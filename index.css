@@ -669,7 +669,9 @@ ul.h-list > li {
   .l_header .menu {
     display: none;
   }
+
 }
+
 .l_header .switcher {
   display: none;
   font-size: 16px;
@@ -904,7 +906,7 @@ ul.h-list > li {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.1),
     0 8px 16px 0 rgba(0, 0, 0, 0.1), 0 16px 32px 0 rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  transform: translate3d(-40px, -40px, 0) scale(0, 0);
+  display: none;
   transform-origin: right top;
   transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
@@ -1790,7 +1792,6 @@ ul.h-list > li {
 @media (max-width: 768px) {
   .l_side section.author {
     box-shadow: none;
-    background: #000000;
     margin-top: 40px;
   }
 }
@@ -2078,7 +2079,7 @@ ul.h-list > li {
 }
 .article h1,
 .article h2 {
-  color: #82ffff;
+  font-weight: 600;
   margin-top: 2em;
 }
 .article h3:first-child,

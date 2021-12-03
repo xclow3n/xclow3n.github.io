@@ -8,10 +8,21 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1"
     />
+    <script src="https://kit.fontawesome.com/13ba53c3fb.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../index.css" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9051705964262794"
      crossorigin="anonymous"></script>
     <title>Xclow3n's Blog</title>
+    <script>
+         function toggle(){
+              if(document.getElementById('phoneMenu').style.display !== "none"){
+               document.getElementById('phoneMenu').style.display = "none";
+              }
+              else{
+               document.getElementById('phoneMenu').style.display = "block";
+              }
+         }
+    </script>
   </head>
   <body>
     <header class="l_header material">
@@ -20,33 +31,33 @@
           <a class="logo" href="/"> Xclow3n </a>
           <div class="menu">
             <ul class="h-list">
-              <li>
-                <a
-                  id="categories"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-folder fa-fw"></i>&nbsp;HTB Writeups
-                </a>
-              </li>
-              <li>
-                <a
-                  id="archives"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-archive fa-fw"></i>&nbsp;CTF WriteUps
-                </a>
-              </li>
-              <li>
-                <a
-                  id="tags"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-tags fa-fw"></i>&nbsp;Bug Bounty
-                </a>
-              </li>
+                <li>
+                    <a
+                      id="categories"
+                      class="nav flat-box waves-effect waves-block"
+                      href="#"
+                    >
+                      <i class="fas fa-box"></i>&nbsp;HTB Writeups
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      id="archives"
+                      class="nav flat-box waves-effect waves-block"
+                      href="#"
+                    >
+                      <i class="fas fa-flag-checkered"></i>&nbsp;CTF WriteUps
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      id="tags"
+                      class="nav flat-box waves-effect waves-block"
+                      href="#"
+                    >
+                      <i class="fas fa-bug"></i>&nbsp;Bug Bounty
+                    </a>
+                  </li>
             </ul>
           </div>
           <div class="m_search" style="display: none;">
@@ -60,11 +71,11 @@
             </form>
           </div>
           <ul class="switcher h-list">
-            <li class="s-search">
+            <!--<li class="s-search">
               <a class="fas fa-search fa-fw" href="javascript:void(0)"></a>
-            </li>
-            <li class="s-menu">
-              <a class="fas fa-bars fa-fw" href="javascript:void(0)"></a>
+            </li>-->
+            <li class="s-menu" onclick="toggle()">
+              <a class="fas fa-hamburger" href="javascript:void(0)"></a>
             </li>
           </ul>
         </div>
@@ -87,31 +98,95 @@
         </div>
       </div>
     </header>
+    <aside class="menu-phone" id="phoneMenu">
+     <header>
+     <nav class="menu">
+     <ul>
+        <li>
+            <a id="categories" class="nav flat-box waves-effect waves-block" href="#">
+            <i class="fas fa-box"></i>&nbsp;HTB WriteUps
+            </a>
+            </li>
+            <li>
+            <a id="archives" class="nav flat-box waves-effect waves-block" href="#">
+            <i class="fas fa-flag-checkered"></i>&nbsp;CTF WriteUps
+            </a>
+            </li>
+            <li>
+            <a id="tags" class="nav flat-box waves-effect waves-block" href="#">
+            <i class="fas fa-bug"></i>&nbsp;Bug Bounty
+            </a>
+            </li>
+     </ul>
+     </nav>
+     </header>
+     </aside>
 
     <div class="l_body">
       <div class="container clearfix">
-        <aside style="float: left; margin-right: 50px" class="l_side">
+        
+        <div class="l_main">
+            <article id="post" class="post white-box article-type-post" itemscope="" itemprop="blogPost">
+                <section class="meta">
+                <div class="meta" id="header-meta">
+                <h1 class="title">How I got my first Bounty</h1>
+                <div class="new-meta-box">
+                <div class="new-meta-item author">
+                <a href="https://twitter.com/_1nt3rc3pt0r_">
+                <i class="fas fa-user" aria-hidden="true"></i>
+                Xclow3n
+                </a>
+                </div>
+                <div class="new-meta-item date">
+                <a class="notlink">
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                2021-12-03
+                </a>
+                </div>
+                <div class="new-meta-item category">
+                <a href="/categories/Web-Exploitation/">
+                <i class="fas fa-folder-open" aria-hidden="true"></i>
+                Bug Bounty
+                </a>
+                </div>
+                
+                </div>
+                <hr>
+                </div>
+                </section>
+                <section class="article typo">
+                    <div class="article-entry" itemprop="articleBody">
+                        <strong>
+                            <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2>
+                        </strong>
+                        <p>
+                            Hello Hackers, It's my first blog so, there might be some mistakes. So please 
+                            ignore them lets get started without wasting more time. I cannot disclose the 
+                            name of the website. Let's call it <b>"redacted.com"</b> so the company had its OAuth system on <b>oauth.redacted.com</b>.
+                            So when a user clicks on the login button on the main domain the user was redirected 
+                            to <b>oauth.redacted.com</b> like this <b>
+                            https://oauth.redacted.com/oauth/authorize?client_id=[ID]&response_type=code&redirect_uri=https://redacted.com/auth/something&state=Random-Token&display=popup</b>
+                            
+                        </p>
+                    </div>
+                    </section>
+                </article>
+                
+      </div>
+      <aside style="float: left; margin-right: 50px" class="l_side">
           <section class="author">
             <div class="content material">
               <div class="avatar">
-                <img class="avatar" src="/assets/logo.png" />
+                <img class="avatar" src="../assets/logo.jpg" />
               </div>
               <section class="list">
                 <header class="material" style="background-color: #4c495d;">
 
                   <div>
-                    <i class="fas fa-medal fa-fw" aria-hidden="true"></i
+                    <i class="far fa-smile-beam" aria-hidden="true"></i
                     >&nbsp;&nbsp;About Me
                   </div>
-                  <a
-                    class="rightBtn"
-                    target="_blank"
-                    rel="external nofollow noopener noreferrer"
-                    href="#"
-                    title="#"
-                  >
-                    <i class="fas fa-trophy fa-fw"></i
-                  ></a>
+                  
                 </header>
 
                 <div class="content material" style="height: 120px;background-color: #564f6f;">
@@ -130,52 +205,12 @@
                   
                 </div>
                 <a  href="https://www.buymeacoffee.com/xclow3n">
-                    <img style="height: unset;width: unset;margin-top:20px;" src="https://img.buymeacoffee.com/button-api/?text=Help Me Get Certification&emoji=&slug=xclow3n&button_colour=BD5FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"></a>
+                    <img style="height: unset;width: unset;margin-top:20px;border-radius: 0;" src="https://img.buymeacoffee.com/button-api/?text=Help Me Get Certification&emoji=&slug=xclow3n&button_colour=BD5FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"></a>
               </section>
               
             </div>
           </section>
         </aside>
-
-        <div class="l_main">
-<article id="post" class="post white-box article-type-post" itemscope="" itemprop="blogPost">
-<section class="meta">
-<div class="meta" id="header-meta">
-<h1 class="title">My First Bounty</h1>
-<div class="new-meta-box">
-<div class="new-meta-item author">
-<a href="https://twitter.com/_1nt3rc3pt0r_">
-<i class="fas fa-user" aria-hidden="true"></i>
-Xclow3n
-</a>
-</div>
-<div class="new-meta-item date">
-<a class="notlink">
-<i class="fas fa-clock" aria-hidden="true"></i>
-2021-12-03
-</a>
-</div>
-<div class="new-meta-item category">
-<a href="/categories/Web-Exploitation/">
-<i class="fas fa-folder-open" aria-hidden="true"></i>
-Bug Bounty
-</a>
-</div>
-<div class="new-meta-item browse busuanzi">
-<a class="notlink">
-<i class="fas fa-eye" aria-hidden="true"></i>
-<span id="busuanzi_value_page_pv">
-<i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
-</span>
-</a>
-</div>
-</div>
-<hr>
-</div>
-</section>
-
-</div>
-      <a class="s-top fas fa-arrow-up fa-fw show" href="javascript:void(0)"></a>
     </div>
   </body>
 </html>
