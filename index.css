@@ -1,19 +1,10 @@
-@charset "utf-8";
-@font-face {
-  font-family: "Skranji";
-  src: url(https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts@19.1.7/Skranji/Skranji-Regular.ttf);
-  font-weight: normal;
-  font-style: normal;
+.glowing-border {
+  border-bottom: 3px solid cyan;
+  
 }
 
-@font-face {
-  font-family: "Monaco";
-  src: url(https://cdn.jsdelivr.net/gh/xaoxuu/cdn-fonts@19.1.7/Monaco/Monaco.ttf);
-  font-weight: normal;
-  font-style: normal;
-}
- /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
-.codeBlock{
+
+.codeBlock {
   margin-top: 4px;
   margin-bottom: 4px;
   word-break: break-word;
@@ -22,7 +13,7 @@
   font-size:13px;
 }
 html {
-  font-family: sans-serif;
+  font-family: 'Montserrat', sans-serif !important;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -224,10 +215,6 @@ html {
   width: 100%;
   height: 100%;
   padding-top: 54px;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5rem;
   -webkit-text-size-adjust: 100%;
@@ -236,7 +223,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  background-color: #2d283e;
+  background-color: #000;
 }
 body.modal-active {
   overflow: hidden;
@@ -555,12 +542,8 @@ ul.h-list > li {
   line-height: 54px;
   height: 54px;
   overflow: hidden;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   padding: 0 20px;
-  background: #4c495d;
+  background: #000;
   transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
   -webkit-transition: all 0.25s ease;
@@ -608,10 +591,7 @@ ul.h-list > li {
   padding: 0 20px;
   line-height: 54px;
   font-size: 19.2px;
-  font-family: Skranji, "Varela Round", Menlo, Monaco, monospace,
-    "Lucida Console", sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
+  
   letter-spacing: 0;
 }
 @media (max-width: 580px) {
@@ -628,10 +608,7 @@ ul.h-list > li {
 }
 .l_header .nav-sub .logo {
   font-size: 16px;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
+  
 }
 @media (max-width: 580px) {
   .l_header .nav-sub .logo {
@@ -771,10 +748,6 @@ ul.h-list > li {
   padding-left: 34px;
   height: 34px;
   line-height: 34px;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   border: none;
   border-radius: 4px;
   background: rgba(9, 12, 14, 0.15);
@@ -1055,8 +1028,6 @@ ul.h-list > li {
   border: none;
 }
 .l_main #comments #valine_container code {
-  font-family: Menlo, Monaco, monospace, "Lucida Console", "Source Code Pro",
-    "Microsoft YaHei", Helvetica, Arial, sans-serif, "Ubuntu";
   font-size: 12.8px;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -1202,8 +1173,9 @@ ul.h-list > li {
   position: relative;
   margin: 0 auto;
   padding: 40px 30px;
-  background: #802bb1;
+  background: #000;
   border-radius: 8px;
+  border: 3px solid cyan;
   transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
   -webkit-transition: all 0.25s ease;
@@ -1594,10 +1566,6 @@ ul.h-list > li {
 .l_side section {
   z-index: 0;
   margin-top: 20px;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-size: 16px;
   border-radius: 8px;
   transition: all 0.25s ease;
@@ -1891,10 +1859,6 @@ ul.h-list > li {
 .l_side section.music .content .aplayer {
   border-radius: 4px;
   color: #666;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
 }
 .l_side section.related_posts .content {
   padding: 10px 0;
@@ -2012,8 +1976,6 @@ ul.h-list > li {
   padding-right: 2px;
 }
 .article p .mjx-math {
-  font-family: Menlo, Monaco, monospace, "Lucida Console", "Source Code Pro",
-    "Microsoft YaHei", Helvetica, Arial, sans-serif, "Ubuntu";
   background: rgba(0, 0, 0, 0.5);
   padding: 10px;
   border-radius: 4px;
@@ -2057,10 +2019,6 @@ ul.h-list > li {
 .article h5,
 .article h6 {
   position: relative;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-weight: normal;
   margin-top: 1.5em;
   margin-bottom: 1em;
@@ -2160,13 +2118,9 @@ ul.h-list > li {
   display: block;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  font-family: Menlo, Monaco, monospace, "Lucida Console", "Source Code Pro",
-    "Microsoft YaHei", Helvetica, Arial, sans-serif, "Ubuntu";
   color: #ffffff;
 }
 .article code {
-  font-family: Menlo, Monaco, monospace, "Lucida Console", "Source Code Pro",
-    "Microsoft YaHei", Helvetica, Arial, sans-serif, "Ubuntu";
   padding: 3px 3px 0px 3px;
   margin: 0px 2px;
   vertical-align: center;
@@ -2182,16 +2136,14 @@ ul.h-list > li {
   }
 }
 .article .readmore {
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-size: 0.8em;
   letter-spacing: 0.1em;
   margin-top: 20px;
 }
 .article .readmore a {
   text-decoration: none;
+  border: 3px solid cyan;
+
   display: inline-block;
   vertical-align: middle;
   line-height: 2rem;
@@ -2276,10 +2228,6 @@ ul.h-list > li {
   margin-top: 10px;
   margin-bottom: 10px;
   position: relative;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-weight: bold;
   font-size: 16px;
 }
@@ -2327,8 +2275,6 @@ ul.h-list > li {
   display: block;
   background: #262626;
   font-size: 13.3px;
-  font-family: Menlo, Monaco, monospace, "Lucida Console", "Source Code Pro",
-    "Microsoft YaHei", Helvetica, Arial, sans-serif, "Ubuntu";
   line-height: 1.7;
   border-radius: 4px;
   transition: all 0.25s ease;
@@ -2883,10 +2829,6 @@ pre .coffeescript .title {
   font-size: 14px;
   overflow: hidden;
   text-align: center;
-  font-family: "Varela Round", Menlo, Monaco, monospace, "Lucida Console",
-    sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
 }
 #footer .licenses {
   color: rgba(255, 255, 255, 0.5);
@@ -3112,10 +3054,6 @@ pre .coffeescript .title {
   .friend-card
   .friend-right
   p.friend-name {
-  font-family: Skranji, "Varela Round", Menlo, Monaco, monospace,
-    "Lucida Console", sans-serif, "Source Sans Pro", "Helvetica Neue", Helvetica,
-    "Hiragino Sans GB", "Hiragino Sans GB W3", Source Han Sans CN Regular,
-    WenQuanYi Micro Hei, "Microsoft YaHei", Arial, sans-serif;
   font-size: 16px;
   font-weight: bold;
   padding-top: 4px;

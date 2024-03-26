@@ -1,20 +1,21 @@
-<!--<html>
-  <head>
-     <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
-    <meta name="keywords" content="CTF, Writeups, Cyber, Blog,Xclow3n" />
-    <meta name="description" content="Xclow3n" />
-    <meta name="HandheldFriendly" content="True" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <script src="https://kit.fontawesome.com/13ba53c3fb.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="./index.css" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9051705964262794"
-     crossorigin="anonymous"></script>
-    <title>Xclow3n's Blog</title>
-    <script>
+<html>
+   <head>
+      <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+      <meta name="keywords" content="CTF, Writeups, Cyber, Blog, Xclow3n" />
+      <meta name="description" content="Xclow3n" />
+      <meta name="HandheldFriendly" content="True" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1, maximum-scale=1"
+         />
+         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans&family=Fira+Code&display=swap" rel="stylesheet">
+
+      <script src="https://kit.fontawesome.com/13ba53c3fb.js" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="./index.css" />
+      
+      <title>Xclow3n's Blog</title>
+      <script>
          function toggle(){
               if(document.getElementById('phoneMenu').style.display === "none"){
                document.getElementById('phoneMenu').style.display = "block";
@@ -23,225 +24,214 @@
                document.getElementById('phoneMenu').style.display = "none";
               }
          }
-    </script>
-  </head>
-  <body>
-    <header class="l_header material">
-      <div class="wrapper">
-        <div class="nav-main container container--flex">
-          <a class="logo" href="/"> Xclow3n </a>
-          <div class="menu">
-            <ul class="h-list">
-              <li>
-                <a
-                  id="categories"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-box"></i>&nbsp;HTB Writeups
-                </a>
-              </li>
-              <li>
-                <a
-                  id="archives"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-flag-checkered"></i>&nbsp;CTF WriteUps
-                </a>
-              </li>
-              <li>
-                <a
-                  id="tags"
-                  class="nav flat-box waves-effect waves-block"
-                  href="#"
-                >
-                  <i class="fas fa-bug"></i>&nbsp;Bug Bounty
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="m_search" style="display: none;">
-            <form name="searchform" class="form u-search-form">
-              <input
-                type="text"
-                class="input u-search-input"
-                placeholder="Search"
-              />
-              <span class="icon"><i class="fas fa-search fa-fw"></i></span>
-            </form>
-          </div>
-          <ul class="switcher h-list">
-            <!--<li class="s-search">
-              <a class="fas fa-search fa-fw" href="javascript:void(0)"></a>
-            </li>
-            <li class="s-menu" onclick="toggle()">
-              <a class="fas fa-hamburger" href="javascript:void(0)"></a>
-            </li>
-          </ul>
-        </div>
-        <div class="nav-sub container container--flex">
-          <a class="logo flat-box waves-effect waves-block"></a>
-          <ul class="switcher h-list">
-            <li class="s-comment">
-              <a
-                class="flat-btn fas fa-comments fa-fw waves-effect waves-button"
-                href="javascript:void(0)"
-              ></a>
-            </li>
-            <li class="s-toc">
-              <a
-                class="flat-btn fas fa-list fa-fw waves-effect waves-button"
-                href="javascript:void(0)"
-              ></a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    <aside class="menu-phone" id="phoneMenu">
-     <header>
-     <nav class="menu">
-     <ul>
-     <li>
-     <a id="categories" class="nav flat-box waves-effect waves-block" href="#">
-     <i class="fas fa-box"></i>&nbsp;HTB WriteUps
-     </a>
-     </li>
-     <li>
-     <a id="archives" class="nav flat-box waves-effect waves-block" href="#">
-     <i class="fas fa-flag-checkered"></i>&nbsp;CTF WriteUps
-     </a>
-     </li>
-     <li>
-     <a id="tags" class="nav flat-box waves-effect waves-block" href="#">
-     <i class="fas fa-bug"></i>&nbsp;Bug Bounty
-     </a>
-     </li>
-     </ul>
-     </nav>
-     </header>
-     </aside>
-
-    <div class="l_body">
+      </script>
+   </head>
+   <body>
+      <header class="l_header material glowing-border">
+         <div class="wrapper">
+            <div class="nav-main container container--flex">
+               <a class="logo" href="/"> Xclow3n </a>
+               <div class="menu">
+                  <ul class="h-list">
+                     <li>
+                        <a
+                           id="categories"
+                           class="nav flat-box waves-effect waves-block"
+                           href="#"
+                           >
+                        <i class="fas fa-box"></i>&nbsp;Posts
+                        </a>
+                     </li>
+                     <li>
+                        <a
+                           id="archives"
+                           class="nav flat-box waves-effect waves-block"
+                           href="#"
+                           >
+                        <i class="fas fa-flag-checkered"></i>&nbsp;CTF Writeup
+                        </a>
+                     </li>
+                     <li>
+                        <a
+                           id="tags"
+                           class="nav flat-box waves-effect waves-block"
+                           href="#"
+                           >
+                        <i class="fas fa-bug"></i>&nbsp;CVE
+                        </a>
+                     </li> 
+                  </ul>
+               </div>
+               <div class="m_search" style="display: none;">
+                  <form name="searchform" class="form u-search-form">
+                     <input
+                        type="text"
+                        class="input u-search-input"
+                        placeholder="Search"
+                        />
+                     <span class="icon"><i class="fas fa-search fa-fw"></i></span>
+                  </form>
+               </div>
+               <ul class="switcher h-list">
+                  <!--<li class="s-search">
+                     <a class="fas fa-search fa-fw" href="javascript:void(0)"></a>
+                     </li> -->
+                  <li class="s-menu" onclick="toggle()">
+                     <a class="fas fa-hamburger" href="javascript:void(0)"></a>
+                  </li>
+               </ul>
+            </div>
+            <div class="nav-sub container container--flex">
+               <a class="logo flat-box waves-effect waves-block"></a>
+               <ul class="switcher h-list">
+                  <li class="s-comment">
+                     <a
+                        class="flat-btn fas fa-comments fa-fw waves-effect waves-button"
+                        href="javascript:void(0)"
+                        ></a>
+                  </li>
+                  <li class="s-toc">
+                     <a
+                        class="flat-btn fas fa-list fa-fw waves-effect waves-button"
+                        href="javascript:void(0)"
+                        ></a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </header>
+      <aside class="menu-phone" id="phoneMenu">
+         <header>
+            <nav class="menu">
+               <ul>
+                  <li>
+                     <a id="categories" class="nav flat-box waves-effect waves-block" href="#">
+                     <i class="fas fa-box"></i>&nbsp;HTB WriteUps
+                     </a>
+                  </li>
+                  <li>
+                     <a id="archives" class="nav flat-box waves-effect waves-block" href="#">
+                     <i class="fas fa-flag-checkered"></i>&nbsp;CTF WriteUps
+                     </a>
+                  </li>
+                  <li>
+                     <a id="tags" class="nav flat-box waves-effect waves-block" href="#">
+                     <i class="fas fa-bug"></i>&nbsp;Bug Bounty
+                     </a>
+                  </li>
+               </ul>
+            </nav>
+         </header>
+      </aside>
+      <div class="l_body">
       <div class="container clearfix">
-        
-        <div class="l_main">
-          <section class="post-list">
-            <div class="post-wrapper">
-              <article
-                class="post reveal"
-                data-sr-id="5"
-                style="
-                  visibility: visible;
-                  opacity: 1;
-                  transition: all 0.25s ease 0s,
-                    opacity 0.6s cubic-bezier(0.5, 0, 0, 1) 0s;
-                "
-              >
-                <section class="meta">
-                  <div class="meta" id="header-meta">
-                    <h2 class="title">
-                      <a href="/bugBounty/myFirstBounty.html">
-                        How I got my first Bounty                      </a>
-                    </h2>
-                    <div class="new-meta-box">
-                      <div class="new-meta-item author">
-                        <a href="https://twitter.com/xclow3n">
-                          <i class="fas fa-user" aria-hidden="true"></i>
-                          Xclow3n
-                        </a>
-                      </div>
-                      <div class="new-meta-item date">
-                        <a class="notlink">
-                          <i class="fas fa-clock" aria-hidden="true"></i>
-                          2021-12-03
-                        </a>
-                      </div>
-                      <div class="new-meta-item category">
-                        <a href="#">
-                          <i class="fas fa-folder-open" aria-hidden="true"></i>
-                          Bug&nbsp;Bounty
-                        </a>
-                      </div>
-                    </div>
-                    <hr />
-                  </div>
-                </section>
-                <section class="article typo">
-                  <p><strong>Overview</strong></p>
-                  <ul>
-                    <li>
-                      Xss on login allowing an
-                      attacker to drop a keylogger and stealing OTP causing
-                      Account Takeover
-                    </li>
-                  </ul>
-                  <div class="readmore">
-                    <a
-                      href="/bugBounty/myFirstBounty.html"
-                      class="flat-box waves-effect waves-block"
-                    >
-                      <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-                      Read More
-                    </a>
-                  </div>
-                </section>
-              </article>
-            </div>
-          </section>
-          <br />
-          <div class="prev-next">
-            <div class="prev-next">
-              <p class="current">1 / 1</p>
-              <a class="next" rel="next" href="#">
-                <section class="post next">
-                  &nbsp;Next&nbsp;<i
-                    class="fas fa-chevron-right"
-                    aria-hidden="true"
-                  ></i>
-                </section>
-              </a>
-            </div>
-          </div>
-      </div>
-      <aside style="float: left; margin-right: 50px" class="l_side">
-          <section class="author">
-            <div class="content material">
-              <div class="avatar">
-                <img class="avatar" src="./assets/logo.jpg" />
-              </div>
-              <section class="list">
-                <header class="material" style="background-color: #4c495d;">
-
-                  <div>
-                    <i class="far fa-smile-beam" aria-hidden="true"></i
-                    >&nbsp;&nbsp;About Me
-                  </div>
-                </header>
-
-                <div class="content material" style="height: 120px;background-color: #564f6f;">
-                  <ul class="entry">
-                    <li>
-                         
-                        <div class="name" style="font-size:13px">
-                          I'm just a simple 18 yrs old learner trying to learn stuff on his own.<br>Help me get a Certification.
-
+         <div class="l_main">
+            <section class="post-list">
+               <div class="post-wrapper">
+                  <article
+                     class="post reveal"
+                     data-sr-id="5"
+                     style="
+                     visibility: visible;
+                     opacity: 1;
+                     transition: all 0.25s ease 0s,
+                     opacity 0.6s cubic-bezier(0.5, 0, 0, 1) 0s;
+                     "
+                     >
+                     <section class="meta">
+                        <div class="meta" id="header-meta">
+                           <h2 class="title">
+                              <a href="/bugBounty/myFirstBounty.html">
+                              How I got my first Bounty                      </a>
+                           </h2>
+                           <div class="new-meta-box">
+                              <div class="new-meta-item author">
+                                 <a href="https://twitter.com/xclow3n">
+                                 <i class="fas fa-user" aria-hidden="true"></i>
+                                 Xclow3n
+                                 </a>
+                              </div>
+                              <div class="new-meta-item date">
+                                 <a class="notlink">
+                                 <i class="fas fa-clock" aria-hidden="true"></i>
+                                 2021-12-03
+                                 </a>
+                              </div>
+                              <div class="new-meta-item category">
+                                 <a href="#">
+                                 <i class="fas fa-folder-open" aria-hidden="true"></i>
+                                 Bug&nbsp;Bounty
+                                 </a>
+                              </div>
+                           </div>
+                           <hr />
                         </div>
-                        
-                      </a>
-                    </li>
-                    
-                  </ul>
-                  
-                </div>
-                <a  href="https://www.buymeacoffee.com/xclow3n">
-                    <img style="height: unset;width: unset;margin-top:20px;border-radius: 0;" src="https://img.buymeacoffee.com/button-api/?text=Help Me Get Certification&emoji=&slug=xclow3n&button_colour=BD5FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"></a>
-              </section>
-              
+                     </section>
+                     <section class="article typo">
+                        <p><strong>Overview</strong></p>
+                        <ul>
+                           <li>
+                              Xss on login allowing an
+                              attacker to drop a keylogger and stealing OTP causing
+                              Account Takeover
+                           </li>
+                        </ul>
+                        <div class="readmore">
+                           <a
+                              href="/bugBounty/myFirstBounty.html"
+                              class="flat-box waves-effect waves-block"
+                              >
+                           <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
+                           Read More
+                           </a>
+                        </div>
+                     </section>
+                  </article>
+               </div>
+            </section>
+            <br />
+            <div class="prev-next">
+               <div class="prev-next">
+                  <p class="current">1 / 1</p>
+                  <a class="next" rel="next" href="#">
+                     <section class="post next">
+                        &nbsp;Next&nbsp;<i
+                           class="fas fa-chevron-right"
+                           aria-hidden="true"
+                           ></i>
+                     </section>
+                  </a>
+               </div>
             </div>
-          </section>
-        </aside>
-    </div>
-  </body>
-</html>-->
+         </div>
+
+         
+         <aside style="float: left; margin-right: 50px" class="l_side">
+            <section class="author">
+               <div class="content material">
+                  <div class="avatar">
+                     <img class="avatar" src="./assets/logo.png" />
+                  </div>
+                  <section class="list">
+                     <header class="material" style="background-color: #000; border: 3px solid cyan;">
+                        <div class="social-wrapper" style="width: 100%;">
+                           <a href="https://app.hackthebox.com/profile/172213" class="social flat-btn waves-effect waves-button" target="_blank" rel="external">
+                           <i class="social fas fa-light fa-cube" aria-hidden="true"></i> 
+                           </a>
+                           <a href="https://twitter.com/xclow3n" class="social flat-btn waves-effect waves-button" target="_blank" rel="external"><i class="social fab fa-twitter" aria-hidden="true"></i></a>
+                           <a href="https://www.linkedin.com/in/rajat-raghav-xclow3n" class="social flat-btn waves-effect waves-button" target="_blank" rel="external"><i class="social fab fa-linkedin" aria-hidden="true"></i></a>
+                        </div>
+
+                        
+                     </header>
+                     <div class="content material" style="font-size:11px; padding: 10px; background-color: #000;border: 3px solid cyan; border-top: unset; ">
+                              Senior Content Engineer I @ HackTheBox <br> Self taught Security Researcher. Intrested in web, blockchain, and Android security with a knack for DevOps. On a perpetual hunt for bugs to make the digital world safer.
+                   </div>
+                  </section>
+                  
+               </div>
+            </section>
+         </aside>
+      </div>
+   </body>
+</html>
