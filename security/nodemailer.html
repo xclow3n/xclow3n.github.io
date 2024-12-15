@@ -1,0 +1,203 @@
+<html lang="en-AU">
+    <head>
+        <title>Xclow3n :)</title>
+        <meta charset="utf-8" />
+        <meta name="referrer" content="origin" />
+        <link rel="stylesheet" href="/assets/css/prism.css" />
+        <script src="/assets/js/prism.js" defer></script>
+        <link rel="stylesheet" href="/assets/css/site.css" />
+    </head>
+    <body>
+        <header>
+            <nav>
+                <center>
+                    <a href="/">
+                        <img
+                            src="/assets/images/ti.gif"
+                            width="512"
+                            height="233"
+                            alt="logo"
+                        />
+                    </a>
+                </center>
+            </nav>
+        </header>
+        <main>
+            <fieldset>
+                <legend>
+                    <h4>Email parser discrepancy in Nodemailer</h4>
+                </legend>
+
+                <p><strong>TL;DR</strong></p>
+                <ul>
+                    <li>
+                        This blog reveals two issues in Nodemailer’s email
+                        address parser. The first was fixed in
+                        <code>v6.9.16</code>.
+                    </li>
+                    <li>
+                        The second issue still remains in the latest version,
+                        potentially causing misrouting of emails.
+                    </li>
+                </ul>
+
+                <p>
+                    After reading
+                    <a
+                        href="https://portswigger.net/research/splitting-the-email-atom"
+                        >Splitting the Email Atom research</a
+                    >, I set out to find a zero-day bug in Nodemailer for one of
+                    my CTF challenges. I discovered that Nodemailer was not
+                    correctly parsing certain valid email addresses. Consider
+                    this example:
+                </p>
+                <pre><code class="language-javascript">"test@xclow3n.htb"@google.com</code></pre>
+                <p>
+                    According to RFC 5322, this is a valid email address. The
+                    portion
+                    <code class="language-text">"test@xclow3n.htb"</code>
+                    is a quoted local-part, which allows the
+                    <code class="language-text">@</code> character. The domain
+                    is <code class="language-text">google.com</code>. Thus, the
+                    mailbox is
+                    <code class="language-text">"test@xclow3n.htb"</code> at the
+                    domain <code class="language-text">google.com</code>.
+                </p>
+                <p>
+                    However, Nodemailer’s parser attempts to identify the
+                    address by splitting at the first
+                    <code class="language-text">@</code>
+                    found outside of a properly recognized quoted local-part.
+                    Here’s a snippet (taken from Nodemailer’s code) showing how
+                    it separates tokens into different lists:
+                </p>
+                <pre><code class="language-javascript">data = {
+    address: [],
+    comment: [],
+    group: [],
+    text: []
+};</code></pre>
+                <p>
+                    When Nodemailer encounters
+                    <code class="language-javascript"
+                        >"test@xclow3n.htb"@google.com</code
+                    >, it correctly identifies the quoted string
+                    <code class="language-javascript">"test@xclow3n.htb"</code>
+                    as the local-part, but then treats the subsequent
+                    <code class="language-javascript">@google.com</code> segment
+                    as non-quoted “text.” It fails to recognize that
+                    <code class="language-text">google.com</code> is the domain.
+                    Instead, it might parse the input as:
+                </p>
+                <pre><code class="language-javascript">[{
+    name: "@google.com",
+    address: "test@xclow3n.htb"
+}]</code></pre>
+                <p>
+                    This results in Nodemailer interpreting
+                    <code class="language-javascript">"test@xclow3n.htb"</code>
+                    as the entire mailbox and <code>@google.com</code> as a
+                    display name, effectively losing the actual domain
+                    information (<code>google.com</code>).
+                </p>
+                <p>
+                    I reported this to the Nodemailer team, hoping it might be
+                    treated as a security issue, since incorrect parsing could
+                    lead to emails being sent to the wrong domain. However, they
+                    considered it a regular bug rather than a security flaw.
+                    They fixed this issue in
+                    <a
+                        href="https://github.com/nodemailer/nodemailer/releases/tag/v6.9.16"
+                        >version 6.9.16</a
+                    >
+                    without providing credit.
+
+                    <br />
+                    <img src="/assets/images/nodemailer/nodemailer1.png" />
+                    <img src="/assets/images/nodemailer/nodemailer2.png" />
+                </p>
+
+                <br />
+                <h3>Nodemailer Zero Day</h3>
+                <br />
+                <p>
+                    Accepting their stance, I moved on and found another
+                    problem. I found out that it is still vulnerable to the same
+                    kind of issue. For example, consider this payload:
+                </p>
+                <pre><code class="language-javascript">"test@email.htb x"@interstellar.htb</code></pre>
+                <p>
+                    It exhibits similar behavior, and the email is sent to the
+                    <code class="language-javascript">test</code> mailbox on
+                    <code class="language-javascript">email.htb</code> rather
+                    than
+                    <code class="language-javascript">interstellar.htb</code>.
+                </p>
+
+                <p>
+                    If we parse the following email using a library such as
+                    <a href="https://www.npmjs.com/package/email-addresses"
+                        >Email-Addresses</a
+                    >
+                </p>
+                <pre><code class="language-javascript" >
+Welcome to Node.js v23.3.0.
+Type ".help" for more information.
+> addrs = require("email-addresses")
+[Function: parse5322] {
+    parseOneAddress: [Function: parseOneAddressSimple],
+    parseAddressList: [Function: parseAddressListSimple],
+    parseFrom: [Function: parseFromSimple],
+    parseSender: [Function: parseSenderSimple],
+    parseReplyTo: [Function: parseReplyToSimple]
+}
+> addrs.parseOneAddress(`"test@email.htb x"@interstellar.htb`)
+{
+    parts: {
+    name: null,
+    address: {
+        name: 'addr-spec',
+        tokens: '"test@email.htb x"@interstellar.htb',
+        semantic: 'test@email.htb x@interstellar.htb',
+        children: [Array]
+    },
+    local: {
+        name: 'local-part',
+        tokens: '"test@email.htb x"',
+        semantic: 'test@email.htb x',
+        children: [Array]
+    },
+    domain: {
+        name: 'domain',
+        tokens: 'interstellar.htb',
+        semantic: 'interstellar.htb',
+        children: [Array]
+    },
+    comments: []
+    },
+    type: 'mailbox',
+    name: null,
+    address: 'test@email.htb x@interstellar.htb',
+    local: 'test@email.htb x',
+    domain: 'interstellar.htb',
+    comments: '',
+    groupName: null
+}
+></code></pre>
+                <p>
+                    The domain is "interstellar.htb". I haven't reported it
+                    because it’s considered a normal bug :)
+                </p>
+                <p>
+                    The latest version as for now v6.9.16 is still vulnerable to
+                    this. I showcased this second bug in the University CTF 2024
+                    Intergalactic Bounty web challenge. Despite the Nodemailer
+                    team’s response to the first bug, I hope that highlighting
+                    these issues will help raise awareness about how subtle
+                    parsing errors can lead to unexpected behavior.
+                </p>
+            </fieldset>
+        </main>
+        <footer>&copy; 2024 Xclow3n</footer>
+    </body>
+</html>

