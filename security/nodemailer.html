@@ -1,6 +1,6 @@
 <html lang="en-AU">
     <head>
-        <title>Xclow3n :)</title>
+        <title>0xhexr4 :)</title>
         <meta charset="utf-8" />
         <meta name="referrer" content="origin" />
         <link rel="stylesheet" href="/assets/css/prism.css" />
@@ -51,16 +51,16 @@
                     correctly parsing certain valid email addresses. Consider
                     this example:
                 </p>
-                <pre><code class="language-javascript">"test@xclow3n.htb"@google.com</code></pre>
+                <pre><code class="language-javascript">"test@0xhexr4.htb"@google.com</code></pre>
                 <p>
                     According to RFC 5322, this is a valid email address. The
                     portion
-                    <code class="language-text">"test@xclow3n.htb"</code>
+                    <code class="language-text">"test@0xhexr4.htb"</code>
                     is a quoted local-part, which allows the
                     <code class="language-text">@</code> character. The domain
                     is <code class="language-text">google.com</code>. Thus, the
                     mailbox is
-                    <code class="language-text">"test@xclow3n.htb"</code> at the
+                    <code class="language-text">"test@0xhexr4.htb"</code> at the
                     domain <code class="language-text">google.com</code>.
                 </p>
                 <p>
@@ -80,9 +80,9 @@
                 <p>
                     When Nodemailer encounters
                     <code class="language-javascript"
-                        >"test@xclow3n.htb"@google.com</code
+                        >"test@0xhexr4.htb"@google.com</code
                     >, it correctly identifies the quoted string
-                    <code class="language-javascript">"test@xclow3n.htb"</code>
+                    <code class="language-javascript">"test@0xhexr4.htb"</code>
                     as the local-part, but then treats the subsequent
                     <code class="language-javascript">@google.com</code> segment
                     as non-quoted “text.” It fails to recognize that
@@ -91,11 +91,11 @@
                 </p>
                 <pre><code class="language-javascript">[{
     name: "@google.com",
-    address: "test@xclow3n.htb"
+    address: "test@0xhexr4.htb"
 }]</code></pre>
                 <p>
                     This results in Nodemailer interpreting
-                    <code class="language-javascript">"test@xclow3n.htb"</code>
+                    <code class="language-javascript">"test@0xhexr4.htb"</code>
                     as the entire mailbox and <code>@google.com</code> as a
                     display name, effectively losing the actual domain
                     information (<code>google.com</code>).
@@ -198,6 +198,6 @@ Type ".help" for more information.
                 </p>
             </fieldset>
         </main>
-        <footer>&copy; 2024 Xclow3n</footer>
+        <footer>&copy; 2024 0xhexr4</footer>
     </body>
 </html>
