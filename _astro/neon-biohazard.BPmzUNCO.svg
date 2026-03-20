@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-green">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-green)">
+    <!-- Center circle -->
+    <circle cx="50" cy="50" r="8" stroke="#00ff00" stroke-width="2.5" fill="none"/>
+
+    <!-- Top symbol -->
+    <path d="M 50 25 Q 35 30, 38 42" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 50 25 Q 65 30, 62 42" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="50" cy="25" r="5" stroke="#00ff00" stroke-width="2.5" fill="none"/>
+
+    <!-- Bottom left symbol -->
+    <path d="M 28 70 Q 28 55, 38 50" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 28 70 Q 38 78, 48 72" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="28" cy="70" r="5" stroke="#00ff00" stroke-width="2.5" fill="none"/>
+
+    <!-- Bottom right symbol -->
+    <path d="M 72 70 Q 72 55, 62 50" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 72 70 Q 62 78, 52 72" stroke="#00ff00" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="72" cy="70" r="5" stroke="#00ff00" stroke-width="2.5" fill="none"/>
+  </g>
+</svg>

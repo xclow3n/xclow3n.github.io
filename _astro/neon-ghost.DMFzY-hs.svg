@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-purple">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-purple)">
+    <!-- Ghost body -->
+    <path d="M 30 40 Q 30 20, 50 20 Q 70 20, 70 40 L 70 75 L 62 68 L 54 75 L 46 68 L 38 75 L 30 68 Z"
+          stroke="#b366ff"
+          stroke-width="3"
+          fill="none"
+          stroke-linejoin="round"/>
+
+    <!-- Eyes -->
+    <circle cx="42" cy="38" r="4" fill="#b366ff" opacity="0.8">
+      <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="58" cy="38" r="4" fill="#b366ff" opacity="0.8">
+      <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Mouth -->
+    <path d="M 42 50 Q 50 54, 58 50" stroke="#b366ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

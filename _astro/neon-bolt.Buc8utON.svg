@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-yellow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-yellow)">
+    <!-- Lightning bolt -->
+    <path d="M 55 10 L 35 50 L 50 50 L 40 90 L 70 45 L 55 45 Z"
+          stroke="#ffff00"
+          stroke-width="3"
+          fill="#ffff00"
+          opacity="0.6"
+          stroke-linejoin="round"/>
+
+    <!-- Inner glow -->
+    <path d="M 55 10 L 35 50 L 50 50 L 40 90 L 70 45 L 55 45 Z"
+          stroke="#ffffff"
+          stroke-width="1.5"
+          fill="none"
+          opacity="0.8"
+          stroke-linejoin="round"/>
+  </g>
+</svg>

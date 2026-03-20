@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-eye-glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-eye-glow)">
+    <!-- Outer eye shape -->
+    <path d="M 10 50 Q 30 25, 50 25 Q 70 25, 90 50 Q 70 75, 50 75 Q 30 75, 10 50 Z"
+          stroke="#ff0080" stroke-width="3" fill="none" stroke-linejoin="round"/>
+
+    <!-- Iris -->
+    <circle cx="50" cy="50" r="15" stroke="#ff0080" stroke-width="2.5" fill="none"/>
+
+    <!-- Pupil -->
+    <circle cx="50" cy="50" r="7" fill="#ff0080" opacity="0.7">
+      <animate attributeName="r" values="7;5;7" dur="3s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Pupil slit (vertical — cat/Jinx style) -->
+    <ellipse cx="50" cy="50" rx="2" ry="12" fill="#0a0a0f" opacity="0.9">
+      <animate attributeName="ry" values="12;8;12" dur="3s" repeatCount="indefinite"/>
+    </ellipse>
+
+    <!-- Iris detail lines -->
+    <line x1="50" y1="36" x2="50" y2="40" stroke="#ff66b3" stroke-width="1" opacity="0.5"/>
+    <line x1="50" y1="60" x2="50" y2="64" stroke="#ff66b3" stroke-width="1" opacity="0.5"/>
+    <line x1="36" y1="50" x2="40" y2="50" stroke="#ff66b3" stroke-width="1" opacity="0.5"/>
+    <line x1="60" y1="50" x2="64" y2="50" stroke="#ff66b3" stroke-width="1" opacity="0.5"/>
+
+    <!-- Highlight -->
+    <circle cx="44" cy="44" r="3" fill="#ffffff" opacity="0.8">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Lower lash accents -->
+    <path d="M 22 58 L 18 64" stroke="#ff0080" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 78 58 L 82 64" stroke="#ff0080" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 30 64 L 28 70" stroke="#ff0080" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <path d="M 70 64 L 72 70" stroke="#ff0080" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-pink-heart">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-pink-heart)">
+    <!-- Heart shape -->
+    <path d="M 50 75 Q 20 50, 25 35 Q 25 20, 37 20 Q 50 25, 50 35 Q 50 25, 63 20 Q 75 20, 75 35 Q 80 50, 50 75 Z"
+          stroke="#ff0080"
+          stroke-width="3"
+          fill="none"
+          stroke-linejoin="round"/>
+
+    <!-- Inner highlight -->
+    <path d="M 37 28 Q 42 26, 45 30"
+          stroke="#ff66b3"
+          stroke-width="2"
+          fill="none"
+          opacity="0.8"
+          stroke-linecap="round"/>
+
+    <!-- Sparkle -->
+    <circle cx="35" cy="40" r="2" fill="#ffffff" opacity="0.9">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

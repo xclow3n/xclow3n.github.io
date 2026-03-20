@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs — 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't."><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed | xclow3n</title><link rel="stylesheet" href="/_astro/_astro_content.DQuR4iV-.css"></head> <body class="min-h-screen relative"> <div class="fixed inset-0 z-0"> <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl"></div> <div class="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div> </div> <!-- Fireflies --> <div class="fixed inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true"> <div class="firefly" style="top:12%;left:8%;--dur:6s;--delay:0s;--size:3px;--color:236,72,153"></div> <div class="firefly" style="top:25%;left:85%;--dur:8s;--delay:1s;--size:4px;--color:96,165,250"></div> <div class="firefly" style="top:60%;left:15%;--dur:7s;--delay:2s;--size:3px;--color:192,132,252"></div> <div class="firefly" style="top:40%;left:70%;--dur:9s;--delay:0.5s;--size:5px;--color:236,72,153"></div> <div class="firefly" style="top:75%;left:45%;--dur:6s;--delay:3s;--size:3px;--color:96,165,250"></div> <div class="firefly" style="top:18%;left:55%;--dur:10s;--delay:1.5s;--size:4px;--color:250,204,21"></div> <div class="firefly" style="top:85%;left:25%;--dur:7s;--delay:4s;--size:3px;--color:192,132,252"></div> <div class="firefly" style="top:50%;left:92%;--dur:8s;--delay:2.5s;--size:4px;--color:236,72,153"></div> <div class="firefly" style="top:35%;left:30%;--dur:11s;--delay:0.8s;--size:3px;--color:96,165,250"></div> <div class="firefly" style="top:70%;left:75%;--dur:6s;--delay:3.5s;--size:5px;--color:250,204,21"></div> <div class="firefly" style="top:8%;left:42%;--dur:9s;--delay:1.2s;--size:3px;--color:192,132,252"></div> <div class="firefly" style="top:90%;left:60%;--dur:7s;--delay:2.8s;--size:4px;--color:236,72,153"></div> <div class="firefly" style="top:55%;left:5%;--dur:8s;--delay:4.2s;--size:3px;--color:96,165,250"></div> <div class="firefly" style="top:30%;left:50%;--dur:10s;--delay:0.3s;--size:4px;--color:250,204,21"></div> <div class="firefly" style="top:45%;left:38%;--dur:6s;--delay:5s;--size:3px;--color:192,132,252"></div> <div class="firefly" style="top:15%;left:72%;--dur:9s;--delay:1.8s;--size:5px;--color:236,72,153"></div> <div class="firefly" style="top:80%;left:88%;--dur:7s;--delay:3.2s;--size:3px;--color:96,165,250"></div> <div class="firefly" style="top:65%;left:20%;--dur:11s;--delay:0.7s;--size:4px;--color:250,204,21"></div> </div> <div class="relative z-10">  <article class="py-24 px-6 relative min-h-screen"> <div class="absolute top-40 right-[8%] w-80 h-80 bg-pink-500/10 rounded-full blur-3xl"></div> <div class="absolute bottom-20 left-[10%] w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div> <div class="max-w-7xl mx-auto"> <a href="/" class="inline-flex items-center gap-3 bg-pink-400 border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all rotate-[-2deg] hover:rotate-0 mb-12"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-black"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg> <span class="font-black text-black">BACK HOME</span> </a> <div class="relative bg-gray-900/60 border-8 border-black p-8 md:p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] mb-12"> <div class="absolute -top-6 -right-6 w-32 h-32 bg-cyan-400 rounded-full blur-2xl opacity-40"></div> <div class="flex items-center gap-4 mb-6 flex-wrap"> <div class="bg-black border-2 border-white px-4 py-2"> <span class="text-white font-black text-sm uppercase">March 2026</span> </div> <div class="bg-cyan-400 border-4 border-black px-4 py-2 rotate-[-2deg]"> <span class="text-black font-black text-sm uppercase">RESEARCH</span> </div> </div> <div class="mb-8"> <h1 class="text-4xl md:text-6xl font-black text-white mb-4" style="text-shadow: 6px 6px 0px rgba(0,0,0,0.5)"> Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed </h1> <div class="flex flex-wrap gap-3"> <div style="transform: rotate(-2deg)" class="bg-white border-3 border-black px-4 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"> <span class="font-black text-black">#AI</span> </div><div style="transform: rotate(2deg)" class="bg-white border-3 border-black px-4 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"> <span class="font-black text-black">#Vulnerability Research</span> </div><div style="transform: rotate(-2deg)" class="bg-white border-3 border-black px-4 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"> <span class="font-black text-black">#SAML</span> </div><div style="transform: rotate(2deg)" class="bg-white border-3 border-black px-4 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"> <span class="font-black text-black">#HTTP Smuggling</span> </div><div style="transform: rotate(-2deg)" class="bg-white border-3 border-black px-4 py-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"> <span class="font-black text-black">#Security</span> </div> </div> </div> </div> <div class="markdown-content"> <div class="bg-gray-900/40 border-4 border-gray-700 p-8 md:p-12 shadow-lg"> <h2 id="tldr">TL;DR</h2>
+<p>I tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs — 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. AI can find bugs — that’s true. But which ones actually have impact? That’s another story. Everything I’m sharing here are real bugs, spec violations, or genuinely wrong practices. But when you actually try to exploit them, most fall apart. AI is fast at coverage, hypothesis generation, and code analysis. It’s bad at impact assessment, validation, and knowing what’s actually exploitable. Every model inflated findings. The researcher’s judgment was the difference between noise and CVEs every single time. AI doesn’t replace security researchers — it’s a force multiplier, not a replacement.</p>
+<hr>
+<p><strong>Note:</strong> I don’t have a formal AI/ML background. This was my first time seriously using AI for vulnerability research. Take this with a grain of salt — your results will likely differ based on your target selection, how you set things up, your prompts, and your overall approach. I deliberately picked some hardened targets to see how well AI performs under pressure, which skews the numbers. I could be wrong about some of my conclusions. This is just what I tried and what I observed. The whole thing took about a week and half. The bugs shown here are examples, not the complete list — some findings are omitted due to pending disclosure or because they’d identify specific targets.</p>
+<hr>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#approach-1-blackbox-rfc-spray">Approach 1: Blackbox RFC Spray</a> — HTTP/1.1 request smuggling across 23 servers</li>
+<li><a href="#approach-2-two-fine-tuned-models-opus-brain">Approach 2: Two Fine-Tuned Models + Opus Brain</a> — XML parser fuzzing with specialist models</li>
+<li><a href="#approach-3-hypothesis-driven-from-code-and-cve-history">Approach 3: Hypothesis-Driven from Code and CVE History</a> — SAML library analysis with structured hypotheses</li>
+<li><a href="#approach-4-domain-research-frontier-model-secra">Approach 4: Domain Research + Frontier Model (SECRA)</a> — Pre-gathered research fed to frontier model, multiple SAML targets</li>
+<li><a href="#what-i-learned">What I Learned</a> — Lessons across all 4 approaches</li>
+<li><a href="#secra">SECRA</a> — How the pipeline works</li>
+<li><a href="#numbers">Numbers</a> — Summary table</li>
+</ul>
+<hr>
+<p>Over around one week I tested 4 different AI-assisted approaches for finding vulnerabilities and found real bugs — some critical. I also wasted days on approaches that produced nothing useful. This is an honest breakdown of what worked, what didn’t, and where AI fits in this workflow.</p>
+<hr>
+<h2 id="approach-1-blackbox-rfc-spray">Approach 1: Blackbox RFC Spray</h2>
+<p>I used AI to help build the testing setup, pointed it at the research direction, and had it systematically map RFC gaps, contradictions, and MAY/SHOULD ambiguities across HTTP/1.0, HTTP/1.1, proxy specifications, and HTTP/2.</p>
+<p>The primary focus was HTTP/1.1. The AI mapped where specs disagree — RFC 7230 vs RFC 9110 on Content-Length handling (first-wins vs last-wins), where “MUST reject” becomes “MAY ignore” across spec versions, where proxies are allowed to be lenient. From those gaps, it generated payload variations and I sprayed them across a matrix of 23 backend servers and proxies in Docker labs.</p>
+<p><strong>Results:</strong> 55 findings across 23 backend servers, tested through H1 and H2→H1 proxy chains. After triage: 8 confirmed exploitable with end-to-end combo lab PoCs, 11 path traversal bugs, 4 logic bugs, plus a funky chunk RFC violation across 16 servers and 6 proxies. 3 turned out to be false positives, 2 were already reported by other researchers.</p>
+<h3 id="confirmed-bugs">Confirmed Bugs</h3>
+<p>The exploitable bugs all follow the same pattern: the AI finds a parser disagreement, I build the proxy→backend chain in Docker labs to prove it’s exploitable end-to-end.</p>
+<p><strong>CL octal parsing via <code>strtol(base=0)</code>.</strong> A backend’s Content-Length parser uses <code>strtol</code> with auto-base detection. <code>CL:0400</code> is read as octal 256, not decimal 400. Proxy reads it as decimal 400 and forwards 400 body bytes. Backend only consumes 256 — the remaining 144 bytes become a smuggled request. Confirmed exploitable through two major proxies in <strong>default configuration</strong> — no lenient mode needed.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
+<span class="line"><span>Content-Length: 0400       ← proxy: decimal 400. backend: octal 256.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>[256 bytes padding]GET /smuggled HTTP/1.1</span></span>
+<span class="line"><span>Host: target               ← backend treats these 144 leftover bytes as next request</span></span></code></pre>
+<p><strong>Bare LF chunk framing.</strong> A backend accepts bare <code>\n</code> (without <code>\r</code>) as chunk line terminator. One proxy forwards bare LF chunks. Backend and proxy disagree on body boundaries — 1 request in, 2 responses out. Confirmed end-to-end.</p>
+<p><strong>Duplicate TE first-wins.</strong> Two TE headers: <code>TE:identity</code> + <code>TE:chunked</code>. Backend takes first (identity → falls to CL). A proxy that forwards both uses chunked. Body framing disagrees — smuggling confirmed through one proxy.</p>
+<p><strong>Multi-valued TE ignored.</strong> <code>TE:gzip,chunked</code> — backend doesn’t recognize the comma-separated value as chunked, falls to CL. Proxy parses <code>chunked</code> from the list. Same desync pattern, confirmed through same proxy.</p>
+<p><strong>Space-in-name header truncation.</strong> A backend silently drops ALL headers after encountering a space in a header name. <code>Content-Length</code> placed after the malformed header vanishes. Body becomes a smuggled request. Dead in pure H1 — every proxy rejects in default config. Revived through a major proxy’s documented lenient mode:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
+<span class="line"><span>Host: target</span></span>
+<span class="line"><span>X -Forwarded: x           ← space terminates backend's header parsing</span></span>
+<span class="line"><span>Content-Length: 43         ← backend NEVER SEES THIS (truncated)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>GET /admin HTTP/1.1        ← these 43 bytes aren't consumed as body</span></span>
+<span class="line"><span>Host: target               ← backend treats them as the next request</span></span></code></pre>
+<p>Proxy checked ACLs on the POST. Backend processes the smuggled GET to <code>/admin</code>. ACL bypass with full PoC.</p>
+<p><strong>NUL byte header splitting.</strong> A backend splits headers on NUL bytes. <code>X-Foo\x00Content-Length: 50</code> becomes two separate headers. Dead in pure H1 — all proxies reject NUL in headers. Revived via H2 downgrade: one H2→H1 proxy forwards NUL bytes in header values.</p>
+<p><strong>Path traversal bugs (11 across 3 backends).</strong> Backslash traversal (<code>/public\..dmin</code> → <code>/admin</code>), null byte truncation (<code>/admin%00.jpg</code> → <code>/admin</code>), encoded dot traversal (<code>/%2e%2e/admin</code> → <code>/admin</code>), semicolon stripping (<code>/public;/../admin</code> → <code>/admin</code>), fragment as path separator. These work through any proxy — proxies forward URI paths without normalizing these patterns. ACL bypass trivial to demo.</p>
+<p><strong>Underscore-to-hyphen header normalization.</strong> Two backends map <code>_</code> to <code>-</code> in header names internally. <code>X_Forwarded_For</code> → <code>X-Forwarded-For</code>. Proxies that strip <code>X-Forwarded-For</code> from clients won’t strip <code>X_Forwarded_For</code>. IP spoofing past proxy XFF filters through any proxy.</p>
+<p><strong>CRLF in quoted chunk-extension.</strong> RFC doesn’t allow CRLF inside quoted strings in chunk-ext. 16 servers + 6 proxies don’t track quote state — CRLF inside a quoted chunk-ext value is treated as real line terminator, promoting attacker text as trailer headers. Reported across the board, but chunk-extensions are not implemented properly in ecosystem, no proper exploitation since most treat it in the same way.</p>
+<h3 id="h2h1-downgrade-testing">H2→H1 Downgrade Testing</h3>
+<p>We also tested the H2→H1 conversion layer across 15 proxies with ~3,600 test cases across 26 categories. The H2 testing found mostly RFC violations — proxies accepting things they shouldn’t per spec, but not actually forwarding them in exploitable ways. The main value was reviving dead H1 bugs: the NUL byte header splitting and bare CR/LF delivery paths only exist through H2 proxies that have different validation than H1 proxies.</p>
+<p>Some hypotheses were my ideas that the AI formalized, others the AI generated on its own from the research material we’d gathered:</p>
+<p><strong>Empty DATA frame → zero-size chunk injection.</strong> From the H2 spec material, the AI reasoned that an empty DATA frame (length=0, no END_STREAM) mid-body could convert to <code>0\r\n\r\n</code> — the chunked terminator — smuggling everything after it.</p>
+<p><strong>RST_STREAM after partial body → dirty backend connection.</strong> H2 POST with CL:1000, deliver 200 bytes, RST_STREAM. Proxy pools the backend connection, next victim’s request fills the remaining body. In practice, proxies handle RST_STREAM cleanly and don’t return dirty connections — this one didn’t pan out.</p>
+<h3 id="the-catch">The Catch</h3>
+<p>The AI didn’t find any of the exploitable chains. I did. The AI found the backend parser bugs and mapped which proxies forward what. I connected the dots — the lenient proxy modes, the specific bytes that trigger each behavior, the end-to-end chains. That’s the pattern: AI maps the surface, researcher builds the exploit.</p>
+<p>It also inflated results badly. Out of 55 initial findings, many were false chains that looked plausible on paper but fell apart in testing. 3 were outright false positives (0 drain hits on re-test). The model would flag a payload as “working” when the proxy-backend pair would never actually desync on it. I still had to sit in labs validating every single one.</p>
+<p>Good for mapping RFC gaps, generating research directions, and finding parser bugs. Bad at chaining logic, bad at knowing what’s actually exploitable. The exploitable chains came from manual work.</p>
+<hr>
+<h2 id="approach-2-two-fine-tuned-models--opus-brain">Approach 2: Two Fine-Tuned Models + Opus Brain</h2>
+<p>The most involved setup. Three-tier model architecture: a 32B security expert fine-tuned on ~24,000 training pairs (CVE analysis, attack patterns, spec gaps, encoding tricks), a 14B implementation expert fine-tuned per-target on code tracing and edge case behavior, and Opus as orchestrator deciding what to ask each one.</p>
+<p>Target: XML parsers. I defined 61 parsers across 11 language ecosystems. Combined all attack surface knowledge into the security expert model. Tested 12 parsers across ~2,800 payloads.</p>
+<p><strong>Results: 53 confirmed bugs, 147 suspicious behaviors across 12 parsers. Zero reportable.</strong></p>
+<h3 id="bugs-found-not-exploitable">Bugs Found (Not Exploitable)</h3>
+<p>The numbers look impressive: 200 total findings across 12 parsers. These are real spec violations, real wrong behaviors, real bugs. But I tested them against major downstream projects — SAML libraries, signature verifiers, document processors — and none of the bugs were exploitable in practice. Every single one needs a specific precondition that doesn’t hold in real deployments.</p>
+<p>Some examples of why they don’t matter:</p>
+<p><strong>Prototype pollution via <code>constructor.prototype</code>.</strong> The parser sanitizes <code>__proto__</code> but not the constructor chain. <code>&#x3C;constructor>&#x3C;prototype>&#x3C;isAdmin>true&#x3C;/isAdmin>&#x3C;/prototype>&#x3C;/constructor></code> creates a pollution gadget. But exploitation requires the downstream application to pass parsed output through a deep-merge utility like <code>_.merge</code> — and the major projects consuming these parsers don’t do that.</p>
+<p><strong>Numeric character reference passthrough.</strong> XML §4.1 says <code>&#x26;#N;</code> MUST be resolved. Multiple parsers leave them as literal strings. <code>&#x26;#60;script&#x26;#62;</code> passes untouched but a browser would decode it. Exploitable only if the parsed output goes directly into an HTML context without re-encoding — and the downstream SAML/XML-signing libraries I checked don’t do that.</p>
+<p><strong>Duplicate attribute acceptance (last-write-wins).</strong> XML §3.1 forbids duplicate attributes. Multiple parsers silently accept them. But for this to be a security issue, a SAML library would need to rely on attribute uniqueness for assertion integrity — and the ones I tested validate signatures before extracting attributes, so duplicate attributes in unsigned content don’t help.</p>
+<p><strong>Missing attribute newline normalization.</strong> XML §3.3.3 says LF in attribute values must be replaced with space. Multiple parsers preserve raw newlines. Breaks C14N and digital signatures — but only if the signing library and the verifying library use different parsers with different normalization behavior. The libraries I tested use the same parser for both.</p>
+<p><strong>Stopnode premature close.</strong> <code>&#x3C;/script></code> inside a string literal breaks out of the stop node. Direct XSS vector — but only in an HTML-in-XML configuration that nobody uses in the downstream projects I checked.</p>
+<p>The pattern is always the same: the bug is real, the spec violation is real, but the precondition for exploitation doesn’t exist in the actual downstream consumers.</p>
+<h3 id="why-it-failed">Why It Failed</h3>
+<p>This is the core problem with targeting parsers in isolation. A parser doing something weird only matters if something downstream trusts that output dangerously. The AI is good at finding the weird behavior. It can’t tell you whether any real application actually hits that path.</p>
+<p>The fine-tuned model architecture did have one real advantage though: the main LLM brain had better visibility. It could directly question the specialist models about implementation details, like “does this parser normalize whitespace before or after entity expansion?” and get answers grounded in the actual codebase instead of hallucinated ones. The reasoning was sharper because the orchestrator could query domain-specific knowledge on demand at a fraction of the cost of sending the full codebase to a frontier model every time. When it asked about prototype pollution, it wasn’t guessing from general knowledge, it was informed by the implementation expert’s understanding of how the parser actually builds its output objects. The target was wrong, not the architecture. If I’d pointed this at a SAML library instead of isolated parsers, I think the results would have been different. I might revisit this when I have the budget.</p>
+<p>The fine-tuning itself wasn’t the waste. The target selection was.</p>
+<p>This approach was cheaper on per target run approx 4-6$ but the fine tuning time / resources / content gathering is much more and only worth doing when you are planning to do systematic research across ecosystem.</p>
+<hr>
+<h2 id="approach-3-hypothesis-driven-from-code-and-cve-history">Approach 3: Hypothesis-Driven from Code and CVE History</h2>
+<p>Instead of spraying blind, this approach reasons about the target:</p>
+<ol>
+<li>Indexes the target codebase using tree-sitter — function signatures, call graphs, entry points</li>
+<li>Summarizes code structure and identifies trust boundaries</li>
+<li>Pulls CVE history from OSV.dev for the target and its dependencies</li>
+<li>Runs behavioral probes — 30-50 edge-case tests to observe actual library behavior before theorizing</li>
+<li>Generates structured hypotheses with confidence levels based on code patterns + past vulns + observed behavior</li>
+<li>Maps dependency impact chains — if library A has a flaw, which downstream libraries inherit it?</li>
+</ol>
+<p>I tested this on a SAML authentication library and its dependency chain — 7 libraries covering XML parsing, signature verification, XPath evaluation, and session management.</p>
+<p><strong>Results:</strong> 38 hypotheses tested across 3 runs. 12 confirmed (31%), 3 partial, 23 rejected.</p>
+<p>The hypothesis quality was the real output here, more than the bugs themselves. Each hypothesis wasn’t just “test X for vulnerability Y.” It had structure: the specific function, what assumption it violates, the attack vector, and why it thinks this based on CVE patterns in similar libraries. One hypothesis looked at a 2021 signature bypass CVE, traced how the fix changed XPath evaluation, cross-referenced that with the current logout flow, and asked “does this same trust boundary violation exist here?” It cited the specific code lines, the CVE pattern, the assumption being violated. That kind of cross-library reasoning across a dependency chain takes days to do manually.</p>
+<h3 id="bugs-found-low-exploitation-impact">Bugs Found (Low Exploitation Impact)</h3>
+<p>The biggest differentiator was the deep analysis step — Opus with a 100K token budget for extended thinking.</p>
+<p><strong>Baseline findings (9 medium/low):</strong></p>
+<ul>
+<li><strong>Unvalidated relay parameter</strong> — open redirect/XSS, no sanitization. Confirmed across GET and POST bindings, no auth required. But depends on application-level handling that most frameworks already mitigate.</li>
+<li><strong>No size validation on auth payloads</strong> — 5MB base64 payload = ~2.5s CPU, ~30MB RAM. Zero size checks. Unauthenticated, but a slow resource drain, not a crash.</li>
+<li><strong>Cross-tenant certificate exposure</strong> — Host header manipulation in multi-tenant metadata generation leaks one tenant’s certs. Requires multi-tenant config most deployments don’t use.</li>
+<li><strong>Cache design forces disabling replay protection</strong> — default cache provider doesn’t work in clustered deployments, pushing users to disable replay checks entirely.</li>
+<li><strong>Async logout race</strong> — logout URL generation runs async but session destruction fires unconditionally before it completes.</li>
+<li><strong>Deprecated URL parser differential</strong> — <code>url.parse</code> creates <code>req.url</code>/<code>req.query</code> divergence for redirect binding signature verification.</li>
+</ul>
+<p><strong>Deep findings (3 the baseline missed):</strong></p>
+<ul>
+<li><strong>Session survives SP-initiated logout</strong> — when a logout acknowledgment arrives, the handler calls <code>this.pass()</code> — continuing to the next middleware — without ever calling <code>req.logout()</code>. The session survives indefinitely after the user “logs out.” Confirmed: 5/5 tests showed <code>pass_called: true</code>, <code>req_logout_called: false</code>, <code>session_still_active: true</code>. But requires a specific SLO flow most deployments don’t exercise.</li>
+<li><strong>IdP-initiated SLO race condition</strong> — logout sends the redirect before session destruction completes, leaving a ~50ms race window. If the session store write fails, the session survives. Tiny window, depends on store failure.</li>
+<li><strong>Query parameter priority override</strong> — query-string parameters unconditionally take priority over POST body, allowing GET parameters to override POST-binding messages.</li>
+</ul>
+<p>The bugs are real. The reasoning that found them was impressive. But the exploitation impact was limited across the board. Individually, none of these were things I’d confidently report as vulnerabilities.</p>
+<h3 id="why-it-failed-1">Why It Failed</h3>
+<p>Where it failed hardest: validation. Test cases looked correct but didn’t trigger the bugs reliably. The model would write a PoC, claim it worked, and be wrong — or partially right with the wrong assertion. The hypothesis generation was good. The lab work was not.</p>
+<p>Good research assistant. Bad lab partner.</p>
+<hr>
+<h2 id="approach-4-domain-research--frontier-model-secra">Approach 4: Domain Research + Frontier Model (SECRA)</h2>
+<p>Completely different from Approach 3. Instead of generating hypotheses for an AI to test, I dropped the hypothesis step entirely. SECRA gathers domain-level research (CVEs, attack techniques, spec violations, code patterns) and structures it into goals for a frontier model to investigate one at a time.</p>
+<p>The pipeline builds a research package for a target domain:</p>
+<ol>
+<li><strong>CVE analysis</strong> — Pull every CVE for the domain, extract root causes, fix gaps, and variant angles. For SAML: 100 CVEs across all known implementations.</li>
+<li><strong>Technique extraction</strong> — From blogs, writeups, commits, and advisories, extract concrete attack techniques. 149 techniques for SAML.</li>
+<li><strong>Pattern mapping</strong> — 25 code-level vulnerability patterns with what to search for, why it’s a bug, how to test it, and which CVEs it maps to.</li>
+<li><strong>Spec analysis</strong> — Map MUST/SHOULD requirements, discretion zones (where the spec says “MAY” and implementations diverge), and undefined behaviors. For SAML: things like “spec doesn’t define behavior with multiple Assertion elements,” “spec doesn’t address XML comment injection in NameID values,” “URL comparison rules for Destination/Recipient not specified.”</li>
+<li><strong>Novel angles</strong> — Attack hypotheses that don’t come from existing CVEs. Things like <code>xml:base</code> attribute injection to redirect Reference URI resolution, or internal DTD <code>ATTLIST</code> injection to fabricate ID attributes on forged elements.</li>
+</ol>
+<p>This gets packaged with a guide: pick one pattern or angle, read the target code, trace the data flow, write a concrete test, run it, report the result. One thing at a time. Don’t scan everything at once.</p>
+<p>The frontier model gets all of this as context and works through it against the target codebase. Reads the actual source, writes test harnesses, executes them, checks whether each pattern or angle exists in the target. The research is pre-done. The model investigates and validates, it doesn’t theorize.</p>
+<p>One caveat: I had to review everything to make sure the model wasn’t taking shortcuts — disabling security features in the test setup, weakening configurations, or subtly making the code more vulnerable and then “finding” the bug it introduced. This happens. The model wants to show results, so it’ll disable signature verification “for testing,” use an insecure default it configured itself, or write a harness that strips validation the real library would perform. You need to verify every finding exists in the real library with its real configuration, not just in the model’s lab. Can’t skip this step.</p>
+<p>I ran this against multiple targets. The results varied dramatically based on one thing: <strong>how much prior security attention the target had.</strong></p>
+<h3 id="hardened-target-a-mature-saml-library">Hardened Target: A Mature SAML Library</h3>
+<p>18 findings. Breakdown:</p>
+<ul>
+<li>7 were design choices the maintainers documented</li>
+<li>4 were spec violations maintainers call “working as intended”</li>
+<li>3 were unreachable dead code</li>
+<li>2 were theoretical with no practical exploitation</li>
+<li>1 was cosmetic</li>
+</ul>
+<p><strong>1 was reportable.</strong> A scope filtering function used string suffix matching instead of domain boundary matching:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>host  = "login.notevil.com"</span></span>
+<span class="line"><span>scope = "evil.com"</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Vulnerable check: is "evil.com" a suffix of "login.notevil.com"?</span></span>
+<span class="line"><span># position("evil.com") == len("login.notevil.com") - len("evil.com")</span></span>
+<span class="line"><span># 10 == 10 → TRUE (should be FALSE — not a domain boundary)</span></span></code></pre>
+<p>An attacker’s IdP at <code>notevil.com</code> can assert scoped attributes for <code>evil.com</code>. That’s a <strong>5% hit rate</strong>. The AI inflated everything else. It couldn’t tell the difference between “this code does something weird” and “this is exploitable.” Every finding came with high confidence and detailed reasoning that sounded convincing. 17 out of 18 were noise.</p>
+<h3 id="fresh-target-a-saml-library">Fresh Target: A SAML Library</h3>
+<p>Same tool, different target — a SAML library with significant downloads. Still actively used. It just hadn’t received focused security review.</p>
+<h4 id="bugs-found">Bugs Found</h4>
+<p><strong>14 confirmed vulnerabilities in 20 minutes.</strong></p>
+<ul>
+<li><strong>2 authentication bypasses</strong> — full SAML assertion forgery, requires understanding the entire authentication flow and where signature verification actually binds to assertion consumption</li>
+<li><strong>CBC padding panic</strong> — CBC padding validation crashes on malformed input. The error path is distinguishable (theoretically a padding oracle), but full Vaudenay decryption wasn’t exploitable in practice. The DoS via the panic is real — unauthenticated crash with a single crafted message.</li>
+<li><strong>XSLT execution</strong> — attacker-controlled XSLT transforms executed during signature verification. Code execution surface.</li>
+<li><strong>Multiple DoS vectors</strong> — resource exhaustion through crafted SAML messages</li>
+</ul>
+<p>Plus 3 patterns from the research that were checked and correctly ruled out — the model didn’t hallucinate findings where they didn’t exist.</p>
+<h3 id="deeper-ecosystem-run">Deeper Ecosystem Run</h3>
+<p>On a separate run against a different SAML ecosystem (7 libraries), the frontier model worked through the research package — patterns, techniques, spec violations — against each library in the chain. 9 findings were CVE-worthy after triage, 6 validated with standalone PoCs.</p>
+<p>The structured domain research made a real difference here. The model wasn’t guessing. It was checking whether known vulnerability patterns from 100 CVEs across the SAML ecosystem exist in this specific target.</p>
+<h4 id="bugs-found-1">Bugs Found</h4>
+<p><strong>CBC padding crash via error type leak.</strong> A CBC decryption function disables the crypto library’s built-in padding check, then does manual validation. On invalid padding, it calls a callback variable that doesn’t exist in scope — throwing a <code>ReferenceError</code> instead of a generic <code>Error</code>. The caller’s try/catch distinguishes these error types. Theoretically that’s a padding oracle — the model flagged it because the research package included Vaudenay patterns from CVE history, and the code matched: manual padding check after <code>setAutoPadding(false)</code>. In practice, the full decryption attack wasn’t exploitable — but the crash on the error path is real. Unauthenticated DoS with a single crafted ciphertext. The AI correctly identified the vulnerable code pattern; it just overestimated the exploitation impact.</p>
+<p><strong>XPath injection in key retrieval.</strong> An encryption library takes a URI attribute from an XML element and concatenates it directly into an XPath expression:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>//*[@Id='ATTACKER_CONTROLLED_VALUE']/*[...]</span></span></code></pre>
+<p>No escaping. Inject a single quote and a union operator, and you select arbitrary elements as the encryption key material:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">RetrievalMethod</span><span style="color:#B392F0"> URI</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#'] | //*[local-name(.)='CipherValue'][1] | //*[@Id='x"</span><span style="color:#E1E4E8"> /></span></span></code></pre>
+<p><strong>Silent algorithm downgrade.</strong> A switch statement matching OAEP digest algorithm URIs uses the wrong XML namespace in its case labels. The standard URIs sent by every major identity provider don’t match any case, so they all fall through to the <code>default: SHA-1</code>. Every deployment unknowingly uses SHA-1 for OAEP instead of the SHA-256/512 they configured.</p>
+<p><strong>Unsigned message acceptance.</strong> A signature verification function for redirect-binding messages returns <code>true</code> when the Signature query parameter is absent entirely — not “invalid signature,” but “no signature = valid.” Unauthenticated attacker sends a logout request with no signature, and the library accepts it:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>GET /slo?SAMLRequest=&#x3C;deflated LogoutRequest>&#x26;RelayState=...</span></span>
+<span class="line"><span># No Signature, no SigAlg query parameters</span></span>
+<span class="line"><span># hasValidSignatureForRedirect() returns true</span></span>
+<span class="line"><span># User's session terminated</span></span></code></pre>
+<p><strong>Replay bypass via unsigned attribute stripping.</strong> Replay protection checks an attribute on the outer (unsigned) message envelope. The signed inner assertion doesn’t include this attribute. Strip it from the envelope — the signature still validates, but the replay check sees “no attribute present” and skips validation entirely, treating the message as unsolicited. Same signed assertion accepted multiple times.</p>
+<p><strong>Text node truncation via XML comment injection.</strong> An XML library extracts identity values using <code>.data</code> on the first child text node. The attacker controls the IdP and signs an assertion containing a comment-injected NameID. The signature is valid because the attacker signed it themselves. But the SP’s identity extraction only reads the first text node before the comment boundary:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#6A737D">&#x3C;!-- Attacker (evil.com IdP) signs assertion with: --></span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">NameID</span><span style="color:#E1E4E8">>admin@victim.com</span><span style="color:#6A737D">&#x3C;!--.evil.com--></span><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">NameID</span><span style="color:#E1E4E8">></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">&#x3C;!-- Signature verifies: attacker signed it, digest matches ✓ --></span></span>
+<span class="line"><span style="color:#6A737D">&#x3C;!-- DOM .data extraction: "admin@victim.com" (first text node only) --></span></span>
+<span class="line"><span style="color:#6A737D">&#x3C;!-- SP authenticates attacker as admin@victim.com --></span></span></code></pre>
+<p>The dependency impact chain analysis was useful here. The pipeline traced how a bug in an encryption library flows through the signature verification layer into the SSO login flow, confirming the crash is reachable from the unauthenticated attack surface.</p>
+<p>Yes these all are not some big SAML issues like Signature bypass, but still on harden targets but the caveat is these bugs on harden targets are situational.</p>
+<h3 id="other-findings">Other Findings</h3>
+<p>Across other SAML libraries with the same pipeline:</p>
+<ul>
+<li><strong>CBC padding panic</strong> — unauthenticated DoS, full PoC</li>
+<li><strong>Deflate bomb</strong> — 464KB compressed → 350MB expanded, 2 requests kill a 1GB container</li>
+<li><strong>InResponseTo replay</strong> — nonce deletion commented out in the source, responses replayable indefinitely</li>
+<li><strong>Metadata signature bypass</strong> — unsigned metadata accepted as trusted, enabling attacker IdP registration</li>
+<li><strong>KeyInfo certificate injection</strong> — untrusted certificates from the SAML response used for signature verification. Full authentication bypass.</li>
+<li><strong>Expired certificate acceptance</strong> — certificate validation always ignores expiry. Revoked/expired certs still trusted.</li>
+<li><strong>Double-encrypted assertion signature bypass</strong> — signature verification skipped on the second decryption loop. Attacker with the SP’s public key can inject a forged assertion.</li>
+</ul>
+<p>Clean, reportable bugs with clear impact.</p>
+<h3 id="the-contrast">The Contrast</h3>
+<p>Same AI. Same pipeline. Same researcher.</p>
+<p>One target: 5% hit rate in about 20-30 minutes (finding, validation, impact analysis). The other: 14 confirmed bugs in 20 minutes. The ecosystem run: 9 CVE-worthy findings across 7 libraries.</p>
+<p>The AI didn’t get smarter between runs. The difference was prior security attention. On the hardened library, every obvious bug was already found by humans. What remained needed deep spec knowledge and real deployment context: understanding SAML’s canonicalization requirements, how XML Signature’s Reference URI resolution actually works, what “working as intended” means when the spec is ambiguous. The AI can’t do that.</p>
+<p>On the fresh targets, the bugs weren’t easy. Auth bypasses aren’t trivial. But nobody had looked closely yet. The AI could apply known vulnerability patterns to code that hadn’t been tested against them. That’s where it works best.</p>
+<hr>
+<h2 id="what-i-learned">What I Learned</h2>
+<p><strong>Target selection > model sophistication.</strong> Fine-tuned models found nothing reportable. The standard SECRA pipeline found 14 bugs in 20 minutes. The difference was where I pointed it, not how smart the model was.</p>
+<p><strong>AI inflates findings. Always.</strong> Every approach had this problem. The model can’t assess impact — it finds weird behavior and calls it a vulnerability. 17 out of 18 findings on a hardened target were noise, all presented with high confidence. The researcher’s judgment is the filter.</p>
+<p><strong>Deep reasoning > more payloads.</strong> Extended thinking found bugs that baseline analysis missed — tracing code paths, reasoning about edge-case state. Spraying more tests wouldn’t have found those.</p>
+<p><strong>Structured research > hypothesis generation.</strong> Feeding the model proven vulnerability patterns from real CVEs produced more reportable bugs than letting it theorize from code. Investigate, don’t speculate.</p>
+<p><strong>Validation is still the gap.</strong> The model will take shortcuts — disabling security features in test setups, weakening configs, then “finding” the bug it introduced. You have to verify every finding against the real library with real configuration.</p>
+<p><strong>Fresh targets win.</strong> Same AI, same pipeline — 5% hit rate on a hardened library, 14 bugs in 20 minutes on a fresh one. If you’re spending compute, point it at code that hasn’t had focused security attention.</p>
+<p><strong>AI is an enabler, not a replacement.</strong> It makes you faster. It doesn’t replace the researcher. Maybe that changes. Right now, it’s not there.</p>
+<hr>
+<h2 id="secra">SECRA</h2>
+<p>SECRA is the tool I built and used across all 4 approaches. It’s a context engine — it gathers domain-level security research and packages it so a frontier model can work through it systematically.</p>
+<p>For each target domain, it builds a research package: CVE history with root causes and variant angles, attack techniques extracted from blogs/writeups/commits, code-level vulnerability patterns, spec analysis (MUST/SHOULD requirements, discretion zones, undefined behaviors), and novel attack angles that don’t come from existing CVEs. The model gets this alongside the target codebase and works through it one pattern at a time — read the code, write a test, run it, report.</p>
+<p>Each approach in this post used SECRA differently. Approach 1 used it to map RFC gaps and generate payload variations. Approach 2 used it to build training data and feed the fine-tuned models. Approach 3 used it for CVE history and code indexing to generate hypotheses. Approach 4 used it most directly — the full research package fed to a frontier model.</p>
+<p>Sonnet handles bulk work like CVE summarization and technique extraction. Findings are cached by ecosystem/name/version so dependencies analyzed once are reusable across targets. Right now I have 4 versions of it, I’ll look more into the hybrid version when I have some budget.</p>
+<hr>
+<h2 id="numbers">Numbers</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Approach</th><th>Findings</th><th>Reportable</th><th>Lesson</th></tr></thead><tbody><tr><td>RFC Spray</td><td>55 across 23 servers. 8 exploitable (combo lab PoC), 11 path traversal, 4 logic bugs, funky chunks across 16 servers + 6 proxies</td><td>Smuggling, ACL bypass, cache poisoning (reported)</td><td>AI maps surface, researcher builds chains</td></tr><tr><td>Fine-Tuned Models</td><td>53 bugs + 147 suspicious across 12 parsers (~2,800 payloads)</td><td>0 reportable (all need preconditions that don’t hold)</td><td>Wrong target, right architecture</td></tr><tr><td>Hypothesis Engine</td><td>38 hypotheses, 12 confirmed (31%)</td><td>3 confirmed, low practical impact</td><td>Good hypotheses, bad validation</td></tr><tr><td>SECRA</td><td>100 CVEs, 25 patterns, 149 techniques fed to frontier model</td><td>14+ across multiple targets, 9 CVE-worthy</td><td>Domain research + right target = results</td></tr></tbody></table>
+<p>One week. Some wasted, some extremely productive. The difference was never the AI — it was where I pointed it. AI works well with goals, If you direct it like <code>Go look for bugs</code> the results might not be that good.</p>
+<p><em>The bugs listed in this post are representative examples — the full findings across all approaches are more extensive. Some findings are pending disclosure. Details will be updated once CVEs are assigned. Most of the findings are situational thats one of the reason im documenting all this</em></p> </div> </div> <div class="mt-12 text-center"> <a href="/" class="inline-block bg-yellow-400 border-8 border-black px-12 py-5 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-[14px_14px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all rotate-[-2deg] hover:rotate-0"> <span class="font-black text-2xl text-black uppercase">BACK HOME →</span> </a> </div> </div> </article>  <!-- Footer --> <footer class="relative z-10 border-t-4 border-pink-400/30 bg-black/90 backdrop-blur-sm py-12"> <div class="max-w-5xl mx-auto px-6"> <div class="flex flex-col items-center gap-6 text-center"> <div class="flex items-center gap-2 font-black text-lg"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg> <span class="text-pink-400">xclow3n</span> </div> <div class="flex gap-5"> <a href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" class="w-12 h-12 flex items-center justify-center border-3 border-pink-400/40 text-pink-400 hover:bg-pink-400/10 hover:scale-110 transition-all"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg> </a> <a href="https://www.linkedin.com/in/rajat-raghav-0xhexr4/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 flex items-center justify-center border-3 border-blue-400/40 text-blue-400 hover:bg-blue-400/10 hover:scale-110 transition-all"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg> </a> <a href="mailto:xclow3n@gmail.com" class="w-12 h-12 flex items-center justify-center border-3 border-purple-400/40 text-purple-400 hover:bg-purple-400/10 hover:scale-110 transition-all"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg> </a> </div> </div> </div> </footer> </div></body></html>

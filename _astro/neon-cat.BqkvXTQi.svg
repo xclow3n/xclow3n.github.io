@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <filter id="neon-cat-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#neon-cat-glow)">
+    <!-- Ears -->
+    <path d="M 22 38 L 28 15 L 38 32" stroke="#ff0080" stroke-width="3" fill="none" stroke-linejoin="round"/>
+    <path d="M 78 38 L 72 15 L 62 32" stroke="#ff0080" stroke-width="3" fill="none" stroke-linejoin="round"/>
+    <!-- Inner ears -->
+    <path d="M 26 34 L 30 20 L 36 32" stroke="#ff66b3" stroke-width="1.5" fill="none" opacity="0.5" stroke-linejoin="round"/>
+    <path d="M 74 34 L 70 20 L 64 32" stroke="#ff66b3" stroke-width="1.5" fill="none" opacity="0.5" stroke-linejoin="round"/>
+
+    <!-- Head -->
+    <ellipse cx="50" cy="50" rx="28" ry="24" stroke="#ff0080" stroke-width="3" fill="none"/>
+
+    <!-- X eyes (kawaii dead/chaos eyes) -->
+    <g stroke="#ff0080" stroke-width="2.5" stroke-linecap="round">
+      <line x1="36" y1="42" x2="44" y2="50"/>
+      <line x1="44" y1="42" x2="36" y2="50"/>
+      <line x1="56" y1="42" x2="64" y2="50"/>
+      <line x1="64" y1="42" x2="56" y2="50"/>
+    </g>
+
+    <!-- Nose -->
+    <path d="M 48 55 L 50 58 L 52 55" stroke="#ff0080" stroke-width="2" fill="none" stroke-linejoin="round"/>
+
+    <!-- Mouth (w shape — kawaii cat mouth) -->
+    <path d="M 40 60 Q 45 65, 50 60 Q 55 65, 60 60" stroke="#ff0080" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+    <!-- Whiskers -->
+    <line x1="20" y1="52" x2="35" y2="55" stroke="#ff0080" stroke-width="1.5" opacity="0.7"/>
+    <line x1="20" y1="58" x2="35" y2="58" stroke="#ff0080" stroke-width="1.5" opacity="0.7"/>
+    <line x1="65" y1="55" x2="80" y2="52" stroke="#ff0080" stroke-width="1.5" opacity="0.7"/>
+    <line x1="65" y1="58" x2="80" y2="58" stroke="#ff0080" stroke-width="1.5" opacity="0.7"/>
+  </g>
+</svg>
