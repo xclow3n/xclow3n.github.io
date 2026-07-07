@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HTTP smuggling reverse proxy marker">
+  <defs>
+    <radialGradient id="disc" cx="38%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#22190e"/>
+      <stop offset="0.58" stop-color="#14100a"/>
+      <stop offset="1" stop-color="#0e0b06"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="35" r="27" fill="#000" opacity=".28"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#f2ead2" stroke-width="3" opacity=".18"/>
+  <circle cx="32" cy="32" r="27" fill="url(#disc)"/>
+  <circle cx="32" cy="32" r="27" fill="none" stroke="#a9742a" stroke-width="3"/>
+  <circle cx="32" cy="32" r="23.5" fill="none" stroke="#ffc23a" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#f2ead2" stroke-width=".7" opacity=".24"/>
+  <path d="M20 45V30.5C20 23.9 25.4 18 32 18s12 5.9 12 12.5V45" fill="none" stroke="#ffc23a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M24.5 45V30.5c0-4.2 3.3-8 7.5-8s7.5 3.8 7.5 8V45" fill="none" stroke="#a9742a" stroke-width="2" stroke-linecap="round"/>
+  <path d="M17 45h30" fill="none" stroke="#ffc23a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M25 45V31M32 45V29M39 45V31" fill="none" stroke="#f2ead2" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
+  <path d="M18.5 34H29m0 0-4-4m4 4-4 4M45.5 34H35m0 0 4-4m-4 4 4 4" fill="none" stroke="#ffc23a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M29.5 25.5h5" fill="none" stroke="#f2ead2" stroke-width="1.5" stroke-linecap="round" opacity=".75"/>
+</svg>

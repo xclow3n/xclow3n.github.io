@@ -1,104 +1,106 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Security research, CVEs &#38; CTF. Breaks stuff for fun &#38; profit."><link rel="icon" type="image/svg+xml" href="/avatar.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><script>
-      (function () {
-        function ready() { document.documentElement.setAttribute('data-fonts-ready', ''); }
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(ready);
-          setTimeout(ready, 2500);
-        } else { ready(); }
-      })();
-    </script><script>
-      (function () {
-        var T = ['synthwave','acid','amber','vapor','mint','sunburst','crimson','cryo'];
-        window.__THEMES = T;
-        // persisted choice wins (set when the user changes the palette); otherwise random.
-        var saved = null;
-        try { saved = localStorage.getItem('arc-theme'); } catch (e) {}
-        var theme = (saved && T.indexOf(saved) >= 0) ? saved : T[(Math.random() * T.length) | 0];
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script><meta property="og:title" content="xclow3n"><meta property="og:description" content="Security research, CVEs &#38; CTF. Breaks stuff for fun &#38; profit."><meta property="og:image" content="/avatar.svg"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="xclow3n"><meta name="twitter:description" content="Security research, CVEs &#38; CTF. Breaks stuff for fun &#38; profit."><meta name="twitter:image" content="/avatar.svg"><title>xclow3n</title><script>(function(){const manifestJson = "[{\"id\":7,\"slug\":\"ai-vuln-research\",\"title\":\"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed\"},{\"id\":6,\"slug\":\"breaking-pingora\",\"title\":\"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy\"},{\"id\":5,\"slug\":\"sanitize-html-bypass-mxss\",\"title\":\"HTML Sanitize Bypass Using MXSS\"},{\"id\":4,\"slug\":\"nodemailer-parser-discrepancy\",\"title\":\"Email Parser Discrepancy in Nodemailer\"},{\"id\":3,\"slug\":\"intergalactic-bounty\",\"title\":\"Intergalactic Bounty - HTB University CTF 2024\"},{\"id\":2,\"slug\":\"encodecept\",\"title\":\"EncoDecept - HTB University CTF 2024\"}]";
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><title>xclow3n</title><meta name="description" content="Security research, CVEs & CTF writeups by xclow3n. Explore the realm."><link rel="icon" type="image/svg+xml" href="/avatar.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/index@_@astro.B10WvmBv.css"></head> <body> <div class="viewport" id="vp"> <div class="world" id="world"><img class="bg" id="bg" src="/pixels/worldmap-8k.webp" alt="Illustrated world map of xclow3n's security writeups" draggable="false"></div> </div> <div class="vignette"></div> <div class="markers" id="markers"></div> <div class="callouts" id="callouts"></div> <div class="chrome"> <div class="tl"><div class="who">Rajat Raghav<span class="h">xclow3n</span></div><div class="role">Security Researcher · Hack The Box</div></div> <div class="tr"> <button class="idx" id="idxBtn" type="button" aria-label="All writeups" title="All writeups"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg> </button> <a href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"> <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5zM3 9h4v12H3zM10 9h3.8v1.65h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.96V21h-4v-5.3c0-1.26-.03-2.9-1.8-2.9-1.8 0-2.08 1.38-2.08 2.8V21h-4z"></path></svg> </a> <a href="mailto:me@xclow3n.com" aria-label="Email" title="Email"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg> </a> <a href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" aria-label="Hack The Box profile" title="Hack The Box"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"></path><path d="M9 8.5v7M15 8.5v7M9 12h6"></path></svg> </a> </div> </div> <div class="zoom"> <button id="zin" title="zoom in" aria-label="zoom in">+</button> <button class="zl" id="zl" aria-hidden="true">100%</button> <button id="zout" title="zoom out" aria-label="zoom out">−</button> <button id="zfit" title="frame all" aria-label="frame whole map" style="border-radius:0 0 10px 10px;font-size:14px">⤢</button> </div> <svg class="compass" viewBox="0 0 100 100" aria-hidden="true"> <circle cx="50" cy="52" r="42" fill="rgba(18,14,8,.4)" stroke="#ffc23a" stroke-width="1.3" opacity=".6"></circle> <polygon points="50,16 56,52 50,70 44,52" fill="#ffc23a" opacity=".92"></polygon> <polygon points="50,88 44,52 50,34 56,52" fill="#c9a04a" opacity=".7"></polygon> <polygon points="14,52 50,46 62,52 50,58" fill="#e8dcc0" opacity=".72"></polygon> <polygon points="86,52 50,58 38,52 50,46" fill="#b8ae95" opacity=".5"></polygon> <circle cx="50" cy="52" r="3" fill="#ffc23a"></circle> <text x="50" y="12" text-anchor="middle" font-family="Cinzel,serif" font-size="13" font-weight="700" fill="#ffc23a">N</text> </svg> <div class="hint" id="hint">drag to explore · scroll to zoom</div> <div class="index" id="index"><div class="in"> <div class="hd"><h2>Writeups · index</h2><button class="x" id="idxClose">✕ close · back to map</button></div> <ol> <li> <span class="n">01</span> <div> <div class="mm"><span class="cat">Research</span> · March 2026</div> <a class="t" href="/post/7">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</a> <div class="e">Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</div> <div class="tg">#AI  #Vulnerability  #Research  #SAML  #HTTP  #Smuggling  #Security</div> </div> </li><li> <span class="n">02</span> <div> <div class="mm"><span class="cat">Research</span> · March 2026</div> <a class="t" href="/post/6">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</a> <div class="e">Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</div> <div class="tg">#HTTP  #Smuggling  #Cache  #Poisoning  #Cloudflare  #Pingora  #CVE</div> </div> </li><li> <span class="n">03</span> <div> <div class="mm"><span class="cat">Research</span> · November 2024</div> <a class="t" href="/post/5">HTML Sanitize Bypass Using MXSS</a> <div class="e">Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</div> <div class="tg">#Security  #Research  #MXSS  #XSS  #HTML  #Sanitization  #htmlparser2</div> </div> </li><li> <span class="n">04</span> <div> <div class="mm"><span class="cat">Research</span> · November 2024</div> <a class="t" href="/post/4">Email Parser Discrepancy in Nodemailer</a> <div class="e">Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</div> <div class="tg">#Security  #Research  #Nodemailer  #Email  #Parser  #RFC  #5322  #GHSA-mm7p-fcc7-pg87</div> </div> </li><li> <span class="n">05</span> <div> <div class="mm"><span class="cat ctf">⚑ CTF</span> · November 2024</div> <a class="t" href="/post/3">Intergalactic Bounty: HTB University CTF 2024</a> <div class="e">Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</div> <div class="tg">#CTF  #Web  #Nodemailer  #MXSS  #Prototype  #Pollution  #RCE</div> </div> </li><li> <span class="n">06</span> <div> <div class="mm"><span class="cat ctf">⚑ CTF</span> · November 2024</div> <a class="t" href="/post/2">EncoDecept: HTB University CTF 2024</a> <div class="e">Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</div> <div class="tg">#CTF  #Web  #Cache  #Deception  #XSS  #ORM  #Leak  #Rails</div> </div> </li> </ol> </div></div> <script type="application/json" id="mapdata">[{"num":"01","href":"/post/7","cat":"Research","ctf":false,"date":"March 2026","newest":true,"title":"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed","label":"AI vuln research","tags":"AI Vulnerability Research SAML HTTP Smuggling Security","teaser":"Four AI-assisted approaches to vuln research, ranked by what actually worked.","full":"Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't.","cp":"mk-ai","mx":0.5,"my":0.45},{"num":"02","href":"/post/6","cat":"Research","ctf":false,"date":"March 2026","newest":false,"title":"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy","label":"Pingora","tags":"HTTP Smuggling Cache Poisoning Cloudflare Pingora CVE","teaser":"Three smuggling bugs and one cache-poisoning flaw in Cloudflare's Pingora.","full":"Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.","cp":"mk-proxy","mx":0.62,"my":0.3},{"num":"03","href":"/post/5","cat":"Research","ctf":false,"date":"November 2024","newest":false,"title":"HTML Sanitize Bypass Using MXSS","label":"mXSS bypass","tags":"Security Research MXSS XSS HTML Sanitization htmlparser2","teaser":"A mutation XSS payload that slips past sanitize-html.","full":"Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.","cp":"mk-browser","mx":0.34,"my":0.37},{"num":"04","href":"/post/4","cat":"Research","ctf":false,"date":"November 2024","newest":false,"title":"Email Parser Discrepancy in Nodemailer","label":"Nodemailer","tags":"Security Research Nodemailer Email Parser RFC 5322 GHSA-mm7p-fcc7-pg87","teaser":"Two Nodemailer parsing bugs that route mail to the wrong person.","full":"Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.","cp":"mk-mail","mx":0.17,"my":0.44},{"num":"05","href":"/post/3","cat":"CTF","ctf":true,"date":"November 2024","newest":false,"title":"Intergalactic Bounty: HTB University CTF 2024","label":"Intergalactic","tags":"CTF Web Nodemailer MXSS Prototype Pollution RCE","teaser":"HTB University CTF 2024: three web bugs chained into RCE.","full":"Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.","cp":"mk-flag","mx":0.31,"my":0.66},{"num":"06","href":"/post/2","cat":"CTF","ctf":true,"date":"November 2024","newest":false,"title":"EncoDecept: HTB University CTF 2024","label":"EncoDecept","tags":"CTF Web Cache Deception XSS ORM Leak Rails","teaser":"HTB University CTF 2024: cache deception plus an encoding trick.","full":"Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.","cp":"mk-cipher","mx":0.8,"my":0.55}]</script> <script>
+(function(){
+  var POSTS = JSON.parse(document.getElementById('mapdata').textContent);
+  var W=1720,H=968;               // world (map) display size; 8K image scales into it
+  var vp=document.getElementById('vp'), world=document.getElementById('world');
+  var markersEl=document.getElementById('markers'), calloutsEl=document.getElementById('callouts');
+  var zl=document.getElementById('zl'), hint=document.getElementById('hint'), index=document.getElementById('index');
+  world.style.width=W+'px'; world.style.height=H+'px';
+  var scale=1, tx=0, ty=0, minS=1, maxS=4, fitS=1, coverS=1, cps=[], cos=[];
 
-      window.__POSTS__ = JSON.parse(manifestJson);
-    })();</script><link rel="stylesheet" href="/assets/_astro_content.CzhbwhA7.css"></head> <body class="min-h-screen relative">  <span class="vp-bk tl" aria-hidden="true"></span> <span class="vp-bk tr" aria-hidden="true"></span> <span class="vp-bk bl" aria-hidden="true"></span> <span class="vp-bk br" aria-hidden="true"></span>  <header class="arcade-hud"> <div class="arcade-hud-in"> <a class="ah-brand" href="/"> <span class="ah-logo pixel">xclow3n</span> </a> <nav class="ah-nav"> <a href="/" data-scramble="home" class="on">home</a> <a href="/#archive" data-scramble="grimoire" class>grimoire</a> <a href="mailto:me@xclow3n.com" data-scramble="signal" class>signal</a> </nav> <span class="ah-coins">★ <b id="coinval">00</b></span> <button class="ah-btn" id="themeBtn" title="cycle palette (T)">◐ THEME</button> <button class="ah-btn" id="soundBtn" title="sfx (S)">♪ SOUND: OFF</button> <button class="ah-btn" onclick="window.__reroll && window.__reroll()" title="reroll palette">↻</button> </div> </header> <main class="relative z-10 px-6 md:px-10 max-w-6xl mx-auto pt-8 md:pt-12 pb-16"> <section class="ahero"> <div class="ahero-grid"> <div class="ahero-main"> <div class="reveal invrow" aria-hidden="true"></div> <div class="reveal d1 smono" style="font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:rgb(var(--muted));"> <span class="c2">00</span> · whoami
-</div> <h1 class="reveal d2 title display glitch" data-text="xclow3n">xclow<span class="c1">3</span>n</h1> <p class="reveal d3 sub"> <span style="font-style:italic;">breaks stuff for fun &amp; profit.</span><br> <span style="color:rgb(var(--bone) / 0.6);">also writes about it,</span> <span class="c1">sometimes</span><span style="color:rgb(var(--bone) / 0.6);">.</span> </p> <div class="reveal d4 smono" style="font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:rgb(var(--muted));margin-top:18px;display:flex;gap:11px;flex-wrap:wrap;align-items:center;"> <span>research</span><span class="c1" style="opacity:.55;">·</span><span>writeups</span><span class="c1" style="opacity:.55;">·</span><span>ctf</span><span class="c1" style="opacity:.55;">·</span><span>web</span> </div> <div class="reveal d5 cta"> <a class="btn" href="/post/7">▶ PRESS START</a> <a class="btn ghost cy" href="#archive">↓ GRIMOIRE</a> </div> <div class="reveal d6" style="margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:rgb(var(--muted));display:flex;gap:20px;flex-wrap:wrap;align-items:center;"> <span><span style="opacity:.55;">handle</span> <span style="color:rgb(var(--bone));">xclow3n</span></span> <span><span style="opacity:.55;">role</span> <span style="color:rgb(var(--bone));">sr. content engineer</span></span> <span><span style="opacity:.55;">at</span> <span class="c1">Hack The Box</span></span> <span style="display:inline-flex;align-items:center;gap:7px;"> <span class="blink" style="width:7px;height:7px;border-radius:50%;background:var(--p1);box-shadow:0 0 6px var(--glow);display:inline-block;"></span> <span class="c1">online</span> <span style="opacity:.5;">· receiving</span> </span> </div> </div> <aside class="ahero-aside reveal d2"> <div class="pixavatar"> <span class="pixavatar-cap">xclow3n</span> <img src="/avatar.svg" alt="xclow3n portrait" loading="eager"> </div> </aside> </div> </section> <section id="archive" class="pt-14 md:pt-20">  <div class="reveal smono" style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;font-size:11px;text-transform:uppercase;letter-spacing:.26em;color:rgb(var(--muted));margin-bottom:14px;"> <span class="c1">02</span> <span style="opacity:.4;">·</span> <span>archive</span> <span style="flex:1;min-width:30px;height:1px;background:var(--line);"></span> <span>06 entries</span> <span style="opacity:.4;">·</span> <span>since <span style="color:rgb(var(--bone));">2024</span></span> <span style="opacity:.4;">·</span> <span>latest <span style="color:rgb(var(--bone));">March 2026</span></span> </div>  <h2 class="reveal display glitch" data-text="grimoire" style="font-size:clamp(2.6rem,6vw,4.4rem);line-height:1;color:rgb(var(--bone));letter-spacing:-0.02em;margin-bottom:8px;">grim<span class="c1">oire</span></h2> <p class="reveal" style="color:rgb(var(--muted));font-size:16px;margin-bottom:22px;">quickhacks, research, writeups.</p>  <div class="reveal" id="grimoire-filter" style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-bottom:24px;"> <span class="smono" style="font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:rgb(var(--muted));opacity:.7;">filter:</span> <button class="gf-btn on" data-filter="ALL">all</button> <button class="gf-btn" data-filter="RESEARCH">research</button><button class="gf-btn" data-filter="MY CHALLENGES">my challenges</button> </div>  <a href="/post/7" class="reveal feat-row" data-cat="RESEARCH"> <div class="feat-num">01</div> <div class="min-w-0"> <div class="feat-meta"> <span class="feat-badge">latest</span> <span>March 2026</span> <span style="opacity:.5;">·</span> <span>research</span> </div> <h3 class="feat-title">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</h3> <p class="feat-excerpt">Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</p> <div class="grow-tags"><span>AI</span><span>Vulnerability Research</span><span>SAML</span><span>HTTP Smuggling</span></div> </div> </a>  <div class="reveal grimoire-list" style="border-top:1px solid var(--line);margin-top:6px;"> <a href="/post/6" class="grow-row" data-cat="RESEARCH"> <div class="grow-num">02</div> <div class="min-w-0"> <div class="grow-meta">March 2026 <span style="opacity:.5;">·</span> research</div> <h3 class="grow-title">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h3> <div class="grow-tags"><span>HTTP Smuggling</span><span>Cache Poisoning</span><span>Cloudflare</span><span>Pingora</span></div> </div> <div class="grow-arrow">→</div> </a><a href="/post/5" class="grow-row" data-cat="RESEARCH"> <div class="grow-num">03</div> <div class="min-w-0"> <div class="grow-meta">November 2024 <span style="opacity:.5;">·</span> research</div> <h3 class="grow-title">HTML Sanitize Bypass Using MXSS</h3> <div class="grow-tags"><span>Security Research</span><span>MXSS</span><span>XSS</span><span>HTML Sanitization</span></div> </div> <div class="grow-arrow">→</div> </a><a href="/post/4" class="grow-row" data-cat="RESEARCH"> <div class="grow-num">04</div> <div class="min-w-0"> <div class="grow-meta">November 2024 <span style="opacity:.5;">·</span> research</div> <h3 class="grow-title">Email Parser Discrepancy in Nodemailer</h3> <div class="grow-tags"><span>Security Research</span><span>Nodemailer</span><span>Email Parser</span><span>RFC 5322</span></div> </div> <div class="grow-arrow">→</div> </a><a href="/post/3" class="grow-row" data-cat="MY CHALLENGES"> <div class="grow-num">05</div> <div class="min-w-0"> <div class="grow-meta">November 2024 <span style="opacity:.5;">·</span> my challenges</div> <h3 class="grow-title">Intergalactic Bounty - HTB University CTF 2024</h3> <div class="grow-tags"><span>CTF</span><span>Web</span><span>Nodemailer</span><span>MXSS</span></div> </div> <div class="grow-arrow">→</div> </a><a href="/post/2" class="grow-row" data-cat="MY CHALLENGES"> <div class="grow-num">06</div> <div class="min-w-0"> <div class="grow-meta">November 2024 <span style="opacity:.5;">·</span> my challenges</div> <h3 class="grow-title">EncoDecept - HTB University CTF 2024</h3> <div class="grow-tags"><span>CTF</span><span>Web</span><span>Cache Deception</span><span>XSS</span></div> </div> <div class="grow-arrow">→</div> </a> </div> </section> <section class="pt-14 md:pt-20"> <div class="reveal pac-frame" style="background:var(--bg2);padding:42px 38px;text-align:center;"> <div class="coin" style="margin-bottom:13px;">// end of archive</div> <h2 class="tek" style="font-weight:900;font-size:clamp(24px,4vw,40px);color:rgb(var(--bone));margin-bottom:10px;">No newsletter. No tracking. Just exploits.</h2> <p class="sub" style="font-family:'Chakra Petch',sans-serif;font-size:18px;color:rgb(var(--muted));max-width:60ch;margin:0 auto;">
-Press <span class="c1">/</span> for the command palette. Hit <span class="c2">T</span> to repaint the palette. There is a cheat code in here somewhere.
-</p> <div class="cta" style="justify-content:center;margin-top:22px;"> <a class="btn" href="/post/7">▶ LATEST WRITEUP</a> <a class="btn ghost" href="https://github.com/xclow3n" target="_blank" rel="noopener noreferrer">SOURCE ▸ github</a> </div> </div> </section> <script>
-    (function () {
-      var bar = document.getElementById('grimoire-filter'); if (!bar) return;
-      var rows = [].slice.call(document.querySelectorAll('#archive [data-cat]'));
-      bar.addEventListener('click', function (e) {
-        var btn = e.target.closest ? e.target.closest('.gf-btn') : null; if (!btn) return;
-        bar.querySelectorAll('.gf-btn').forEach(function (b) { b.classList.toggle('on', b === btn); });
-        var f = btn.getAttribute('data-filter');
-        rows.forEach(function (r) { r.classList.toggle('gf-hide', f !== 'ALL' && r.getAttribute('data-cat') !== f); });
-      });
-    })();
-  </script>  </main>  <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event("astro:load"));})();</script><script>(()=>{var A=Object.defineProperty;var g=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var d=(i,o,a)=>g(i,typeof o!="symbol"?o+"":o,a);{let i={0:t=>m(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>Number.POSITIVE_INFINITY*t},o=t=>{let[l,e]=t;return l in i?i[l](e):void 0},a=t=>t.map(o),m=t=>typeof t!="object"||t===null?t:Object.fromEntries(Object.entries(t).map(([l,e])=>[l,o(e)]));class y extends HTMLElement{constructor(){super(...arguments);d(this,"Component");d(this,"hydrator");d(this,"hydrate",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest("astro-island[ssr]");if(e){e.addEventListener("astro:hydrate",this.hydrate,{once:!0});return}let c=this.querySelectorAll("astro-slot"),n={},h=this.querySelectorAll("template[data-astro-template]");for(let r of h){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("data-astro-template")||"default"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute("name")||"default"]=r.innerHTML)}let p;try{p=this.hasAttribute("props")?m(JSON.parse(this.getAttribute("props"))):{}}catch(r){let s=this.getAttribute("component-url")||"<unknown>",v=this.getAttribute("component-export");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute("props"),r),r}let u;await this.hydrator(this)(this.Component,p,n,{client:this.getAttribute("client")}),this.removeAttribute("ssr"),this.dispatchEvent(new CustomEvent("astro:hydrate"))});d(this,"unmount",()=>{this.isConnected||this.dispatchEvent(new CustomEvent("astro:unmount"))})}disconnectedCallback(){document.removeEventListener("astro:after-swap",this.unmount),document.addEventListener("astro:after-swap",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute("await-children")||document.readyState==="interactive"||document.readyState==="complete")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener("DOMContentLoaded",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue==="astro:end"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener("DOMContentLoaded",e)}}async childrenConnectedCallback(){let e=this.getAttribute("before-hydration-url");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute("opts")),c=this.getAttribute("client");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute("renderer-url"),[h,{default:p}]=await Promise.all([import(this.getAttribute("component-url")),n?import(n):()=>()=>{}]),u=this.getAttribute("component-export")||"default";if(!u.includes("."))this.Component=h[u];else{this.Component=h;for(let f of u.split("."))this.Component=this.Component[f]}return this.hydrator=p,this.hydrate},e,this)}catch(n){console.error(`[astro-island] Error hydrating ${this.getAttribute("component-url")}`,n)}}attributeChangedCallback(){this.hydrate()}}d(y,"observedAttributes",["props"]),customElements.get("astro-island")||customElements.define("astro-island",y)}})();</script><astro-island uid="Zkt50n" prefix="r1" component-url="/assets/TerminalPalette.YSBSvGzP.js" component-export="default" renderer-url="/assets/client.DzCmfdQj.js" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;TerminalPalette&quot;,&quot;value&quot;:true}"></astro-island>  <footer class="relative z-10" style="border-top: 2px solid var(--line);"> <div class="max-w-6xl mx-auto px-6 md:px-10 pt-6 pixel" style="font-size: 11px;"> <span style="color: var(--p1);">CONTINUE?</span> <span class="blink" style="color: rgb(var(--bone) / 0.55);">▸ PRESS START</span> </div> <div class="max-w-6xl mx-auto px-6 md:px-10 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 smono" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: rgb(var(--muted));"> <span>xclow3n.local <span style="color: var(--p1);">// <span id="hud-codename">chaos</span>.bin</span></span> <div class="flex items-center gap-5"> <a href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" style="color: rgb(var(--muted));">htb</a> <a href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" style="color: rgb(var(--muted));">linkedin</a> <a href="https://github.com/xclow3n" target="_blank" rel="noopener noreferrer" style="color: rgb(var(--muted));">github</a> <a href="mailto:me@xclow3n.com" style="color: rgb(var(--muted));">mail</a> </div> </div> <div class="max-w-6xl mx-auto px-6 md:px-10 pb-6 marquee-row" aria-hidden="true"></div> </footer>  <div id="hud-pbar" aria-hidden="true" style="position:fixed;left:0;bottom:0;height:3px;width:0;z-index:65;background:var(--p1);box-shadow:0 0 12px var(--glow);transition:width .1s linear;"></div> <div aria-hidden="true" style="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:65;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:rgb(var(--muted));background:color-mix(in srgb,var(--bg) 80%,transparent);padding:4px 12px;border:1px solid var(--line);white-space:nowrap;">
-sig <b id="hud-sig" style="color:var(--p2);">0x0000</b> · scan <b id="hud-scan" style="color:var(--p2);">000</b>%
-</div> <div aria-hidden="true" style="position:fixed;right:14px;bottom:13px;z-index:65;font-family:'Press Start 2P',monospace;font-size:8px;color:rgb(var(--muted));"> <span style="color:var(--p4);">/</span>CMDS · <span style="color:var(--p4);">↑↓</span>SCAN
-</div>  <script>
-      (function () {
-        var CHARS = '!<>-_\\/[]{}=+*^?#01';
-        function runScramble(el, target, perChar, startDelay) {
-          var start = performance.now();
-          var lock = target.split('').map(function (_, i) { return startDelay + i * perChar; });
-          var dur = lock[lock.length - 1] + 60;
-          function tick() {
-            var t = performance.now() - start;
-            var s = target.split('').map(function (ch, i) {
-              if (ch === ' ') return ' ';
-              return t > lock[i] ? ch : CHARS[Math.floor(Math.random() * CHARS.length)];
-            }).join('');
-            el.textContent = s;
-            if (t < dur) requestAnimationFrame(tick);
-            else { el.textContent = target; el.__scrambling = false; el.dispatchEvent(new CustomEvent('scrambled', { bubbles: true })); }
-          }
-          requestAnimationFrame(tick);
-        }
-        document.querySelectorAll('[data-scramble]').forEach(function (el) {
-          var target = el.getAttribute('data-scramble') || el.textContent || '';
-          el.addEventListener('mouseenter', function () {
-            if (el.__scrambling) return;
-            el.__scrambling = true;
-            runScramble(el, target, 22, 40);
-          });
-        });
-        var mountEls = document.querySelectorAll('[data-scramble-mount]');
-        if (mountEls.length && 'IntersectionObserver' in window) {
-          var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (e) {
-              if (!e.isIntersecting || e.target.__scrambled) return;
-              e.target.__scrambled = true;
-              var target = e.target.getAttribute('data-scramble-mount') || e.target.textContent || '';
-              var per = parseInt(e.target.getAttribute('data-scramble-per') || '22', 10);
-              var delay = parseInt(e.target.getAttribute('data-scramble-delay') || '40', 10);
-              runScramble(e.target, target, per, delay);
-              io.unobserve(e.target);
-            });
-          }, { threshold: 0.4 });
-          mountEls.forEach(function (el) { io.observe(el); });
-        }
-      })();
-    </script>  <script>
-      (function () {
-        var pbar = document.getElementById('hud-pbar');
-        var sig  = document.getElementById('hud-sig');
-        var scan = document.getElementById('hud-scan');
-        if (!pbar || !sig || !scan) return;
-        var ticking = false;
-        function tick() {
-          ticking = false;
-          var doc = document.documentElement;
-          var max = Math.max(1, doc.scrollHeight - window.innerHeight);
-          var pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
-          pbar.style.width = pct.toFixed(2) + '%';
-          scan.textContent = String(Math.floor(pct)).padStart(3, '0');
-          var seed = (window.scrollY * 31) ^ 0xC0DE;
-          sig.textContent = '0x' + (seed & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-        }
-        function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(tick); } }
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        tick();
-      })();
-    </script>  <script src="/arcade.js"></script> </body> </html>
+  function vpw(){return vp.clientWidth;} function vph(){return vp.clientHeight;}
+  function computeMin(){ fitS=Math.min(vpw()/W,vph()/H); coverS=Math.max(vpw()/W,vph()/H); minS=fitS; maxS=coverS*3; }
+  function clamp(){
+    scale=Math.max(minS,Math.min(maxS,scale));
+    var sw=W*scale, sh=H*scale;
+    tx = sw<=vpw() ? (vpw()-sw)/2 : Math.min(0,Math.max(vpw()-sw,tx));
+    ty = sh<=vph() ? (vph()-sh)/2 : Math.min(0,Math.max(vph()-sh,ty));
+  }
+  function apply(){
+    clamp();
+    world.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+    zl.textContent=Math.round(scale/fitS*100)+'%';
+    var vw=vpw(), vh=vph();
+    for(var i=0;i<POSTS.length;i++){
+      var p=POSTS[i], sx=tx+p.mx*W*scale, sy=ty+p.my*H*scale;
+      cps[i].style.left=sx+'px'; cps[i].style.top=sy+'px';
+      cps[i]._sx=sx; cps[i]._sy=sy;
+      var on = sx>=-6 && sx<=vw+6 && sy>=-6 && sy<=vh+6;   // modal shows whenever its checkpoint is on-screen, any zoom
+      if(on){ placeCallout(i); cos[i].classList.add('show'); }
+      else cos[i].classList.remove('show');
+    }
+  }
+  function placeCallout(i){
+    var cp=cps[i], co=cos[i], sx=cp._sx, sy=cp._sy, cw=266;
+    if(!co._h) co._h=co.offsetHeight||140;
+    var left=Math.max(10,Math.min(sx-cw/2, vpw()-cw-10));
+    var top = sy-40-co._h>8 ? sy-40-co._h : sy+44;     // above marker, else below
+    co.style.left=left+'px'; co.style.top=top+'px';
+  }
+
+  function bringFront(i){ for(var k=0;k<cos.length;k++) cos[k].style.zIndex = (k===i?'30':''); }
+  function open(p){ location.href=p.href; }
+
+  POSTS.forEach(function(p,i){
+    var cp=document.createElement('button'); cp.className='cp'+(p.newest?' newest':''); cp.setAttribute('aria-label',p.title);
+    cp.innerHTML='<span class="mk"><img src="/pixels/'+p.cp+'.svg" alt=""/></span><span class="lbl">'+p.label+(p.ctf?'<span class="ct">⚑</span>':'')+'</span>';
+    markersEl.appendChild(cp); cps.push(cp);
+    var co=document.createElement('div'); co.className='callout';
+    co.innerHTML='<div class="m"><span class="cat'+(p.ctf?' ctf':'')+'">'+(p.ctf?'⚑ CTF':p.cat)+'</span><span>'+p.date+'</span></div><h3>'+p.title+'</h3><p>'+p.teaser+'</p><button class="more" type="button">show full summary ▾</button><div class="cf"><a class="go" href="'+p.href+'">read the writeup →</a></div>';
+    calloutsEl.appendChild(co); cos.push(co);
+    cp.addEventListener('click',function(){ if(moved)return; open(p); });
+    cp.addEventListener('pointerenter',function(){ bringFront(i); });
+    co.addEventListener('pointerenter',function(){ bringFront(i); });
+    co.querySelector('.more').addEventListener('click',function(e){ e.stopPropagation(); var pp=co.querySelector('p'); var ex=co.classList.toggle('exp'); pp.textContent=ex?p.full:p.teaser; this.textContent=ex?'show less ▴':'show full summary ▾'; co._h=0; placeCallout(i); });
+  });
+
+  function zoomAt(cx,cy,factor){
+    var ns=Math.max(minS,Math.min(maxS,scale*factor));
+    var wx=(cx-tx)/scale, wy=(cy-ty)/scale;
+    scale=ns; tx=cx-wx*scale; ty=cy-wy*scale; apply();
+  }
+
+  var pointers={}, dragging=false, moved=false, last=null, pinchDist=0;
+  vp.addEventListener('pointerdown',function(e){
+    pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+    if(Object.keys(pointers).length===1){ dragging=true; moved=false; last={x:e.clientX,y:e.clientY}; vp.classList.add('drag'); vp.setPointerCapture(e.pointerId); endIntro(); }
+  });
+  vp.addEventListener('pointermove',function(e){
+    if(!(e.pointerId in pointers))return;
+    pointers[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ids=Object.keys(pointers);
+    if(ids.length>=2){
+      var a=pointers[ids[0]],b=pointers[ids[1]],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(pinchDist){ zoomAt((a.x+b.x)/2,(a.y+b.y)/2, d/pinchDist); }
+      pinchDist=d; moved=true; return;
+    }
+    if(dragging&&last){ var dx=e.clientX-last.x,dy=e.clientY-last.y; if(Math.abs(dx)+Math.abs(dy)>3)moved=true; tx+=dx; ty+=dy; last={x:e.clientX,y:e.clientY}; apply(); }
+  });
+  function up(e){ delete pointers[e.pointerId]; if(Object.keys(pointers).length<2)pinchDist=0; if(Object.keys(pointers).length===0){ dragging=false; vp.classList.remove('drag'); } }
+  vp.addEventListener('pointerup',up); vp.addEventListener('pointercancel',up);
+  vp.addEventListener('wheel',function(e){ e.preventDefault(); endIntro();
+    var d=e.deltaY; if(e.deltaMode===1)d*=16; else if(e.deltaMode===2)d*=vph();
+    d=Math.max(-60,Math.min(60,d));
+    zoomAt(e.clientX,e.clientY, Math.exp(-d*0.0032)); },{passive:false});
+  vp.addEventListener('dblclick',function(e){ endIntro(); zoomAt(e.clientX,e.clientY,1.7); });
+  document.getElementById('zin').addEventListener('click',function(){ endIntro(); zoomAt(vpw()/2,vph()/2,1.35); });
+  document.getElementById('zout').addEventListener('click',function(){ endIntro(); zoomAt(vpw()/2,vph()/2,1/1.35); });
+  document.getElementById('zfit').addEventListener('click',function(){ endIntro(); scale=minS; tx=(vpw()-W*scale)/2; ty=(vph()-H*scale)/2; apply(); });
+
+  function initView(){ computeMin(); scale=coverS*1.28; tx=vpw()/2 - .48*W*scale; ty=vph()/2 - .44*H*scale; apply(); }
+  var interacted=false;
+  function endIntro(){ if(interacted)return; interacted=true; hint.classList.add('faded'); }
+
+  window.addEventListener('resize',function(){ computeMin(); apply(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ index.classList.remove('show'); }
+    else if(e.key==='+'||e.key==='='){ zoomAt(vpw()/2,vph()/2,1.35); }
+    else if(e.key==='-'){ zoomAt(vpw()/2,vph()/2,1/1.35); }
+  });
+
+  document.getElementById('idxBtn').addEventListener('click',function(){ endIntro(); index.classList.add('show'); });
+  document.getElementById('idxClose').addEventListener('click',function(){ index.classList.remove('show'); });
+
+  computeMin(); initView();
+})();
+</script> </body> </html>

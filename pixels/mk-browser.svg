@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mutation XSS sanitizer bypass marker">
+  <defs>
+    <radialGradient id="disc" cx="38%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#22190e"/>
+      <stop offset="0.58" stop-color="#14100a"/>
+      <stop offset="1" stop-color="#0e0b06"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="35" r="27" fill="#000" opacity=".28"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#f2ead2" stroke-width="3" opacity=".18"/>
+  <circle cx="32" cy="32" r="27" fill="url(#disc)"/>
+  <circle cx="32" cy="32" r="27" fill="none" stroke="#a9742a" stroke-width="3"/>
+  <circle cx="32" cy="32" r="23.5" fill="none" stroke="#ffc23a" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#f2ead2" stroke-width=".7" opacity=".24"/>
+  <path d="M32 17.8c4 3 8.2 4.2 12.5 4.7v9.4c0 8.8-5.2 14.1-12.5 17.7-7.3-3.6-12.5-8.9-12.5-17.7v-9.4c4.3-.5 8.5-1.7 12.5-4.7Z" fill="none" stroke="#ffc23a" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M32 22.3c2.9 1.9 5.7 2.8 8.8 3.3v6.5c0 5.8-3.2 9.5-8.8 12.5-5.6-3-8.8-6.7-8.8-12.5v-6.5c3.1-.5 5.9-1.4 8.8-3.3Z" fill="none" stroke="#a9742a" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M30.7 23.4 34 31l-5.7 3.3 4 2.8-2.1 7.2M39.9 26.6l-5.9 4.3M23.7 31.7l4.6 2.6M38.1 40.5l-5.8-3.4" fill="none" stroke="#ffc23a" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M27.7 25.9 30 31M35.8 27.7 34 31M31.2 39.7l-1 3.2" fill="none" stroke="#f2ead2" stroke-width="1.4" stroke-linecap="round" opacity=".85"/>
+</svg>
