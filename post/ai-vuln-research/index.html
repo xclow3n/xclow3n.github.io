@@ -1,21 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed | xclow3n</title><meta name="description" content="Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't."><link rel="icon" type="image/svg+xml" href="/avatar.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><script>
-/* dynamic theme — a different accent + paper tint on every visit (set before paint, no flash) */
-(function(){
-  var P=[
-    {a:'#ffc23a',a2:'#e0932a',rgb:'255,194,58',bg:'#0e0c07',bg2:'#14110a',panel:'#16130b'},
-    {a:'#ff6b4a',a2:'#c73e28',rgb:'255,107,74',bg:'#100a08',bg2:'#170e0b',panel:'#18100b'},
-    {a:'#ff6f9c',a2:'#c93e6b',rgb:'255,111,156',bg:'#0f0a0c',bg2:'#160e12',panel:'#170f13'},
-    {a:'#b58bff',a2:'#7d4fd8',rgb:'181,139,255',bg:'#0c0a10',bg2:'#120f19',panel:'#13101a'},
-    {a:'#5db4ff',a2:'#2f7fd8',rgb:'93,180,255',bg:'#080b10',bg2:'#0d1018',panel:'#0e111a'},
-    {a:'#35d6c0',a2:'#1f9488',rgb:'53,214,192',bg:'#070d0c',bg2:'#0c1413',panel:'#0d1514'},
-    {a:'#8ee06a',a2:'#4fa63a',rgb:'142,224,106',bg:'#080d08',bg2:'#0d140c',panel:'#0e150d'}
-  ];
-  var p=P[(Math.random()*P.length)|0], r=document.documentElement.style;
-  r.setProperty('--gold',p.a); r.setProperty('--gold2',p.a2); r.setProperty('--gold-rgb',p.rgb);
-  r.setProperty('--bg',p.bg); r.setProperty('--bg2',p.bg2); r.setProperty('--panel',p.panel);
-  window.__ACC=p.a;
-})();
-</script><link rel="stylesheet" href="/assets/_id_@_@astro.Dpp7fWN5.css"></head> <body> <div id="bar"></div> <canvas id="ff"></canvas> <header class="top"> <a class="brand" href="/">xclow3<span class="c">n</span></a> <div class="r"> <a class="ico" href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5zM3 9h4v12H3zM10 9h3.8v1.65h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.96V21h-4v-5.3c0-1.26-.03-2.9-1.8-2.9-1.8 0-2.08 1.38-2.08 2.8V21h-4z"></path></svg></a> <a class="ico" href="mailto:me@xclow3n.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg></a> <a class="ico" href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" aria-label="Hack The Box profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"></path><path d="M9 8.5v7M15 8.5v7M9 12h6"></path></svg></a> <a class="crumb" href="/"><span>←</span><span>map</span></a> </div> </header> <nav class="rail" id="rail" aria-label="Chapters"> <div class="cap">Waypoints</div> <ol> <li><a href="#top" class="active"><span class="n">◆</span><span>Overview</span></a></li> <li><a href="#tldr"><span class="n">01</span><span>TL;DR</span></a></li><li><a href="#table-of-contents"><span class="n">02</span><span>Table of Contents</span></a></li><li><a href="#approach-1-blackbox-rfc-spray"><span class="n">03</span><span>Approach 1: Blackbox RFC Spray</span></a></li><li><a href="#approach-2-two-fine-tuned-models--opus-brain"><span class="n">04</span><span>Approach 2: Two Fine-Tuned Models + Opus Brain</span></a></li><li><a href="#approach-3-hypothesis-driven-from-code-and-cve-history"><span class="n">05</span><span>Approach 3: Hypothesis-Driven from Code and CVE History</span></a></li><li><a href="#approach-4-domain-research--frontier-model-secra"><span class="n">06</span><span>Approach 4: Domain Research + Frontier Model (SECRA)</span></a></li><li><a href="#what-i-learned"><span class="n">07</span><span>What I Learned</span></a></li><li><a href="#secra"><span class="n">08</span><span>SECRA</span></a></li><li><a href="#numbers"><span class="n">09</span><span>Numbers</span></a></li> </ol> </nav> <main class="wrap" id="top"> <div class="seal"><span class="dot"></span>research</div> <h1 class="title">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</h1> <div class="rule"><span class="ln"></span><span class="fl">❧</span></div> <p class="lede">Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</p> <div class="tags"><span class="tag">AI</span><span class="tag">Vulnerability Research</span><span class="tag">SAML</span><span class="tag">HTTP Smuggling</span><span class="tag">Security</span></div> <div class="thresh"></div> <article class="doc"><h2 id="tldr">TL;DR</h2>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed · AI Vuln Research · xclow3n</title><meta name="description" content="Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/_slug_.DwJ29Fq7.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <div class="band top" id="bandTop"><span></span></div> <div class="band bot" id="bandBot"><span></span></div> <header class="chrome"> <a class="brand" href="/">xclow3n<i>the grimoire map</i></a> <div class="r"> <a href="#top">to the top ↑</a> <a href="/">back to map</a> <a href="#" id="themeBtn">day edition</a> </div> </header> <nav class="rail" id="rail" aria-label="Waypoints"> <div class="cap">WAYPOINTS</div> <ol id="railList"> <li><a href="#top" class="active"><span class="n">✦</span><span>The threshold</span></a></li> <li><a href="#tldr"><span class="n">I</span><span>TL;DR</span></a></li><li><a href="#table-of-contents"><span class="n">II</span><span>Table of Contents</span></a></li><li><a href="#approach-1-blackbox-rfc-spray"><span class="n">III</span><span>Approach 1: Blackbox RFC Spray</span></a></li><li><a href="#approach-2-two-fine-tuned-models--opus-brain"><span class="n">IV</span><span>Approach 2: Two Fine-Tuned Models +…</span></a></li><li><a href="#approach-3-hypothesis-driven-from-code-and-cve-history"><span class="n">V</span><span>Approach 3: Hypothesis-Driven from…</span></a></li><li><a href="#approach-4-domain-research--frontier-model-secra"><span class="n">VI</span><span>Approach 4: Domain Research + Front…</span></a></li><li><a href="#what-i-learned"><span class="n">VII</span><span>What I Learned</span></a></li><li><a href="#secra"><span class="n">VIII</span><span>SECRA</span></a></li><li><a href="#numbers"><span class="n">IX</span><span>Numbers</span></a></li> </ol> <div id="feet"> <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" style="color:var(--ink)"> <ellipse cx="4" cy="5" rx="2.4" ry="3.4" opacity=".9"></ellipse><ellipse cx="4" cy="10.4" rx="1.1" ry="1.2" opacity=".9"></ellipse> <ellipse cx="10" cy="7" rx="2.4" ry="3.4" opacity=".55"></ellipse><ellipse cx="10" cy="12.4" rx="1.1" ry="1.2" opacity=".55"></ellipse> </svg> </div> </nav> <main class="wrap" id="top"> <div class="seal">RESEARCH · MAR 2026 · <a href="/">AI VULN RESEARCH</a></div> <h1 class="title">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</h1> <div class="rule"><span class="ln"></span><span class="fl">✦</span><span class="ln"></span></div> <p class="lede">Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</p> <div class="tags"><span class="tag">AI</span><span class="tag">Vulnerability Research</span><span class="tag">SAML</span><span class="tag">HTTP Smuggling</span><span class="tag">Security</span></div> <div class="thresh"></div> <article class="doc"> <h2 id="tldr">TL;DR</h2>
 <p>I tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. AI can find bugs - that’s true. But which ones actually have impact? That’s another story. Everything I’m sharing here are real bugs, spec violations, or genuinely wrong practices. But when you actually try to exploit them, most fall apart. AI is fast at coverage, hypothesis generation, and code analysis. It’s bad at impact assessment, validation, and knowing what’s actually exploitable. Every model inflated findings. The researcher’s judgment was the difference between noise and CVEs every single time. AI doesn’t replace security researchers - it’s a force multiplier, not a replacement.</p>
 <hr>
 <p><strong>Note:</strong> I don’t have a formal AI/ML background. This was my first time seriously using AI for vulnerability research. Take this with a grain of salt - your results will likely differ based on your target selection, how you set things up, your prompts, and your overall approach. I deliberately picked some hardened targets to see how well AI performs under pressure, which skews the numbers. I could be wrong about some of my conclusions. This is just what I tried and what I observed. The whole thing took about a week and half. The bugs shown here are examples, not the complete list - some findings are omitted due to pending disclosure or because they’d identify specific targets.</p>
@@ -40,7 +23,7 @@
 <h3 id="confirmed-bugs">Confirmed Bugs</h3>
 <p>The exploitable bugs all follow the same pattern: the AI finds a parser disagreement, I build the proxy→backend chain in Docker labs to prove it’s exploitable end-to-end.</p>
 <p><strong>CL octal parsing via <code>strtol(base=0)</code>.</strong> A backend’s Content-Length parser uses <code>strtol</code> with auto-base detection. <code>CL:0400</code> is read as octal 256, not decimal 400. Proxy reads it as decimal 400 and forwards 400 body bytes. Backend only consumes 256 - the remaining 144 bytes become a smuggled request. Confirmed exploitable through two major proxies in <strong>default configuration</strong> - no lenient mode needed.</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
 <span class="line"><span>Content-Length: 0400       ← proxy: decimal 400. backend: octal 256.</span></span>
 <span class="line"><span></span></span>
 <span class="line"><span>[256 bytes padding]GET /smuggled HTTP/1.1</span></span>
@@ -49,7 +32,7 @@
 <p><strong>Duplicate TE first-wins.</strong> Two TE headers: <code>TE:identity</code> + <code>TE:chunked</code>. Backend takes first (identity → falls to CL). A proxy that forwards both uses chunked. Body framing disagrees - smuggling confirmed through one proxy.</p>
 <p><strong>Multi-valued TE ignored.</strong> <code>TE:gzip,chunked</code> - backend doesn’t recognize the comma-separated value as chunked, falls to CL. Proxy parses <code>chunked</code> from the list. Same desync pattern, confirmed through same proxy.</p>
 <p><strong>Space-in-name header truncation.</strong> A backend silently drops ALL headers after encountering a space in a header name. <code>Content-Length</code> placed after the malformed header vanishes. Body becomes a smuggled request. Dead in pure H1 - every proxy rejects in default config. Revived through a major proxy’s documented lenient mode:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST / HTTP/1.1</span></span>
 <span class="line"><span>Host: target</span></span>
 <span class="line"><span>X -Forwarded: x           ← space terminates backend's header parsing</span></span>
 <span class="line"><span>Content-Length: 43         ← backend NEVER SEES THIS (truncated)</span></span>
@@ -149,7 +132,7 @@
 <li>1 was cosmetic</li>
 </ul>
 <p><strong>1 was reportable.</strong> A scope filtering function used string suffix matching instead of domain boundary matching:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>host  = "login.notevil.com"</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>host  = "login.notevil.com"</span></span>
 <span class="line"><span>scope = "evil.com"</span></span>
 <span class="line"><span></span></span>
 <span class="line"><span># Vulnerable check: is "evil.com" a suffix of "login.notevil.com"?</span></span>
@@ -173,23 +156,23 @@
 <h4 id="bugs-found-1">Bugs Found</h4>
 <p><strong>CBC padding crash via error type leak.</strong> A CBC decryption function disables the crypto library’s built-in padding check, then does manual validation. On invalid padding, it calls a callback variable that doesn’t exist in scope - throwing a <code>ReferenceError</code> instead of a generic <code>Error</code>. The caller’s try/catch distinguishes these error types. Theoretically that’s a padding oracle - the model flagged it because the research package included Vaudenay patterns from CVE history, and the code matched: manual padding check after <code>setAutoPadding(false)</code>. In practice, the full decryption attack wasn’t exploitable - but the crash on the error path is real. Unauthenticated DoS with a single crafted ciphertext. The AI correctly identified the vulnerable code pattern; it just overestimated the exploitation impact.</p>
 <p><strong>XPath injection in key retrieval.</strong> An encryption library takes a URI attribute from an XML element and concatenates it directly into an XPath expression:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>//*[@Id='ATTACKER_CONTROLLED_VALUE']/*[...]</span></span></code></pre>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>//*[@Id='ATTACKER_CONTROLLED_VALUE']/*[...]</span></span></code></pre>
 <p>No escaping. Inject a single quote and a union operator, and you select arbitrary elements as the encryption key material:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">RetrievalMethod</span><span style="color:#B392F0"> URI</span><span style="color:#E1E4E8">=</span><span style="color:#9ECBFF">"#'] | //*[local-name(.)='CipherValue'][1] | //*[@Id='x"</span><span style="color:#E1E4E8"> /></span></span></code></pre>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">RetrievalMethod</span><span style="color:#BD976A"> URI</span><span style="color:#DBD7CACC">=</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">#'] | //*[local-name(.)='CipherValue'][1] | //*[@Id='x</span><span style="color:#C98A7D77">"</span><span style="color:#444444"> /></span></span></code></pre>
 <p><strong>Silent algorithm downgrade.</strong> A switch statement matching OAEP digest algorithm URIs uses the wrong XML namespace in its case labels. The standard URIs sent by every major identity provider don’t match any case, so they all fall through to the <code>default: SHA-1</code>. Every deployment unknowingly uses SHA-1 for OAEP instead of the SHA-256/512 they configured.</p>
 <p><strong>Unsigned message acceptance.</strong> A signature verification function for redirect-binding messages returns <code>true</code> when the Signature query parameter is absent entirely - not “invalid signature,” but “no signature = valid.” Unauthenticated attacker sends a logout request with no signature, and the library accepts it:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>GET /slo?SAMLRequest=&#x3C;deflated LogoutRequest>&#x26;RelayState=...</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>GET /slo?SAMLRequest=&#x3C;deflated LogoutRequest>&#x26;RelayState=...</span></span>
 <span class="line"><span># No Signature, no SigAlg query parameters</span></span>
 <span class="line"><span># hasValidSignatureForRedirect() returns true</span></span>
 <span class="line"><span># User's session terminated</span></span></code></pre>
 <p><strong>Replay bypass via unsigned attribute stripping.</strong> Replay protection checks an attribute on the outer (unsigned) message envelope. The signed inner assertion doesn’t include this attribute. Strip it from the envelope - the signature still validates, but the replay check sees “no attribute present” and skips validation entirely, treating the message as unsolicited. Same signed assertion accepted multiple times.</p>
 <p><strong>Text node truncation via XML comment injection.</strong> An XML library extracts identity values using <code>.data</code> on the first child text node. The attacker controls the IdP and signs an assertion containing a comment-injected NameID. The signature is valid because the attacker signed it themselves. But the SP’s identity extraction only reads the first text node before the comment boundary:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#6A737D">&#x3C;!-- Attacker (evil.com IdP) signs assertion with: --></span></span>
-<span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#85E89D">NameID</span><span style="color:#E1E4E8">>admin@victim.com</span><span style="color:#6A737D">&#x3C;!--.evil.com--></span><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#85E89D">NameID</span><span style="color:#E1E4E8">></span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="xml"><code><span class="line"><span style="color:#758575DD">&#x3C;!-- Attacker (evil.com IdP) signs assertion with: --></span></span>
+<span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">NameID</span><span style="color:#444444">></span><span style="color:#DBD7CACC">admin@victim.com</span><span style="color:#758575DD">&#x3C;!--.evil.com--></span><span style="color:#444444">&#x3C;/</span><span style="color:#4D9375">NameID</span><span style="color:#444444">></span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#6A737D">&#x3C;!-- Signature verifies: attacker signed it, digest matches ✓ --></span></span>
-<span class="line"><span style="color:#6A737D">&#x3C;!-- DOM .data extraction: "admin@victim.com" (first text node only) --></span></span>
-<span class="line"><span style="color:#6A737D">&#x3C;!-- SP authenticates attacker as admin@victim.com --></span></span></code></pre>
+<span class="line"><span style="color:#758575DD">&#x3C;!-- Signature verifies: attacker signed it, digest matches ✓ --></span></span>
+<span class="line"><span style="color:#758575DD">&#x3C;!-- DOM .data extraction: "admin@victim.com" (first text node only) --></span></span>
+<span class="line"><span style="color:#758575DD">&#x3C;!-- SP authenticates attacker as admin@victim.com --></span></span></code></pre>
 <p>The dependency impact chain analysis was useful here. The pipeline traced how a bug in an encryption library flows through the signature verification layer into the SSO login flow, confirming the crash is reachable from the unauthenticated attack surface.</p>
 <p>Yes these all are not some big SAML issues like Signature bypass, but still on harden targets but the caveat is these bugs on harden targets are situational.</p>
 <h3 id="other-findings">Other Findings</h3>
@@ -263,42 +246,74 @@
 
 <table><thead><tr><th>Approach</th><th>Findings</th><th>Reportable</th><th>Lesson</th></tr></thead><tbody><tr><td>RFC Spray</td><td>55 across 23 servers. 8 exploitable (combo lab PoC), 11 path traversal, 4 logic bugs, funky chunks across 16 servers + 6 proxies</td><td>Smuggling, ACL bypass, cache poisoning (reported)</td><td>AI maps surface, researcher builds chains</td></tr><tr><td>Fine-Tuned Models</td><td>53 bugs + 147 suspicious across 12 parsers (~2,800 payloads)</td><td>0 reportable (all need preconditions that don’t hold)</td><td>Wrong target, right architecture</td></tr><tr><td>Hypothesis Engine</td><td>38 hypotheses, 12 confirmed (31%)</td><td>3 confirmed, low practical impact</td><td>Good hypotheses, bad validation</td></tr><tr><td>SECRA</td><td>100 CVEs, 25 patterns, 149 techniques fed to frontier model</td><td>14+ across multiple targets, 9 CVE-worthy</td><td>Domain research + right target = results</td></tr></tbody></table>
 <p>One week. Some wasted, some extremely productive. The difference was never the AI - it was where I pointed it. AI works well with goals, If you direct it like <code>Go look for bugs</code> the results might not be that good.</p>
-<p><em>The bugs listed in this post are representative examples - the full findings across all approaches are more extensive. Some findings are pending disclosure. Details will be updated once CVEs are assigned. Most of the findings are situational thats one of the reason im documenting all this</em></p></article> <nav class="nav"> <span></span> <a class="next" href="/post/6"> <div class="d">older · 02 →</div> <div class="t">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</div> </a> </nav> <div class="foot"><a href="/">↑ return to the map</a></div> </main> <script>
+<p><em>The bugs listed in this post are representative examples - the full findings across all approaches are more extensive. Some findings are pending disclosure. Details will be updated once CVEs are assigned. Most of the findings are situational thats one of the reason im documenting all this</em></p> </article> <div class="passages"> <div class="cap">SECRET PASSAGES · RELATED ENTRIES</div> <a href="/post/breaking-pingora/"><b>Breaking Pingora</b> shared tag · http smuggling</a> </div> <div class="finis"> <span class="stamp"> <svg width="78" height="78" viewBox="0 0 78 78" fill="none"> <g style="color:var(--wax)"><circle cx="39" cy="39" r="34" stroke="currentColor" stroke-width="1.6" opacity=".85"></circle> <circle cx="39" cy="39" r="28" stroke="currentColor" stroke-width=".8" opacity=".6"></circle> <text x="39" y="36" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English SC';font-size:13px;letter-spacing:.2em">FINIS</text> <text x="39" y="52" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English',serif;font-style:italic;font-size:9px" opacity=".85">mischief managed</text></g> </svg> </span> </div> <nav class="nav"> <a class="prev disabled" href="#"> <div class="d">← NEWER CORRIDOR</div> <div class="t">—</div> <div class="w">this is the newest entry</div> </a> <a class="next" href="/post/breaking-pingora/"> <div class="d">OLDER CORRIDOR →</div> <div class="t">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</div> <div class="w">breaking pingora · mar 2026</div> </a> </nav> <div class="foot"><a href="/">MISCHIEF MANAGED — RETURN TO THE MAP</a></div> </main> <script>
+/* editions — shared with the map via localStorage; night is default */
 (function(){
-  var bar=document.getElementById('bar');
-  function up(){var d=document.documentElement,m=d.scrollHeight-window.innerHeight,r=m>0?scrollY/m:0;bar.style.transform='scaleX('+Math.max(0,Math.min(1,r))+')';}
-  up();addEventListener('scroll',up,{passive:true});addEventListener('resize',up);
+  let ed='night';
+  try{ ed=localStorage.getItem('archive-ed')||'night'; }catch(e){}
+  if(ed==='day') document.documentElement.classList.add('day');
+  const btn=document.getElementById('themeBtn');
+  const lbl=()=>{ btn.textContent=document.documentElement.classList.contains('day')?'night edition':'day edition'; };
+  lbl();
+  btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const veil=document.getElementById('veil');
+    veil.classList.add('on');
+    setTimeout(()=>{
+      const day=document.documentElement.classList.toggle('day');
+      try{ localStorage.setItem('archive-ed',day?'day':'night'); }catch(e){}
+      lbl();
+      setTimeout(()=>veil.classList.remove('on'),140);
+    },400);
+  });
+})();
 
-  var links=[].slice.call(document.querySelectorAll('.rail a'));
-  if(links.length){
-    var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
-    function spy(){var y=scrollY+140,cur=0;for(var i=0;i<secs.length;i++){if(secs[i]&&secs[i].offsetTop<=y)cur=i;}
-      links.forEach(function(a,i){a.classList.toggle('active',i===cur);});}
-    spy();addEventListener('scroll',spy,{passive:true});addEventListener('resize',spy);
-  }
+/* latin bands, same phrase as the map */
+(function(){
+  const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+  let s=''; while(s.length<400) s+=phrase;
+  document.querySelector('#bandTop span').textContent=s;
+  document.querySelector('#bandBot span').textContent=s;
+})();
 
-  /* multi-coloured fireflies drifting behind the codex */
-  var c=document.getElementById('ff');
-  if(c){
-    var ctx=c.getContext('2d'), W,H, DPR=Math.min(2,window.devicePixelRatio||1);
-    var acc=window.__ACC||'#ffc23a';
-    var COLORS=[acc,'#fff3c8','#8fd0ff','#ff9ecb','#9effc0','#c9a0ff'];
-    var ff=[], N=Math.max(20,Math.min(46,Math.round(innerWidth/34)));
-    function mk(){return {x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.7,vx:(Math.random()-.5)*0.00013,vy:(Math.random()-.5)*0.00012,ph:Math.random()*6.28,sp:Math.random()*0.8+0.25,col:COLORS[(Math.random()*COLORS.length)|0]};}
-    function resize(){W=c.width=innerWidth*DPR;H=c.height=innerHeight*DPR;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';}
-    resize(); for(var i=0;i<N;i++) ff.push(mk());
-    var t=0;
-    function draw(){ t+=0.016; ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter';
-      for(var i=0;i<ff.length;i++){ var f=ff[i]; f.x+=f.vx; f.y+=f.vy;
-        if(f.x<-.03)f.x=1.03; if(f.x>1.03)f.x=-.03; if(f.y<-.03)f.y=1.03; if(f.y>1.03)f.y=-.03;
-        var a=Math.sin(t*f.sp+f.ph)*.5+.5, px=f.x*W, py=f.y*H, rad=f.r*DPR*7;
-        var g=ctx.createRadialGradient(px,py,0,px,py,rad); g.addColorStop(0,f.col); g.addColorStop(1,'transparent');
-        ctx.globalAlpha=0.05+a*0.30; ctx.fillStyle=g; ctx.beginPath(); ctx.arc(px,py,rad,0,6.2832); ctx.fill();
-        ctx.globalAlpha=0.22+a*0.48; ctx.fillStyle=f.col; ctx.beginPath(); ctx.arc(px,py,f.r*DPR,0,6.2832); ctx.fill();
-      }
-      ctx.globalAlpha=1; requestAnimationFrame(draw);
-    }
-    addEventListener('resize',resize); draw();
+/* ink-soak reveal: monotonic, quick, no blinking */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const units=[...document.querySelectorAll('.seal,.title,.rule,.lede,.tags,.thresh,.doc > *,.passages,.finis,.nav,.foot')];
+  units.forEach((e,i)=>{
+    e.style.opacity='0';
+    const a=e.animate(
+      [{opacity:0,filter:'blur(2px)'},{opacity:1,filter:'blur(0px)'}],
+      {duration:1100,delay:120+Math.min(i*70,900)+Math.random()*180,
+       easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{a.cancel();e.style.opacity='';}).catch(()=>{});
+  });
+})();
+
+/* waypoints scrollspy + the reader's pacing feet */
+(function(){
+  const links=[...document.querySelectorAll('.rail a')];
+  if(!links.length) return;
+  const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const feet=document.getElementById('feet');
+  function spy(){
+    const y=scrollY+150; let cur=0;
+    secs.forEach((s,i)=>{ if(s&&s.offsetTop<=y) cur=i; });
+    links.forEach((a,i)=>{
+      a.classList.toggle('active',i===cur);
+      a.classList.toggle('walked',i<cur);
+    });
+    /* feet walk the dotted line: interpolate within the current leg */
+    const rows=links.map(a=>a.parentElement);
+    const cA=rows[cur].offsetTop+6;
+    const cB=(rows[cur+1]?rows[cur+1].offsetTop:cA+26)+6;
+    const sTop=secs[cur]?secs[cur].offsetTop:0;
+    const sBot=secs[cur+1]?secs[cur+1].offsetTop:document.body.scrollHeight;
+    const k=Math.max(0,Math.min(1,(y-sTop)/Math.max(1,sBot-sTop)));
+    feet.style.top=(cA+(cB-cA)*k)+'px';
   }
+  spy();
+  addEventListener('scroll',spy,{passive:true});
+  addEventListener('resize',spy);
 })();
 </script> </body> </html>

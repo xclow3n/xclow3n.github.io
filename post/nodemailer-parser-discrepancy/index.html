@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Email Parser Discrepancy in Nodemailer · Nodemailer Parser · xclow3n</title><meta name="description" content="Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/_slug_.DwJ29Fq7.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <div class="band top" id="bandTop"><span></span></div> <div class="band bot" id="bandBot"><span></span></div> <header class="chrome"> <a class="brand" href="/">xclow3n<i>the grimoire map</i></a> <div class="r"> <a href="#top">to the top ↑</a> <a href="/">back to map</a> <a href="#" id="themeBtn">day edition</a> </div> </header> <nav class="rail" id="rail" aria-label="Waypoints"> <div class="cap">WAYPOINTS</div> <ol id="railList"> <li><a href="#top" class="active"><span class="n">✦</span><span>The threshold</span></a></li> <li><a href="#email-parser-discrepancy-in-nodemailer"><span class="n">I</span><span>Email Parser Discrepancy in Nodemai…</span></a></li><li><a href="#nodemailer-zero-day"><span class="n">II</span><span>Nodemailer Zero Day</span></a></li><li><a href="#update-second-issue-patched-october-2025"><span class="n">III</span><span>Update: Second Issue Patched (Octob…</span></a></li> </ol> <div id="feet"> <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" style="color:var(--ink)"> <ellipse cx="4" cy="5" rx="2.4" ry="3.4" opacity=".9"></ellipse><ellipse cx="4" cy="10.4" rx="1.1" ry="1.2" opacity=".9"></ellipse> <ellipse cx="10" cy="7" rx="2.4" ry="3.4" opacity=".55"></ellipse><ellipse cx="10" cy="12.4" rx="1.1" ry="1.2" opacity=".55"></ellipse> </svg> </div> </nav> <main class="wrap" id="top"> <div class="seal">RESEARCH · NOV 2024 · <a href="/">NODEMAILER PARSER</a></div> <h1 class="title">Email Parser Discrepancy in Nodemailer</h1> <div class="rule"><span class="ln"></span><span class="fl">✦</span><span class="ln"></span></div> <p class="lede">Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</p> <div class="tags"><span class="tag">Security Research</span><span class="tag">Nodemailer</span><span class="tag">Email Parser</span><span class="tag">RFC 5322</span><span class="tag">GHSA-mm7p-fcc7-pg87</span></div> <div class="thresh"></div> <article class="doc"> <h2 id="email-parser-discrepancy-in-nodemailer">Email Parser Discrepancy in Nodemailer</h2>
+<p><strong>TL;DR</strong></p>
+<ul>
+<li>This blog reveals two issues in Nodemailer’s email address parser. The first was fixed in <code>v6.9.16</code>.</li>
+<li>The second issue was later reported as a security advisory and patched in <code>v7.0.7</code>. See <a href="https://github.com/nodemailer/nodemailer/security/advisories/GHSA-mm7p-fcc7-pg87">GHSA-mm7p-fcc7-pg87</a>.</li>
+</ul>
+<p>After reading <a href="https://portswigger.net/research/splitting-the-email-atom">Splitting the Email Atom research</a>, I set out to find a zero-day bug in Nodemailer for one of my CTF challenges. I discovered that Nodemailer was not correctly parsing certain valid email addresses. Consider this example:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">test@0xhexr4.htb</span><span style="color:#C98A7D77">"</span><span style="color:#444444">@</span><span style="color:#BD976A">google</span><span style="color:#444444">.</span><span style="color:#BD976A">com</span></span></code></pre>
+<p>According to RFC 5322, this is a valid email address. The portion <code>"test@0xhexr4.htb"</code> is a quoted local-part, which allows the <code>@</code> character. The domain is <code>google.com</code>. Thus, the mailbox is <code>"test@0xhexr4.htb"</code> at the domain <code>google.com</code>.</p>
+<p>However, Nodemailer’s parser attempts to identify the address by splitting at the first <code>@</code> found outside of a properly recognized quoted local-part. Here’s a snippet (taken from Nodemailer’s code) showing how it separates tokens into different lists:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#BD976A">data</span><span style="color:#444444"> =</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#B8A965">    address</span><span style="color:#444444">:</span><span style="color:#444444"> [],</span></span>
+<span class="line"><span style="color:#B8A965">    comment</span><span style="color:#444444">:</span><span style="color:#444444"> [],</span></span>
+<span class="line"><span style="color:#B8A965">    group</span><span style="color:#444444">:</span><span style="color:#444444"> [],</span></span>
+<span class="line"><span style="color:#B8A965">    text</span><span style="color:#444444">:</span><span style="color:#444444"> []</span></span>
+<span class="line"><span style="color:#444444">};</span></span></code></pre>
+<p>When Nodemailer encounters <code>"test@0xhexr4.htb"@google.com</code>, it correctly identifies the quoted string <code>"test@0xhexr4.htb"</code> as the local-part, but then treats the subsequent <code>@google.com</code> segment as non-quoted “text.” It fails to recognize that <code>google.com</code> is the domain. Instead, it might parse the input as:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#444444">[{</span></span>
+<span class="line"><span style="color:#B8A965">    name</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">@google.com</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#B8A965">    address</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">test@0xhexr4.htb</span><span style="color:#C98A7D77">"</span></span>
+<span class="line"><span style="color:#444444">}]</span></span></code></pre>
+<p>This results in Nodemailer interpreting <code>"test@0xhexr4.htb"</code> as the entire mailbox and <code>@google.com</code> as a display name, effectively losing the actual domain information (<code>google.com</code>).</p>
+<p>I reported this to the Nodemailer team, hoping it might be treated as a security issue, since incorrect parsing could lead to emails being sent to the wrong domain. However, they considered it a regular bug rather than a security flaw. They fixed this issue in <a href="https://github.com/nodemailer/nodemailer/releases/tag/v6.9.16">version 6.9.16</a> without providing credit.</p>
+<p><img src="/images/nodemailer/nodemailer1.png" alt="Nodemailer Issue 1">
+<img src="/images/nodemailer/nodemailer2.png" alt="Nodemailer Issue 2"></p>
+<h2 id="nodemailer-zero-day">Nodemailer Zero Day</h2>
+<p>Accepting their stance, I moved on and found another problem. I found out that it is still vulnerable to the same kind of issue. For example, consider this payload:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">test@email.htb x</span><span style="color:#C98A7D77">"</span><span style="color:#444444">@</span><span style="color:#BD976A">interstellar</span><span style="color:#444444">.</span><span style="color:#BD976A">htb</span></span></code></pre>
+<p>It exhibits similar behavior, and the email is sent to the <code>test</code> mailbox on <code>email.htb</code> rather than <code>interstellar.htb</code>.</p>
+<p>If we parse the following email using a library such as <a href="https://www.npmjs.com/package/email-addresses">Email-Addresses</a>:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#BD976A">Welcome</span><span style="color:#BD976A"> to</span><span style="color:#BD976A"> Node</span><span style="color:#444444">.</span><span style="color:#BD976A">js</span><span style="color:#BD976A"> v23</span><span style="color:#444444">.</span><span style="color:#4C9A91">3.0</span><span style="color:#444444">.</span></span>
+<span class="line"><span style="color:#BD976A">Type</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">.help</span><span style="color:#C98A7D77">"</span><span style="color:#BD976A"> for</span><span style="color:#BD976A"> more</span><span style="color:#BD976A"> information</span><span style="color:#444444">.</span></span>
+<span class="line"><span style="color:#444444">></span><span style="color:#BD976A"> addrs</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">email-addresses</span><span style="color:#C98A7D77">"</span><span style="color:#444444">)</span></span>
+<span class="line"><span style="color:#444444">[</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parse5322</span><span style="color:#444444">]</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#80A665">    parseOneAddress</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parseOneAddressSimple</span><span style="color:#444444">],</span></span>
+<span class="line"><span style="color:#80A665">    parseAddressList</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parseAddressListSimple</span><span style="color:#444444">],</span></span>
+<span class="line"><span style="color:#80A665">    parseFrom</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parseFromSimple</span><span style="color:#444444">],</span></span>
+<span class="line"><span style="color:#80A665">    parseSender</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parseSenderSimple</span><span style="color:#444444">],</span></span>
+<span class="line"><span style="color:#80A665">    parseReplyTo</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Function</span><span style="color:#DBD7CACC">: </span><span style="color:#BD976A">parseReplyToSimple</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">}</span></span>
+<span class="line"><span style="color:#444444">></span><span style="color:#BD976A"> addrs</span><span style="color:#444444">.</span><span style="color:#80A665">parseOneAddress</span><span style="color:#444444">(</span><span style="color:#C98A7D77">`</span><span style="color:#C98A7D">"test@email.htb x"@interstellar.htb</span><span style="color:#C98A7D77">`</span><span style="color:#444444">)</span></span>
+<span class="line"><span style="color:#444444">{</span></span>
+<span class="line"><span style="color:#80A665">    parts</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#80A665">    name</span><span style="color:#444444">:</span><span style="color:#CB7676"> null</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    address</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#80A665">        name</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">addr-spec</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        tokens</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">"test@email.htb x"@interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        semantic</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">test@email.htb x@interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#80A665">    local</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#80A665">        name</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">local-part</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        tokens</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">"test@email.htb x"</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        semantic</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">test@email.htb x</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#80A665">    domain</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#80A665">        name</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">domain</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        tokens</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        semantic</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#BD976A">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#80A665">    comments</span><span style="color:#444444">:</span><span style="color:#444444"> []</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#80A665">    type</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">mailbox</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    name</span><span style="color:#444444">:</span><span style="color:#CB7676"> null</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    address</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">test@email.htb x@interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    local</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">test@email.htb x</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    domain</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    comments</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> ''</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#80A665">    groupName</span><span style="color:#444444">:</span><span style="color:#CB7676"> null</span></span>
+<span class="line"><span style="color:#444444">}</span></span>
+<span class="line"><span style="color:#444444">></span></span></code></pre>
+<p>The domain is “interstellar.htb”. I showcased this second bug in the University CTF 2024 Intergalactic Bounty web challenge.</p>
+<h2 id="update-second-issue-patched-october-2025">Update: Second Issue Patched (October 2025)</h2>
+<p>I eventually reported this second issue as a security advisory to the Nodemailer team. The advisory was published as <a href="https://github.com/nodemailer/nodemailer/security/advisories/GHSA-mm7p-fcc7-pg87">GHSA-mm7p-fcc7-pg87</a> and the issue was patched in <strong>v7.0.7</strong> on October 6, 2025.</p>
+<p>The core problem was identical to the first issue - the email parsing library incorrectly handles quoted local-parts containing <code>@</code>, leading to misrouting of email recipients where the parser extracts and routes to an unintended domain instead of the RFC-compliant target.</p>
+<p><strong>Payload:</strong> <code>"xclow3n@gmail.com x"@internal.domain</code></p>
+<p>Instead of sending to <code>internal.domain</code>, Nodemailer would extract and route the email to <code>gmail.com</code>. This could lead to:</p>
+<ul>
+<li><strong>Email misdelivery / data leakage</strong> - emails sent to unintended external domains</li>
+<li><strong>Filter evasion</strong> - logs and anti-spam systems bypassed by hiding recipients inside quoted local-parts</li>
+<li><strong>Domain-based access control bypass</strong> in downstream applications using Nodemailer</li>
+</ul>
+<p>Both issues are now fixed. These findings highlight how subtle RFC 5321/5322 parsing errors can lead to real security impact in widely-used libraries.</p> </article> <div class="passages"> <div class="cap">SECRET PASSAGES · RELATED ENTRIES</div> <a href="/post/intergalactic-bounty/"><b>Intergalactic Bounty</b> shared tag · nodemailer</a><a href="/post/sanitize-html-bypass-mxss/"><b>sanitize-html Bypass</b> shared tag · security research</a> </div> <div class="finis"> <span class="stamp"> <svg width="78" height="78" viewBox="0 0 78 78" fill="none"> <g style="color:var(--wax)"><circle cx="39" cy="39" r="34" stroke="currentColor" stroke-width="1.6" opacity=".85"></circle> <circle cx="39" cy="39" r="28" stroke="currentColor" stroke-width=".8" opacity=".6"></circle> <text x="39" y="36" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English SC';font-size:13px;letter-spacing:.2em">FINIS</text> <text x="39" y="52" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English',serif;font-style:italic;font-size:9px" opacity=".85">mischief managed</text></g> </svg> </span> </div> <nav class="nav"> <a class="prev" href="/post/sanitize-html-bypass-mxss/"> <div class="d">← NEWER CORRIDOR</div> <div class="t">HTML Sanitize Bypass Using MXSS</div> <div class="w">sanitize-html bypass · nov 2024</div> </a> <a class="next" href="/post/intergalactic-bounty/"> <div class="d">OLDER CORRIDOR →</div> <div class="t">Intergalactic Bounty: HTB University CTF 2024</div> <div class="w">intergalactic bounty · nov 2024</div> </a> </nav> <div class="foot"><a href="/">MISCHIEF MANAGED — RETURN TO THE MAP</a></div> </main> <script>
+/* editions — shared with the map via localStorage; night is default */
+(function(){
+  let ed='night';
+  try{ ed=localStorage.getItem('archive-ed')||'night'; }catch(e){}
+  if(ed==='day') document.documentElement.classList.add('day');
+  const btn=document.getElementById('themeBtn');
+  const lbl=()=>{ btn.textContent=document.documentElement.classList.contains('day')?'night edition':'day edition'; };
+  lbl();
+  btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const veil=document.getElementById('veil');
+    veil.classList.add('on');
+    setTimeout(()=>{
+      const day=document.documentElement.classList.toggle('day');
+      try{ localStorage.setItem('archive-ed',day?'day':'night'); }catch(e){}
+      lbl();
+      setTimeout(()=>veil.classList.remove('on'),140);
+    },400);
+  });
+})();
+
+/* latin bands, same phrase as the map */
+(function(){
+  const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+  let s=''; while(s.length<400) s+=phrase;
+  document.querySelector('#bandTop span').textContent=s;
+  document.querySelector('#bandBot span').textContent=s;
+})();
+
+/* ink-soak reveal: monotonic, quick, no blinking */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const units=[...document.querySelectorAll('.seal,.title,.rule,.lede,.tags,.thresh,.doc > *,.passages,.finis,.nav,.foot')];
+  units.forEach((e,i)=>{
+    e.style.opacity='0';
+    const a=e.animate(
+      [{opacity:0,filter:'blur(2px)'},{opacity:1,filter:'blur(0px)'}],
+      {duration:1100,delay:120+Math.min(i*70,900)+Math.random()*180,
+       easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{a.cancel();e.style.opacity='';}).catch(()=>{});
+  });
+})();
+
+/* waypoints scrollspy + the reader's pacing feet */
+(function(){
+  const links=[...document.querySelectorAll('.rail a')];
+  if(!links.length) return;
+  const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const feet=document.getElementById('feet');
+  function spy(){
+    const y=scrollY+150; let cur=0;
+    secs.forEach((s,i)=>{ if(s&&s.offsetTop<=y) cur=i; });
+    links.forEach((a,i)=>{
+      a.classList.toggle('active',i===cur);
+      a.classList.toggle('walked',i<cur);
+    });
+    /* feet walk the dotted line: interpolate within the current leg */
+    const rows=links.map(a=>a.parentElement);
+    const cA=rows[cur].offsetTop+6;
+    const cB=(rows[cur+1]?rows[cur+1].offsetTop:cA+26)+6;
+    const sTop=secs[cur]?secs[cur].offsetTop:0;
+    const sBot=secs[cur+1]?secs[cur+1].offsetTop:document.body.scrollHeight;
+    const k=Math.max(0,Math.min(1,(y-sTop)/Math.max(1,sBot-sTop)));
+    feet.style.top=(cA+(cB-cA)*k)+'px';
+  }
+  spy();
+  addEventListener('scroll',spy,{passive:true});
+  addEventListener('resize',spy);
+})();
+</script> </body> </html>

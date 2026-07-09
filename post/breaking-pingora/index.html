@@ -1,21 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy | xclow3n</title><meta name="description" content="Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes."><link rel="icon" type="image/svg+xml" href="/avatar.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><script>
-/* dynamic theme — a different accent + paper tint on every visit (set before paint, no flash) */
-(function(){
-  var P=[
-    {a:'#ffc23a',a2:'#e0932a',rgb:'255,194,58',bg:'#0e0c07',bg2:'#14110a',panel:'#16130b'},
-    {a:'#ff6b4a',a2:'#c73e28',rgb:'255,107,74',bg:'#100a08',bg2:'#170e0b',panel:'#18100b'},
-    {a:'#ff6f9c',a2:'#c93e6b',rgb:'255,111,156',bg:'#0f0a0c',bg2:'#160e12',panel:'#170f13'},
-    {a:'#b58bff',a2:'#7d4fd8',rgb:'181,139,255',bg:'#0c0a10',bg2:'#120f19',panel:'#13101a'},
-    {a:'#5db4ff',a2:'#2f7fd8',rgb:'93,180,255',bg:'#080b10',bg2:'#0d1018',panel:'#0e111a'},
-    {a:'#35d6c0',a2:'#1f9488',rgb:'53,214,192',bg:'#070d0c',bg2:'#0c1413',panel:'#0d1514'},
-    {a:'#8ee06a',a2:'#4fa63a',rgb:'142,224,106',bg:'#080d08',bg2:'#0d140c',panel:'#0e150d'}
-  ];
-  var p=P[(Math.random()*P.length)|0], r=document.documentElement.style;
-  r.setProperty('--gold',p.a); r.setProperty('--gold2',p.a2); r.setProperty('--gold-rgb',p.rgb);
-  r.setProperty('--bg',p.bg); r.setProperty('--bg2',p.bg2); r.setProperty('--panel',p.panel);
-  window.__ACC=p.a;
-})();
-</script><link rel="stylesheet" href="/assets/_id_@_@astro.Dpp7fWN5.css"></head> <body> <div id="bar"></div> <canvas id="ff"></canvas> <header class="top"> <a class="brand" href="/">xclow3<span class="c">n</span></a> <div class="r"> <a class="ico" href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5zM3 9h4v12H3zM10 9h3.8v1.65h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.96V21h-4v-5.3c0-1.26-.03-2.9-1.8-2.9-1.8 0-2.08 1.38-2.08 2.8V21h-4z"></path></svg></a> <a class="ico" href="mailto:me@xclow3n.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg></a> <a class="ico" href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" aria-label="Hack The Box profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"></path><path d="M9 8.5v7M15 8.5v7M9 12h6"></path></svg></a> <a class="crumb" href="/"><span>←</span><span>map</span></a> </div> </header> <nav class="rail" id="rail" aria-label="Chapters"> <div class="cap">Waypoints</div> <ol> <li><a href="#top" class="active"><span class="n">◆</span><span>Overview</span></a></li> <li><a href="#introduction"><span class="n">01</span><span>Introduction</span></a></li><li><a href="#background-how-http-request-smuggling-works"><span class="n">02</span><span>Background: How HTTP Request Smuggling Works</span></a></li><li><a href="#bug-1-connection-upgrade-header-bypass-cve-2026-2833"><span class="n">03</span><span>Bug 1: Connection Upgrade Header Bypass (CVE-2026-2833)</span></a></li><li><a href="#bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835"><span class="n">04</span><span>Bug 2: Transfer-Encoding Comma-Separated Misparsing (CVE-2026-2835)</span></a></li><li><a href="#bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835"><span class="n">05</span><span>Bug 3: Transfer-Encoding Duplicate Header Handling (CVE-2026-2835)</span></a></li><li><a href="#bug-4-default-cache-key-excludes-host-header-cve-2026-2836"><span class="n">06</span><span>Bug 4: Default Cache Key Excludes Host Header (CVE-2026-2836)</span></a></li><li><a href="#the-http10-close-delimited-body-a-shared-exploitation-primitive"><span class="n">07</span><span>The HTTP/1.0 Close-Delimited Body: A Shared Exploitation Primitive</span></a></li><li><a href="#disclosure-experience"><span class="n">08</span><span>Disclosure Experience</span></a></li><li><a href="#advisories"><span class="n">09</span><span>Advisories</span></a></li><li><a href="#impact-summary"><span class="n">10</span><span>Impact Summary</span></a></li><li><a href="#fixed-versions"><span class="n">11</span><span>Fixed Versions</span></a></li><li><a href="#timeline"><span class="n">12</span><span>Timeline</span></a></li> </ol> </nav> <main class="wrap" id="top"> <div class="seal"><span class="dot"></span>research</div> <h1 class="title">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h1> <div class="rule"><span class="ln"></span><span class="fl">❧</span></div> <p class="lede">Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</p> <div class="tags"><span class="tag">HTTP Smuggling</span><span class="tag">Cache Poisoning</span><span class="tag">Cloudflare</span><span class="tag">Pingora</span><span class="tag">CVE</span></div> <div class="thresh"></div> <article class="doc"><h2 id="introduction">Introduction</h2>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy · Breaking Pingora · xclow3n</title><meta name="description" content="Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/_slug_.DwJ29Fq7.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <div class="band top" id="bandTop"><span></span></div> <div class="band bot" id="bandBot"><span></span></div> <header class="chrome"> <a class="brand" href="/">xclow3n<i>the grimoire map</i></a> <div class="r"> <a href="#top">to the top ↑</a> <a href="/">back to map</a> <a href="#" id="themeBtn">day edition</a> </div> </header> <nav class="rail" id="rail" aria-label="Waypoints"> <div class="cap">WAYPOINTS</div> <ol id="railList"> <li><a href="#top" class="active"><span class="n">✦</span><span>The threshold</span></a></li> <li><a href="#introduction"><span class="n">I</span><span>Introduction</span></a></li><li><a href="#background-how-http-request-smuggling-works"><span class="n">II</span><span>Background: How HTTP Request Smuggl…</span></a></li><li><a href="#bug-1-connection-upgrade-header-bypass-cve-2026-2833"><span class="n">III</span><span>Bug 1: Connection Upgrade Header By…</span></a></li><li><a href="#bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835"><span class="n">IV</span><span>Bug 2: Transfer-Encoding Comma-Sepa…</span></a></li><li><a href="#bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835"><span class="n">V</span><span>Bug 3: Transfer-Encoding Duplicate…</span></a></li><li><a href="#bug-4-default-cache-key-excludes-host-header-cve-2026-2836"><span class="n">VI</span><span>Bug 4: Default Cache Key Excludes H…</span></a></li><li><a href="#the-http10-close-delimited-body-a-shared-exploitation-primitive"><span class="n">VII</span><span>The HTTP/1.0 Close-Delimited Body:…</span></a></li><li><a href="#disclosure-experience"><span class="n">VIII</span><span>Disclosure Experience</span></a></li><li><a href="#advisories"><span class="n">IX</span><span>Advisories</span></a></li><li><a href="#impact-summary"><span class="n">X</span><span>Impact Summary</span></a></li><li><a href="#fixed-versions"><span class="n">XI</span><span>Fixed Versions</span></a></li><li><a href="#timeline"><span class="n">XII</span><span>Timeline</span></a></li> </ol> <div id="feet"> <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" style="color:var(--ink)"> <ellipse cx="4" cy="5" rx="2.4" ry="3.4" opacity=".9"></ellipse><ellipse cx="4" cy="10.4" rx="1.1" ry="1.2" opacity=".9"></ellipse> <ellipse cx="10" cy="7" rx="2.4" ry="3.4" opacity=".55"></ellipse><ellipse cx="10" cy="12.4" rx="1.1" ry="1.2" opacity=".55"></ellipse> </svg> </div> </nav> <main class="wrap" id="top"> <div class="seal">RESEARCH · MAR 2026 · <a href="/">BREAKING PINGORA</a></div> <h1 class="title">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h1> <div class="rule"><span class="ln"></span><span class="fl">✦</span><span class="ln"></span></div> <p class="lede">Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</p> <div class="tags"><span class="tag">HTTP Smuggling</span><span class="tag">Cache Poisoning</span><span class="tag">Cloudflare</span><span class="tag">Pingora</span><span class="tag">CVE</span></div> <div class="thresh"></div> <article class="doc"> <h2 id="introduction">Introduction</h2>
 <p>Between December 2025 and January 2026, I found and reported multiple vulnerabilities in <a href="https://github.com/cloudflare/pingora">Pingora</a>, Cloudflare’s open-source reverse proxy framework written in Rust. Pingora is positioned as a modern replacement for NGINX and powers parts of Cloudflare’s own infrastructure.</p>
 <p>I found three independent HTTP request smuggling bugs and one cache poisoning vulnerability, all exploitable under Pingora’s default configuration with no special setup required. I confirmed the Upgrade header bug (Bug 1) also affects downstream projects like <a href="https://github.com/vicanso/pingap">Pingap</a> and <a href="https://encore.dev/">Encore</a>. The TE and cache bugs likely do as well since they’re in shared Pingora code, but I didn’t verify those specifically.</p>
 <p>Cloudflare’s own CDN stack is protected by upstream architectural layers that prevent exploitation, but direct Pingora deployments on the internet are fully exposed.</p>
@@ -50,7 +33,7 @@
 <li>The backend receives those raw bytes and parses them as a new HTTP request</li>
 </ol>
 <p>The smuggled request bypasses all proxy-layer controls (ACLs, WAF rules, rate limiting, auth checks) because Pingora never sees it as an HTTP request.</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>┌──────────┐           ┌──────────┐           ┌──────────┐</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>┌──────────┐           ┌──────────┐           ┌──────────┐</span></span>
 <span class="line"><span>│  Client   │           │  Pingora  │           │  Backend  │</span></span>
 <span class="line"><span>└────┬─────┘           └────┬─────┘           └────┬─────┘</span></span>
 <span class="line"><span>     │                      │                      │</span></span>
@@ -64,13 +47,13 @@
 <span class="line"><span>     │                      │                      │  2. GET /admin</span></span>
 <span class="line"><span>     │                      │                      │     (smuggled!)</span></span></code></pre>
 <h3 id="minimal-poc">Minimal PoC</h3>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#F97583">GET</span><span style="color:#E1E4E8"> / </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.1</span></span>
-<span class="line"><span style="color:#85E89D">Host</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> target.com</span></span>
-<span class="line"><span style="color:#85E89D">Upgrade</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> anything</span></span>
-<span class="line"><span style="color:#85E89D">Content-Length</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> 0</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#4D9375">GET</span><span style="color:#DBD7CACC"> / </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.1</span></span>
+<span class="line"><span style="color:#4D9375">Host:</span><span style="color:#C98A7D"> target.com</span></span>
+<span class="line"><span style="color:#4D9375">Upgrade:</span><span style="color:#C98A7D"> anything</span></span>
+<span class="line"><span style="color:#4D9375">Content-Length:</span><span style="color:#C98A7D"> 0</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#F97583">GET</span><span style="color:#E1E4E8"> /admin </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.1</span></span>
-<span class="line"><span style="color:#85E89D">Host</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> target.com</span></span></code></pre>
+<span class="line"><span style="color:#4D9375">GET</span><span style="color:#DBD7CACC"> /admin </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.1</span></span>
+<span class="line"><span style="color:#4D9375">Host:</span><span style="color:#C98A7D"> target.com</span></span></code></pre>
 <p>That’s it. The <code>Upgrade</code> value doesn’t matter - <code>websocket</code>, <code>xxx</code>, literally anything triggers passthrough mode. The second request reaches the backend directly, appearing to come from the proxy’s trusted IP.</p>
 <h3 id="cross-user-impact">Cross-User Impact</h3>
 <p>This isn’t just self-inflicted. I proved cross-user exploitation using two separate VPS instances with different IPs:</p>
@@ -92,7 +75,7 @@
 <p>The actual root cause is in <a href="https://github.com/cloudflare/pingora/blob/ef017ceb01962063addbacdab2a4fd2700039db5/pingora-core/src/protocols/http/v1/server.rs#L797"><code>pingora-core/src/protocols/http/v1/server.rs#L797</code></a>. When the session encounters an <code>Upgrade</code> header, it calls <code>init_http10()</code>, which puts the session into “pass-through” mode. This is the same close-delimited body mode exploited in the TE bugs (Bugs 2 &#x26; 3). In this mode, Pingora reads until the connection closes and forwards everything as raw bytes, including any pipelined requests.</p>
 <p>Side note: <code>ServerSession::into_inner()</code> has a doc comment suggesting it’s involved in the upgrade process, but it’s not actually called as part of this code path. The pass-through behavior is triggered entirely through <code>init_http10()</code>.</p>
 <h3 id="what-the-patch-does">What the Patch Does</h3>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// Before: switch to passthrough immediately on Upgrade header</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// Before: switch to passthrough immediately on Upgrade header</span></span>
 <span class="line"><span>// After: switch to passthrough only after 101 response from backend</span></span></code></pre>
 <p>The patched behavior returns <code>400 Bad Request</code> for the smuggled content. HTTP/1.1 pipelining is technically valid per RFC, but Pingora closes the connection by default when it encounters pipelined requests, so the smuggled content is rejected either way.</p>
 <p>I threw a bunch of edge cases at the patch - couldn’t get past it.</p>
@@ -104,22 +87,22 @@
 <p><strong>Root cause:</strong> <code>is_chunked_encoding()</code> performs an exact string match on the Transfer-Encoding header value. It doesn’t parse comma-separated lists per RFC 9112.</p>
 <h3 id="the-vulnerability-1">The Vulnerability</h3>
 <p>RFC 9112 allows Transfer-Encoding to contain a comma-separated list of encodings:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity, chunked</span></span></code></pre>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity, chunked</span></span></code></pre>
 <p>The last encoding in the list determines the framing. If “chunked” is the final value, the body uses chunked framing.</p>
 <p>Pingora’s <code>is_chunked_encoding()</code> does an exact match against the string <code>"chunked"</code>. When it sees <code>"identity, chunked"</code>, the match fails. Pingora doesn’t recognize this as chunked encoding.</p>
 <p>Here’s what happens next. Whenever Transfer-Encoding is present, Pingora strips the Content-Length header. This is correct per RFC since TE always takes precedence over CL regardless of whether the TE value is recognized. But because Pingora also failed to recognize the TE as chunked, the request now has no recognized framing at all. If the request uses HTTP/1.0, Pingora falls back to close-delimited body mode - reads until the connection closes and forwards everything as the body.</p>
 <p>The result <em>looks</em> like a CL.TE desync from the outside, but the actual mechanism is different: Pingora isn’t using Content-Length for framing (it stripped it). It’s in close-delimited mode, forwarding everything. Meanwhile, lenient backends like Node.js (Express, Fastify, NestJS) correctly parse <code>identity, chunked</code> as chunked encoding. They see the chunked terminator (<code>0\r\n\r\n</code>) and treat everything after it as a new request. That’s where the desync happens.</p>
 <h3 id="poc">PoC</h3>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#F97583">GET</span><span style="color:#E1E4E8"> / </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.0</span></span>
-<span class="line"><span style="color:#85E89D">Host</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> target.com</span></span>
-<span class="line"><span style="color:#85E89D">Connection</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> keep-alive</span></span>
-<span class="line"><span style="color:#85E89D">Transfer-Encoding</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> identity, chunked</span></span>
-<span class="line"><span style="color:#85E89D">Content-Length</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> 29</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#4D9375">GET</span><span style="color:#DBD7CACC"> / </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.0</span></span>
+<span class="line"><span style="color:#4D9375">Host:</span><span style="color:#C98A7D"> target.com</span></span>
+<span class="line"><span style="color:#4D9375">Connection:</span><span style="color:#C98A7D"> keep-alive</span></span>
+<span class="line"><span style="color:#4D9375">Transfer-Encoding:</span><span style="color:#C98A7D"> identity, chunked</span></span>
+<span class="line"><span style="color:#4D9375">Content-Length:</span><span style="color:#C98A7D"> 29</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">0</span></span>
+<span class="line"><span style="color:#DBD7CACC">0</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#F97583">GET</span><span style="color:#E1E4E8"> /admin </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.1</span></span>
-<span class="line"><span style="color:#85E89D">X</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> </span></span></code></pre>
+<span class="line"><span style="color:#4D9375">GET</span><span style="color:#DBD7CACC"> /admin </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.1</span></span>
+<span class="line"><span style="color:#4D9375">X:</span><span style="color:#DBD7CACC"> </span></span></code></pre>
 <p><strong>Why HTTP/1.0?</strong> This is an attacker-controlled bypass technique, not an environmental requirement. The attacker chooses the protocol version in their request. With HTTP/1.0, Pingora triggers <code>init_http10()</code> which reads the body using close-delimited mode and forwards everything, including the smuggled request.</p>
 <p>With HTTP/1.1, Pingora doesn’t forward the body bytes the same way, so the desync doesn’t occur.</p>
 <p>The attacker’s request with <code>Transfer-Encoding: identity, chunked</code> - Pingora doesn’t recognize the chunked framing, forwards everything, and the backend (Express) returns the smuggled <code>/admin</code> response:</p>
@@ -142,24 +125,24 @@
 <h3 id="the-vulnerability-2">The Vulnerability</h3>
 <p>This is a separate bug from Bug 2, even though the exploitation path looks similar.</p>
 <p>RFC 9110 says that multiple headers with the same field name should be treated as if they were combined into a comma-separated list. So these two are semantically identical:</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity, chunked</span></span></code></pre>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity, chunked</span></span></code></pre>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Transfer-Encoding: identity</span></span>
 <span class="line"><span>Transfer-Encoding: chunked</span></span></code></pre>
 <p>Pingora uses <code>.get()</code> to retrieve the Transfer-Encoding header, which returns only the <strong>first</strong> occurrence. It checks <code>"identity"</code> against <code>"chunked"</code>, finds no match, and falls into the same no-framing > close-delimited > passthrough chain as Bug 2.</p>
 <p>Meanwhile, many backends use <code>.get_all()</code> or equivalent, see both headers, and recognize chunked framing from the second one.</p>
 <h3 id="poc-1">PoC</h3>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#F97583">POST</span><span style="color:#E1E4E8"> /legit </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.0</span></span>
-<span class="line"><span style="color:#85E89D">Host</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> target.com</span></span>
-<span class="line"><span style="color:#85E89D">Connection</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> keep-alive</span></span>
-<span class="line"><span style="color:#85E89D">Content-Length</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> 5</span></span>
-<span class="line"><span style="color:#85E89D">Transfer-Encoding</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> identity</span></span>
-<span class="line"><span style="color:#85E89D">Transfer-Encoding</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> chunked</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#4D9375">POST</span><span style="color:#DBD7CACC"> /legit </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.0</span></span>
+<span class="line"><span style="color:#4D9375">Host:</span><span style="color:#C98A7D"> target.com</span></span>
+<span class="line"><span style="color:#4D9375">Connection:</span><span style="color:#C98A7D"> keep-alive</span></span>
+<span class="line"><span style="color:#4D9375">Content-Length:</span><span style="color:#C98A7D"> 5</span></span>
+<span class="line"><span style="color:#4D9375">Transfer-Encoding:</span><span style="color:#C98A7D"> identity</span></span>
+<span class="line"><span style="color:#4D9375">Transfer-Encoding:</span><span style="color:#C98A7D"> chunked</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#E1E4E8">0</span></span>
+<span class="line"><span style="color:#DBD7CACC">0</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#F97583">GET</span><span style="color:#E1E4E8"> /admin </span><span style="color:#F97583">HTTP</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">1.1</span></span>
-<span class="line"><span style="color:#85E89D">Host</span><span style="color:#F97583">:</span><span style="color:#9ECBFF"> target.com</span></span>
-<span class="line"><span style="color:#85E89D">X</span><span style="color:#F97583">:</span><span style="color:#E1E4E8"> </span></span></code></pre>
+<span class="line"><span style="color:#4D9375">GET</span><span style="color:#DBD7CACC"> /admin </span><span style="color:#4D9375">HTTP</span><span style="color:#DBD7CACC">/</span><span style="color:#4C9A91">1.1</span></span>
+<span class="line"><span style="color:#4D9375">Host:</span><span style="color:#C98A7D"> target.com</span></span>
+<span class="line"><span style="color:#4D9375">X:</span><span style="color:#DBD7CACC"> </span></span></code></pre>
 <p>Same cross-user impact. Same exploitation chain. Different root cause, different code path, different fix.</p>
 <p>Duplicate <code>Transfer-Encoding</code> headers - Pingora only reads the first (<code>identity</code>), misses the second (<code>chunked</code>), and the backend grants access to <code>/admin</code>:</p>
 <p><img src="/images/pingora/bug3-te-duplicate-smuggling.png" alt="Burp Suite showing duplicate TE header smuggling with admin panel response"></p>
@@ -200,7 +183,7 @@
 <h3 id="the-vulnerability-3">The Vulnerability</h3>
 <p>This one is different from the smuggling bugs. It’s a cache poisoning issue, but equally dangerous in practice.</p>
 <p>When a developer enables caching in Pingora without implementing a custom <code>cache_key_callback</code>, the trait’s default implementation returns <code>CacheKey::default()</code>. This generates cache keys from the request path only. No Host. No scheme. No port.</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Request to evil.com/api/data    > Cache key: /api/data</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Request to evil.com/api/data    > Cache key: /api/data</span></span>
 <span class="line"><span>Request to victim.com/api/data  > Cache key: /api/data  (SAME KEY)</span></span></code></pre>
 <p>Every major proxy/cache (NGINX, Varnish, Apache, CDN providers) includes the Host header in cache keys by default. Pingora is the exception, and it’s not documented anywhere.</p>
 <h3 id="attack-scenario">Attack Scenario</h3>
@@ -221,12 +204,12 @@
 </ol>
 <p>This turns what would normally be a low-impact, self-inflicted Host header injection into stored XSS affecting all users.</p>
 <h3 id="poc-2">PoC</h3>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># Attacker poisons cache</span></span>
-<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -H</span><span style="color:#9ECBFF"> "Host: evil.com"</span><span style="color:#9ECBFF"> http://target:8080/api/data</span></span>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#758575DD"># Attacker poisons cache</span></span>
+<span class="line"><span style="color:#80A665">curl</span><span style="color:#C99076"> -H</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">Host: evil.com</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D"> http://target:8080/api/data</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#6A737D"># Victim gets poisoned response</span></span>
-<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -H</span><span style="color:#9ECBFF"> "Host: legitimate.com"</span><span style="color:#9ECBFF"> http://target:8080/api/data</span></span>
-<span class="line"><span style="color:#6A737D"># Response: X-Cache-Status: HIT, content from evil.com</span></span></code></pre>
+<span class="line"><span style="color:#758575DD"># Victim gets poisoned response</span></span>
+<span class="line"><span style="color:#80A665">curl</span><span style="color:#C99076"> -H</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">Host: legitimate.com</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D"> http://target:8080/api/data</span></span>
+<span class="line"><span style="color:#758575DD"># Response: X-Cache-Status: HIT, content from evil.com</span></span></code></pre>
 <h3 id="the-fix">The Fix</h3>
 <p>Cloudflare decided to <strong>remove the default cache key generation entirely</strong>, forcing developers to define their own <code>cache_key_callback</code>. Right call - rather than guessing what should be in the key, make the developer think about it explicitly.</p>
 <hr>
@@ -436,42 +419,74 @@
 
 
 <table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody><tr><td>Dec 2, 2025</td><td>Reported Upgrade header smuggling (#3449260)</td></tr><tr><td>Dec 5, 2025</td><td>Bug 1 triaged after live instance provided</td></tr><tr><td>Jan 13, 2026</td><td>Reported TE comma-separated smuggling (#3508851)</td></tr><tr><td>Jan 14, 2026</td><td>Bug 2 triaged</td></tr><tr><td>Jan 18, 2026</td><td>Identified TE duplicate header bug, reported within #3508851</td></tr><tr><td>Jan 18, 2026</td><td>Reported cache key poisoning (#3515245)</td></tr><tr><td>Jan 19, 2026</td><td>Bug 4 triaged</td></tr><tr><td>Jan 29, 2026</td><td>Received and verified patch for Bug 1</td></tr><tr><td>Feb 13, 2026</td><td>Received and verified patch for Bugs 2 &#x26; 3</td></tr><tr><td>Feb 25, 2026</td><td>Received and verified patch for Bug 4</td></tr><tr><td>Mar 3, 2026</td><td>Bounty awarded</td></tr><tr><td>Mar 5, 2026</td><td>CVEs, GHSAs, and RUSTSECs published</td></tr><tr><td>Mar 9, 2026</td><td>Coordinated blog publication</td></tr></tbody></table>
-<p><strong>Total:</strong> ~98 days from first report to public disclosure.</p></article> <nav class="nav"> <a class="prev" href="/post/7"> <div class="d">← newer · 01</div> <div class="t">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</div> </a> <a class="next" href="/post/5"> <div class="d">older · 03 →</div> <div class="t">HTML Sanitize Bypass Using MXSS</div> </a> </nav> <div class="foot"><a href="/">↑ return to the map</a></div> </main> <script>
+<p><strong>Total:</strong> ~98 days from first report to public disclosure.</p> </article> <div class="passages"> <div class="cap">SECRET PASSAGES · RELATED ENTRIES</div> <a href="/post/ai-vuln-research/"><b>AI Vuln Research</b> shared tag · http smuggling</a> </div> <div class="finis"> <span class="stamp"> <svg width="78" height="78" viewBox="0 0 78 78" fill="none"> <g style="color:var(--wax)"><circle cx="39" cy="39" r="34" stroke="currentColor" stroke-width="1.6" opacity=".85"></circle> <circle cx="39" cy="39" r="28" stroke="currentColor" stroke-width=".8" opacity=".6"></circle> <text x="39" y="36" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English SC';font-size:13px;letter-spacing:.2em">FINIS</text> <text x="39" y="52" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English',serif;font-style:italic;font-size:9px" opacity=".85">mischief managed</text></g> </svg> </span> </div> <nav class="nav"> <a class="prev" href="/post/ai-vuln-research/"> <div class="d">← NEWER CORRIDOR</div> <div class="t">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</div> <div class="w">ai vuln research · mar 2026</div> </a> <a class="next" href="/post/sanitize-html-bypass-mxss/"> <div class="d">OLDER CORRIDOR →</div> <div class="t">HTML Sanitize Bypass Using MXSS</div> <div class="w">sanitize-html bypass · nov 2024</div> </a> </nav> <div class="foot"><a href="/">MISCHIEF MANAGED — RETURN TO THE MAP</a></div> </main> <script>
+/* editions — shared with the map via localStorage; night is default */
 (function(){
-  var bar=document.getElementById('bar');
-  function up(){var d=document.documentElement,m=d.scrollHeight-window.innerHeight,r=m>0?scrollY/m:0;bar.style.transform='scaleX('+Math.max(0,Math.min(1,r))+')';}
-  up();addEventListener('scroll',up,{passive:true});addEventListener('resize',up);
+  let ed='night';
+  try{ ed=localStorage.getItem('archive-ed')||'night'; }catch(e){}
+  if(ed==='day') document.documentElement.classList.add('day');
+  const btn=document.getElementById('themeBtn');
+  const lbl=()=>{ btn.textContent=document.documentElement.classList.contains('day')?'night edition':'day edition'; };
+  lbl();
+  btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const veil=document.getElementById('veil');
+    veil.classList.add('on');
+    setTimeout(()=>{
+      const day=document.documentElement.classList.toggle('day');
+      try{ localStorage.setItem('archive-ed',day?'day':'night'); }catch(e){}
+      lbl();
+      setTimeout(()=>veil.classList.remove('on'),140);
+    },400);
+  });
+})();
 
-  var links=[].slice.call(document.querySelectorAll('.rail a'));
-  if(links.length){
-    var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
-    function spy(){var y=scrollY+140,cur=0;for(var i=0;i<secs.length;i++){if(secs[i]&&secs[i].offsetTop<=y)cur=i;}
-      links.forEach(function(a,i){a.classList.toggle('active',i===cur);});}
-    spy();addEventListener('scroll',spy,{passive:true});addEventListener('resize',spy);
-  }
+/* latin bands, same phrase as the map */
+(function(){
+  const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+  let s=''; while(s.length<400) s+=phrase;
+  document.querySelector('#bandTop span').textContent=s;
+  document.querySelector('#bandBot span').textContent=s;
+})();
 
-  /* multi-coloured fireflies drifting behind the codex */
-  var c=document.getElementById('ff');
-  if(c){
-    var ctx=c.getContext('2d'), W,H, DPR=Math.min(2,window.devicePixelRatio||1);
-    var acc=window.__ACC||'#ffc23a';
-    var COLORS=[acc,'#fff3c8','#8fd0ff','#ff9ecb','#9effc0','#c9a0ff'];
-    var ff=[], N=Math.max(20,Math.min(46,Math.round(innerWidth/34)));
-    function mk(){return {x:Math.random(),y:Math.random(),r:Math.random()*1.5+0.7,vx:(Math.random()-.5)*0.00013,vy:(Math.random()-.5)*0.00012,ph:Math.random()*6.28,sp:Math.random()*0.8+0.25,col:COLORS[(Math.random()*COLORS.length)|0]};}
-    function resize(){W=c.width=innerWidth*DPR;H=c.height=innerHeight*DPR;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';}
-    resize(); for(var i=0;i<N;i++) ff.push(mk());
-    var t=0;
-    function draw(){ t+=0.016; ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter';
-      for(var i=0;i<ff.length;i++){ var f=ff[i]; f.x+=f.vx; f.y+=f.vy;
-        if(f.x<-.03)f.x=1.03; if(f.x>1.03)f.x=-.03; if(f.y<-.03)f.y=1.03; if(f.y>1.03)f.y=-.03;
-        var a=Math.sin(t*f.sp+f.ph)*.5+.5, px=f.x*W, py=f.y*H, rad=f.r*DPR*7;
-        var g=ctx.createRadialGradient(px,py,0,px,py,rad); g.addColorStop(0,f.col); g.addColorStop(1,'transparent');
-        ctx.globalAlpha=0.05+a*0.30; ctx.fillStyle=g; ctx.beginPath(); ctx.arc(px,py,rad,0,6.2832); ctx.fill();
-        ctx.globalAlpha=0.22+a*0.48; ctx.fillStyle=f.col; ctx.beginPath(); ctx.arc(px,py,f.r*DPR,0,6.2832); ctx.fill();
-      }
-      ctx.globalAlpha=1; requestAnimationFrame(draw);
-    }
-    addEventListener('resize',resize); draw();
+/* ink-soak reveal: monotonic, quick, no blinking */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const units=[...document.querySelectorAll('.seal,.title,.rule,.lede,.tags,.thresh,.doc > *,.passages,.finis,.nav,.foot')];
+  units.forEach((e,i)=>{
+    e.style.opacity='0';
+    const a=e.animate(
+      [{opacity:0,filter:'blur(2px)'},{opacity:1,filter:'blur(0px)'}],
+      {duration:1100,delay:120+Math.min(i*70,900)+Math.random()*180,
+       easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{a.cancel();e.style.opacity='';}).catch(()=>{});
+  });
+})();
+
+/* waypoints scrollspy + the reader's pacing feet */
+(function(){
+  const links=[...document.querySelectorAll('.rail a')];
+  if(!links.length) return;
+  const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const feet=document.getElementById('feet');
+  function spy(){
+    const y=scrollY+150; let cur=0;
+    secs.forEach((s,i)=>{ if(s&&s.offsetTop<=y) cur=i; });
+    links.forEach((a,i)=>{
+      a.classList.toggle('active',i===cur);
+      a.classList.toggle('walked',i<cur);
+    });
+    /* feet walk the dotted line: interpolate within the current leg */
+    const rows=links.map(a=>a.parentElement);
+    const cA=rows[cur].offsetTop+6;
+    const cB=(rows[cur+1]?rows[cur+1].offsetTop:cA+26)+6;
+    const sTop=secs[cur]?secs[cur].offsetTop:0;
+    const sBot=secs[cur+1]?secs[cur+1].offsetTop:document.body.scrollHeight;
+    const k=Math.max(0,Math.min(1,(y-sTop)/Math.max(1,sBot-sTop)));
+    feet.style.top=(cA+(cB-cA)*k)+'px';
   }
+  spy();
+  addEventListener('scroll',spy,{passive:true});
+  addEventListener('resize',spy);
 })();
 </script> </body> </html>

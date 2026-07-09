@@ -1,106 +1,1060 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><title>xclow3n</title><meta name="description" content="Security research, CVEs & CTF writeups by xclow3n. Explore the realm."><link rel="icon" type="image/svg+xml" href="/avatar.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/index@_@astro.xP5DfCBI.css"></head> <body> <div class="viewport" id="vp"> <div class="world" id="world"><img class="bg" id="bg" src="/pixels/worldmap-8k.webp" alt="Illustrated world map of xclow3n's security writeups" draggable="false"></div> </div> <div class="vignette"></div> <div class="markers" id="markers"></div> <div class="callouts" id="callouts"></div> <div class="chrome"> <div class="tl"><div class="who">Rajat Raghav<span class="h">xclow3n</span></div><div class="role">Senior Content Engineer · Hack The Box</div></div> <div class="tr"> <button class="idx" id="idxBtn" type="button" aria-label="All writeups" title="All writeups"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg> </button> <a href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"> <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5zM3 9h4v12H3zM10 9h3.8v1.65h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.96V21h-4v-5.3c0-1.26-.03-2.9-1.8-2.9-1.8 0-2.08 1.38-2.08 2.8V21h-4z"></path></svg> </a> <a href="mailto:me@xclow3n.com" aria-label="Email" title="Email"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg> </a> <a href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" aria-label="Hack The Box profile" title="Hack The Box"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"></path><path d="M9 8.5v7M15 8.5v7M9 12h6"></path></svg> </a> </div> </div> <div class="zoom"> <button id="zin" title="zoom in" aria-label="zoom in">+</button> <button class="zl" id="zl" aria-hidden="true">100%</button> <button id="zout" title="zoom out" aria-label="zoom out">−</button> <button id="zfit" title="frame all" aria-label="frame whole map" style="border-radius:0 0 10px 10px;font-size:14px">⤢</button> </div> <svg class="compass" viewBox="0 0 100 100" aria-hidden="true"> <circle cx="50" cy="52" r="42" fill="rgba(18,14,8,.4)" stroke="#ffc23a" stroke-width="1.3" opacity=".6"></circle> <polygon points="50,16 56,52 50,70 44,52" fill="#ffc23a" opacity=".92"></polygon> <polygon points="50,88 44,52 50,34 56,52" fill="#c9a04a" opacity=".7"></polygon> <polygon points="14,52 50,46 62,52 50,58" fill="#e8dcc0" opacity=".72"></polygon> <polygon points="86,52 50,58 38,52 50,46" fill="#b8ae95" opacity=".5"></polygon> <circle cx="50" cy="52" r="3" fill="#ffc23a"></circle> <text x="50" y="12" text-anchor="middle" font-family="Cinzel,serif" font-size="13" font-weight="700" fill="#ffc23a">N</text> </svg> <div class="hint" id="hint">drag to explore · scroll to zoom</div> <div class="index" id="index"><div class="in"> <div class="hd"><h2>Writeups · index</h2><button class="x" id="idxClose">✕ close · back to map</button></div> <ol> <li> <span class="n">01</span> <div> <div class="mm"><span class="cat">Research</span> · March 2026</div> <a class="t" href="/post/7">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</a> <div class="e">Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</div> <div class="tg">#AI  #Vulnerability  #Research  #SAML  #HTTP  #Smuggling  #Security</div> </div> </li><li> <span class="n">02</span> <div> <div class="mm"><span class="cat">Research</span> · March 2026</div> <a class="t" href="/post/6">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</a> <div class="e">Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</div> <div class="tg">#HTTP  #Smuggling  #Cache  #Poisoning  #Cloudflare  #Pingora  #CVE</div> </div> </li><li> <span class="n">03</span> <div> <div class="mm"><span class="cat">Research</span> · November 2024</div> <a class="t" href="/post/5">HTML Sanitize Bypass Using MXSS</a> <div class="e">Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</div> <div class="tg">#Security  #Research  #MXSS  #XSS  #HTML  #Sanitization  #htmlparser2</div> </div> </li><li> <span class="n">04</span> <div> <div class="mm"><span class="cat">Research</span> · November 2024</div> <a class="t" href="/post/4">Email Parser Discrepancy in Nodemailer</a> <div class="e">Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</div> <div class="tg">#Security  #Research  #Nodemailer  #Email  #Parser  #RFC  #5322  #GHSA-mm7p-fcc7-pg87</div> </div> </li><li> <span class="n">05</span> <div> <div class="mm"><span class="cat ctf">⚑ CTF</span> · November 2024</div> <a class="t" href="/post/3">Intergalactic Bounty: HTB University CTF 2024</a> <div class="e">Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</div> <div class="tg">#CTF  #Web  #Nodemailer  #MXSS  #Prototype  #Pollution  #RCE</div> </div> </li><li> <span class="n">06</span> <div> <div class="mm"><span class="cat ctf">⚑ CTF</span> · November 2024</div> <a class="t" href="/post/2">EncoDecept: HTB University CTF 2024</a> <div class="e">Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</div> <div class="tg">#CTF  #Web  #Cache  #Deception  #XSS  #ORM  #Leak  #Rails</div> </div> </li> </ol> </div></div> <script type="application/json" id="mapdata">[{"num":"01","href":"/post/7","cat":"Research","ctf":false,"date":"March 2026","newest":true,"title":"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed","label":"AI vuln research","tags":"AI Vulnerability Research SAML HTTP Smuggling Security","teaser":"Four AI-assisted approaches to vuln research, ranked by what actually worked.","full":"Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't.","cp":"mk-ai","mx":0.47,"my":0.35},{"num":"02","href":"/post/6","cat":"Research","ctf":false,"date":"March 2026","newest":false,"title":"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy","label":"Pingora","tags":"HTTP Smuggling Cache Poisoning Cloudflare Pingora CVE","teaser":"Three smuggling bugs and one cache-poisoning flaw in Cloudflare's Pingora.","full":"Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.","cp":"mk-proxy","mx":0.75,"my":0.3},{"num":"03","href":"/post/5","cat":"Research","ctf":false,"date":"November 2024","newest":false,"title":"HTML Sanitize Bypass Using MXSS","label":"mXSS bypass","tags":"Security Research MXSS XSS HTML Sanitization htmlparser2","teaser":"A mutation XSS payload that slips past sanitize-html.","full":"Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.","cp":"mk-browser","mx":0.17,"my":0.46},{"num":"04","href":"/post/4","cat":"Research","ctf":false,"date":"November 2024","newest":false,"title":"Email Parser Discrepancy in Nodemailer","label":"Nodemailer","tags":"Security Research Nodemailer Email Parser RFC 5322 GHSA-mm7p-fcc7-pg87","teaser":"Two Nodemailer parsing bugs that route mail to the wrong person.","full":"Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.","cp":"mk-mail","mx":0.59,"my":0.68},{"num":"05","href":"/post/3","cat":"CTF","ctf":true,"date":"November 2024","newest":false,"title":"Intergalactic Bounty: HTB University CTF 2024","label":"Intergalactic","tags":"CTF Web Nodemailer MXSS Prototype Pollution RCE","teaser":"HTB University CTF 2024: three web bugs chained into RCE.","full":"Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.","cp":"mk-flag","mx":0.86,"my":0.24},{"num":"06","href":"/post/2","cat":"CTF","ctf":true,"date":"November 2024","newest":false,"title":"EncoDecept: HTB University CTF 2024","label":"EncoDecept","tags":"CTF Web Cache Deception XSS ORM Leak Rails","teaser":"HTB University CTF 2024: cache deception plus an encoding trick.","full":"Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.","cp":"mk-cipher","mx":0.48,"my":0.8}]</script> <script>
-(function(){
-  var POSTS = JSON.parse(document.getElementById('mapdata').textContent);
-  var W=1720,H=739;               // world (map) display size; new map is ~2.33:1
-  var vp=document.getElementById('vp'), world=document.getElementById('world');
-  var markersEl=document.getElementById('markers'), calloutsEl=document.getElementById('callouts');
-  var zl=document.getElementById('zl'), hint=document.getElementById('hint'), index=document.getElementById('index');
-  world.style.width=W+'px'; world.style.height=H+'px';
-  var scale=1, tx=0, ty=0, minS=1, maxS=4, fitS=1, coverS=1, cps=[], cos=[];
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Grimoire Map · xclow3n</title><meta name="description" content="The Grimoire Map — a hand-inked castle floor plan where every security-research writeup is a chamber. Bug bounty, CVEs, and CTF notes by xclow3n."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/index.D6jsrli1.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="paperveil"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <svg id="map" aria-label="Hand-drawn archive map"></svg> <svg id="fixed"></svg> <div class="plate" id="plate"> <div class="who">Rajat Raghav<span>xclow3n</span></div> <div class="role">Senior Content Engineer @ Hack The Box</div> </div> <div class="tools" id="tools"> <button id="idxBtn" type="button">Contents</button> <button id="wipeBtn" type="button">Mischief Managed</button> <button id="themeBtn" type="button">Day Edition</button> </div> <div class="zoom" id="zoom"> <button id="zin" aria-label="zoom in">+</button> <button class="zl" id="zl" aria-hidden="true">100%</button> <button id="zout" aria-label="zoom out">−</button> <button id="zfit" aria-label="frame whole map">⤢</button> </div> <div class="hint" id="hint">drag to wander the corridors · click a chamber to step inside</div> <div class="skipink" id="skipInk">reveal it at once ➳</div> <div class="card" id="card"><div class="in"> <div class="m"><span id="cCat"></span><span id="cDate"></span></div> <div class="ch" id="cCh"></div> <h3 id="cT"></h3><p id="cE"></p> <div class="go">step inside ⟶</div> </div></div> <div class="index" id="index"><div class="in"> <div class="hd"><h2>Contents of the Archive</h2><button id="idxClose">close ✕</button></div> <ol id="idxList"></ol> </div></div> <svg id="flood"></svg> <nav class="seo" aria-label="All entries"> <ul> <li><a href="/post/encodecept/">EncoDecept: HTB University CTF 2024</a> — Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</li><li><a href="/post/intergalactic-bounty/">Intergalactic Bounty: HTB University CTF 2024</a> — Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</li><li><a href="/post/nodemailer-parser-discrepancy/">Email Parser Discrepancy in Nodemailer</a> — Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</li><li><a href="/post/sanitize-html-bypass-mxss/">HTML Sanitize Bypass Using MXSS</a> — Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</li><li><a href="/post/breaking-pingora/">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</a> — Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</li><li><a href="/post/ai-vuln-research/">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</a> — Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</li> </ul> </nav> <script type="application/json" id="mapdata">[{"t":"EncoDecept: HTB University CTF 2024","short":"EncoDecept","label":"Web Cache Deception","date":"Nov 2024","cat":"My Challenges","ft":false,"kind":"maze","tags":["CTF","Web","Cache Deception","XSS","ORM Leak","Rails"],"e":"Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.","href":"/post/encodecept/"},{"t":"Intergalactic Bounty: HTB University CTF 2024","short":"Intergalactic Bounty","label":"MXSS → RCE","date":"Nov 2024","cat":"My Challenges","ft":false,"kind":"observatory","tags":["CTF","Web","Nodemailer","MXSS","Prototype Pollution","RCE"],"e":"Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.","href":"/post/intergalactic-bounty/"},{"t":"Email Parser Discrepancy in Nodemailer","short":"Nodemailer Parser","label":"Email Misrouting","date":"Nov 2024","cat":"Research","ft":false,"kind":"owlery","tags":["Security Research","Nodemailer","Email Parser","RFC 5322","GHSA-mm7p-fcc7-pg87"],"e":"Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.","href":"/post/nodemailer-parser-discrepancy/"},{"t":"HTML Sanitize Bypass Using MXSS","short":"sanitize-html Bypass","label":"Mutation XSS","date":"Nov 2024","cat":"Research","ft":false,"kind":"glasshouse","tags":["Security Research","MXSS","XSS","HTML Sanitization","htmlparser2"],"e":"Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.","href":"/post/sanitize-html-bypass-mxss/"},{"t":"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy","short":"Breaking Pingora","label":"Request Smuggling","date":"Mar 2026","cat":"Research","ft":true,"kind":"tower","tags":["HTTP Smuggling","Cache Poisoning","Cloudflare","Pingora","CVE"],"e":"Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.","href":"/post/breaking-pingora/"},{"t":"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed","short":"AI Vuln Research","label":"4 AI Approaches","date":"Mar 2026","cat":"Research","ft":true,"kind":"hallwide","tags":["AI","Vulnerability Research","SAML","HTTP Smuggling","Security"],"e":"Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't.","href":"/post/ai-vuln-research/","newest":true}]</script> <script>
+/* =====================================================================
+   THE ARCHIVE MAP — Marauder's-Map floor plan. The reveal: pieces of
+   the map MATERIALIZE softly at random places across the parchment —
+   a chamber here, a corridor there, a label flickering faintly as it
+   develops — until the whole plan is present. Mischief Managed
+   dissolves it the same way. The castle grows organically forever.
+   ===================================================================== */
+const NS='http://www.w3.org/2000/svg';
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function vpw(){return vp.clientWidth;} function vph(){return vp.clientHeight;}
-  function computeMin(){ fitS=Math.min(vpw()/W,vph()/H); coverS=Math.max(vpw()/W,vph()/H); minS=fitS; maxS=coverS*3; }
-  function clamp(){
-    scale=Math.max(minS,Math.min(maxS,scale));
-    var sw=W*scale, sh=H*scale;
-    tx = sw<=vpw() ? (vpw()-sw)/2 : Math.min(0,Math.max(vpw()-sw,tx));
-    ty = sh<=vph() ? (vph()-sh)/2 : Math.min(0,Math.max(vph()-sh,ty));
-  }
-  function apply(){
-    clamp();
-    world.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
-    zl.textContent=Math.round(scale/fitS*100)+'%';
-    var vw=vpw(), vh=vph();
-    for(var i=0;i<POSTS.length;i++){
-      var p=POSTS[i], sx=tx+p.mx*W*scale, sy=ty+p.my*H*scale;
-      cps[i].style.left=sx+'px'; cps[i].style.top=sy+'px';
-      cps[i]._sx=sx; cps[i]._sy=sy;
-      var on = sx>=-6 && sx<=vw+6 && sy>=-6 && sy<=vh+6;   // modal shows whenever its checkpoint is on-screen, any zoom
-      if(on){ placeCallout(i); cos[i].classList.add('show'); }
-      else cos[i].classList.remove('show');
+/* ---------- posts (oldest → newest) — injected from the content collection ---------- */
+const POSTS=JSON.parse(document.getElementById('mapdata').textContent);
+
+/* ---------- utils ---------- */
+function mulberry(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const el=(tag,attrs,parent)=>{ const e=document.createElementNS(NS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; };
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+function samplePts(pts,step=7){
+  const P=[pts[0],...pts,pts[pts.length-1]], out=[];
+  for(let i=0;i<pts.length-1;i++){
+    const p0=P[i],p1=P[i+1],p2=P[i+2],p3=P[i+3];
+    const seg=Math.hypot(p2[0]-p1[0],p2[1]-p1[1]), n=Math.max(2,Math.round(seg/step));
+    for(let j=0;j<n;j++){ const t=j/n, t2=t*t, t3=t2*t;
+      out.push([
+        .5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+        .5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)]);
     }
   }
-  function placeCallout(i){
-    var cp=cps[i], co=cos[i], sx=cp._sx, sy=cp._sy, cw=266;
-    if(!co._h) co._h=co.offsetHeight||140;
-    var left=Math.max(10,Math.min(sx-cw/2, vpw()-cw-10));
-    var top = sy-40-co._h>8 ? sy-40-co._h : sy+44;     // above marker, else below
-    co.style.left=left+'px'; co.style.top=top+'px';
+  out.push(pts[pts.length-1].slice());
+  return out;
+}
+function jitterPolyline(pts, seed, amp=1.1, step=7){
+  const rnd=mulberry(seed); const ph1=rnd()*7, ph2=rnd()*7, f1=.08+rnd()*.05, f2=.21+rnd()*.09;
+  const out=samplePts(pts,step);
+  let d='';
+  for(let i=0;i<out.length;i++){
+    const p=out[i];
+    const q=out[Math.min(out.length-1,i+1)], b=out[Math.max(0,i-1)];
+    let nx=-(q[1]-b[1]), ny=q[0]-b[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
+    const w=Math.sin(i*f1+ph1)*.6+Math.sin(i*f2+ph2)*.4;
+    d+=(i?'L':'M')+(p[0]+nx*w*amp).toFixed(1)+' '+(p[1]+ny*w*amp).toFixed(1);
   }
-
-  function bringFront(i){ for(var k=0;k<cos.length;k++) cos[k].style.zIndex = (k===i?'30':''); }
-  function open(p){ location.href=p.href; }
-
-  POSTS.forEach(function(p,i){
-    var cp=document.createElement('button'); cp.className='cp'+(p.newest?' newest':''); cp.setAttribute('aria-label',p.title);
-    cp.innerHTML='<span class="mk"><img src="/pixels/'+p.cp+'.svg" alt=""/></span><span class="lbl">'+p.label+(p.ctf?'<span class="ct">⚑</span>':'')+'</span>';
-    markersEl.appendChild(cp); cps.push(cp);
-    var co=document.createElement('div'); co.className='callout';
-    co.innerHTML='<div class="m"><span class="cat'+(p.ctf?' ctf':'')+'">'+(p.ctf?'⚑ CTF':p.cat)+'</span><span>'+p.date+'</span></div><h3>'+p.title+'</h3><p>'+p.teaser+'</p><button class="more" type="button">show full summary ▾</button><div class="cf"><a class="go" href="'+p.href+'">read the writeup →</a></div>';
-    calloutsEl.appendChild(co); cos.push(co);
-    cp.addEventListener('click',function(){ open(p); });
-    cp.addEventListener('pointerenter',function(){ bringFront(i); });
-    co.addEventListener('pointerenter',function(){ bringFront(i); });
-    co.querySelector('.more').addEventListener('click',function(e){ e.stopPropagation(); var pp=co.querySelector('p'); var ex=co.classList.toggle('exp'); pp.textContent=ex?p.full:p.teaser; this.textContent=ex?'show less ▴':'show full summary ▾'; co._h=0; placeCallout(i); });
-  });
-
-  function zoomAt(cx,cy,factor){
-    var ns=Math.max(minS,Math.min(maxS,scale*factor));
-    var wx=(cx-tx)/scale, wy=(cy-ty)/scale;
-    scale=ns; tx=cx-wx*scale; ty=cy-wy*scale; apply();
+  return d;
+}
+function inkLine(a,b,seed,amp=.9){
+  const n=Math.max(2,Math.round(Math.hypot(b[0]-a[0],b[1]-a[1])/8));
+  const rnd=mulberry(seed); const ph=rnd()*7, f=.5+rnd()*.4;
+  let d='';
+  for(let i=0;i<=n;i++){ const t=i/n;
+    const x=lerp(a[0],b[0],t), y=lerp(a[1],b[1],t);
+    let nx=-(b[1]-a[1]), ny=b[0]-a[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
+    const w=Math.sin(i*f+ph)*(i===0||i===n?0:1);
+    d+=(i?'L':'M')+(x+nx*w*amp).toFixed(1)+' '+(y+ny*w*amp).toFixed(1); }
+  return d;
+}
+function wobbleArc(cx,cy,r,a0,a1,seed,amp=.9){
+  const pts=[], n=Math.max(8,Math.round(Math.abs(a1-a0)*r/7));
+  for(let i=0;i<=n;i++){ const a=lerp(a0,a1,i/n); pts.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); }
+  return jitterPolyline(pts,seed,amp,5);
+}
+function wallPath(verts, doorEdge, doorT, gap, seed, amp=.8){
+  const n=verts.length, pts=[];
+  const A=verts[doorEdge], B=verts[(doorEdge+1)%n];
+  const eL=Math.hypot(B[0]-A[0],B[1]-A[1]);
+  const t0=Math.min(.94,doorT+gap/eL/2), t1=Math.max(.06,doorT-gap/eL/2);
+  pts.push([lerp(A[0],B[0],t0),lerp(A[1],B[1],t0)]);
+  for(let k=1;k<=n;k++){
+    const i=(doorEdge+k)%n;
+    pts.push(verts[i].slice());
+    if(i===doorEdge) break;
   }
+  pts.push([lerp(A[0],B[0],t1),lerp(A[1],B[1],t1)]);
+  let d='';
+  for(let i=0;i<pts.length-1;i++){
+    const seg=inkLine(pts[i],pts[i+1],seed+i*17,amp);
+    d+= i? seg.replace(/^M/,'L') : seg;
+  }
+  return d;
+}
+const rectVerts=(cx,cy,w,h)=>[[cx-w/2,cy-h/2],[cx+w/2,cy-h/2],[cx+w/2,cy+h/2],[cx-w/2,cy+h/2]];
+function ngonVerts(cx,cy,r,n,rot=0){ const v=[]; for(let i=0;i<n;i++){ const a=rot+i/n*Math.PI*2; v.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]); } return v; }
+function insetVerts(verts,cx,cy,by){ return verts.map(([x,y])=>{ const dx=x-cx,dy=y-cy,L=Math.hypot(dx,dy)||1; return [x-dx/L*by,y-dy/L*by]; }); }
+const XLINK='http://www.w3.org/1999/xlink';
 
-  var pointers={}, dragging=false, moved=false, last=null, pinchDist=0;
-  vp.addEventListener('pointerdown',function(e){
-    pointers[e.pointerId]={x:e.clientX,y:e.clientY};
-    if(Object.keys(pointers).length===1){ dragging=true; moved=false; last={x:e.clientX,y:e.clientY}; vp.classList.add('drag'); vp.setPointerCapture(e.pointerId); endIntro(); }
-  });
-  vp.addEventListener('pointermove',function(e){
-    if(!(e.pointerId in pointers))return;
-    pointers[e.pointerId]={x:e.clientX,y:e.clientY};
-    var ids=Object.keys(pointers);
-    if(ids.length>=2){
-      var a=pointers[ids[0]],b=pointers[ids[1]],d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(pinchDist){ zoomAt((a.x+b.x)/2,(a.y+b.y)/2, d/pinchDist); }
-      pinchDist=d; moved=true; return;
+/* pseudo-latin filler, prop-style */
+const LATIN_WORDS=('omnibus archivantibus bonum audere est archivare semper vigila noctis itinera scriptum manet littera volat verba currunt quod scripsi scripsi lector cave hic sunt notae').split(' ');
+function latin(chars,seed=7){
+  const r=mulberry(seed*13+5); let s='';
+  while(s.length<chars) s+=LATIN_WORDS[(r()*LATIN_WORDS.length)|0]+' ';
+  return s.toUpperCase();
+}
+/* tiny script that runs along a path — the prop's walls are made of this */
+let tpN=0;
+function textOnPath(parent,d,txt,{size=6.2,fill='#3d2514',opacity=.6,ls='.06em',italic=false,startOffset=0}={}){
+  const id='tp'+(tpN++);
+  el('path',{id,d,fill:'none',stroke:'none'},parent);
+  const t=el('text',{fill,opacity,
+    style:(italic?'font-family:var(--text);font-style:italic;':'font-family:var(--sc);')+
+      `font-size:${size}px;letter-spacing:${ls}`},parent);
+  const tp=el('textPath',{href:'#'+id,startOffset},t);
+  tp.setAttributeNS(XLINK,'href','#'+id);
+  tp.textContent=txt;
+  return t;
+}
+/* tiny four-ray star ✶ */
+function starGlyph(parent,x,y,s=3.4,op=.8){
+  const g=el('g',{stroke:'#3d2514','stroke-width':.9,'stroke-linecap':'round',opacity:op,fill:'none'},parent);
+  el('path',{d:`M${x-s} ${y}L${x+s} ${y}M${x} ${y-s}L${x} ${y+s}M${x-s*.6} ${y-s*.6}L${x+s*.6} ${y+s*.6}M${x-s*.6} ${y+s*.6}L${x+s*.6} ${y-s*.6}`},g);
+  return g;
+}
+/* fox marks & ink spatter on the paper itself (fixed, not part of the reveal) */
+function drawStains(){
+  const g=el('g',{fill:'#4a2c12',stroke:'none'},fixedSvg);
+  fixedSvg.insertBefore(g,frameWrap);
+  const r=mulberry(90210);
+  for(let k=0;k<46;k++){
+    const x=20+r()*(innerWidth-40), y=20+r()*(innerHeight-40);
+    const big=r()<.16;
+    const rad=big? 4+r()*8 : .7+r()*2.6;
+    const blob=el('path',{d:wobbleArc(x,y,rad,0,Math.PI*2,(r()*1e6)|0,rad*.35)+'Z',
+      opacity:.04+r()*(big?.09:.13)},g);
+    if(big&&r()<.7){ // satellite droplets
+      for(let j=0;j<3;j++){
+        el('circle',{cx:x+(r()-.5)*rad*6,cy:y+(r()-.5)*rad*6,r:.6+r()*1.2,opacity:.05+r()*.1},g);
+      }
     }
-    if(dragging&&last){ var dx=e.clientX-last.x,dy=e.clientY-last.y; if(Math.abs(dx)+Math.abs(dy)>3)moved=true; tx+=dx; ty+=dy; last={x:e.clientX,y:e.clientY}; apply(); }
+  }
+}
+
+/* ---------- svg scaffolding ---------- */
+const svg=document.getElementById('map');
+const fixedSvg=document.getElementById('fixed');
+const world=el('g',{id:'world'},svg);
+const worldWrap=el('g',{id:'worldWrap'},world);      // masked during the reveal
+const gCorr=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.6,'stroke-linecap':'round'},worldWrap);
+const gPass=el('g',{fill:'none','stroke-linecap':'round'},worldWrap);
+const gRooms=el('g',{},worldWrap);
+const gDecor=el('g',{fill:'none',stroke:'#5a4326','stroke-width':1,'stroke-linecap':'round',opacity:.75},worldWrap);
+const gPrints=el('g',{},world);
+const frameWrap=el('g',{id:'frameWrap'},fixedSvg);
+
+/* ---------- materialize registry ----------
+   Every visual piece of the map registers as a "unit". The reveal gives
+   each unit a random moment to flicker into being; Mischief Managed
+   dissolves them the same way; an idle shimmer keeps the map alive. */
+const UNITS=[];
+function reg(...els){
+  const u={els:els.filter(Boolean)};
+  if(!reduced) u.els.forEach(e=>{ e.style.opacity='0'; });
+  UNITS.push(u);
+  return u;
+}
+function materialize(u,delay,dur){
+  /* after a skip, never spawn delayed soaks — they'd blink pieces
+     that are already visible back to zero and in again */
+  if(reduced||SKIP){ u.els.forEach(e=>{ e.style.opacity=''; e.style.filter=''; }); return; }
+  /* real ink never blinks: it soaks in once — faint and soft-edged at
+     first, then darkening and sharpening as the paper drinks it. */
+  u.els.forEach((e,k)=>{
+    const a=e.animate(
+      [{opacity:0,  filter:'blur(2.6px)'},
+       {opacity:.38,filter:'blur(1.6px)',offset:.45},
+       {opacity:.82,filter:'blur(.5px)', offset:.8},
+       {opacity:1,  filter:'blur(0px)'}],
+      {duration:dur,delay:delay+k*160,easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
+    a.finished.then(()=>{ a.cancel(); e.style.opacity=''; e.style.filter=''; }).catch(()=>{});
+    pending.push({a});
   });
-  function up(e){ delete pointers[e.pointerId]; if(Object.keys(pointers).length<2)pinchDist=0; if(Object.keys(pointers).length===0){ dragging=false; vp.classList.remove('drag'); } }
-  vp.addEventListener('pointerup',up); vp.addEventListener('pointercancel',up);
-  vp.addEventListener('wheel',function(e){ e.preventDefault(); endIntro();
-    var d=e.deltaY; if(e.deltaMode===1)d*=16; else if(e.deltaMode===2)d*=vph();
-    d=Math.max(-60,Math.min(60,d));
-    zoomAt(e.clientX,e.clientY, Math.exp(-d*0.0032)); },{passive:false});
-  vp.addEventListener('dblclick',function(e){ endIntro(); zoomAt(e.clientX,e.clientY,1.7); });
-  document.getElementById('zin').addEventListener('click',function(){ endIntro(); zoomAt(vpw()/2,vph()/2,1.35); });
-  document.getElementById('zout').addEventListener('click',function(){ endIntro(); zoomAt(vpw()/2,vph()/2,1/1.35); });
-  document.getElementById('zfit').addEventListener('click',function(){ endIntro(); scale=minS; tx=(vpw()-W*scale)/2; ty=(vph()-H*scale)/2; apply(); });
+}
 
-  function initView(){ computeMin(); scale=coverS*1.28; tx=vpw()/2 - .48*W*scale; ty=vph()/2 - .44*H*scale; apply(); }
-  var interacted=false;
-  function endIntro(){ if(interacted)return; interacted=true; hint.classList.add('faded'); }
+/* ---------- animation machinery ---------- */
+let SKIP=false;
+const pending=[];
+function strokeDraw(path,{dur=600,delay=0,ease='cubic-bezier(.5,.05,.6,1)'}={}){
+  const len=path.getTotalLength?path.getTotalLength():0;
+  if(!len||reduced||SKIP){ return {finished:Promise.resolve()}; }
+  path.style.strokeDasharray=len+' '+len;
+  path.style.strokeDashoffset=len;
+  const a=path.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:dur,delay,easing:ease,fill:'forwards'});
+  a.finished.then(()=>{ path.style.strokeDasharray=''; path.style.strokeDashoffset=''; }).catch(()=>{});
+  pending.push({a});
+  return a;
+}
+function fadeIn(node,{dur=500,delay=0}={}){
+  if(reduced||SKIP){ node.style.opacity=''; return {finished:Promise.resolve()}; }
+  node.style.opacity=0;
+  const a=node.animate([{opacity:0},{opacity:1}],{duration:dur,delay,easing:'ease',fill:'forwards'});
+  a.finished.then(()=>node.style.opacity='').catch(()=>{});
+  pending.push({a});
+  return a;
+}
+function skipAll(){ SKIP=true; pending.forEach(({a})=>{ try{a.finish();}catch(e){} }); }
+const TL=[];
+function schedule(fn,at){ const it={fn,done:false}; it.id=setTimeout(()=>{ if(!it.done){it.done=true;fn();} },at); TL.push(it); return it; }
+function fastForward(){
+  for(let g=0;g<300;g++){ const it=TL.find(x=>!x.done); if(!it) break;
+    clearTimeout(it.id); it.done=true; it.fn(); }
+}
+let maskN=0;
+function dashedDraw(d,{parent=gCorr,width=1.5,color='#2b1a0c',dashPat='.6 7'}={}){
+  return el('path',{d,fill:'none',stroke:color,'stroke-width':width,'stroke-linecap':'round',
+    'stroke-dasharray':dashPat},parent);
+}
 
-  window.addEventListener('resize',function(){ computeMin(); apply(); });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){ index.classList.remove('show'); }
-    else if(e.key==='+'||e.key==='='){ zoomAt(vpw()/2,vph()/2,1.35); }
-    else if(e.key==='-'){ zoomAt(vpw()/2,vph()/2,1/1.35); }
+/* ---------- bespoke illustrations ---------- */
+const KIND_IMG={hallwide:'bld-hall',tower:'bld-tower',owlery:'bld-gatehouse',glasshouse:'bld-glasshouse',
+  gallery:'bld-lighthouse',observatory:'bld-observatory',entrance:'bld-keep',
+  library:'bld-library',clocktower:'bld-clocktower',well:'bld-well',
+  windmill:'bld-windmill',bridge:'bld-bridge',maze:'bld-maze'};
+function placeArt(parent,kind,cx,cy,w,h,{onerror}={}){
+  const href='/assets/'+(KIND_IMG[kind]||'bld-tower')+'.png';
+  /* the image keeps its own ink-treatment filter; the reveal animates
+     this wrapper instead, so the two never fight */
+  const wrap=el('g',{},parent);
+  const img=el('image',{x:cx-w/2,y:cy-h/2,width:w,height:h,href,
+    style:'filter:contrast(1.18) brightness(.94)'},wrap);
+  img.setAttributeNS('http://www.w3.org/1999/xlink','href',href);
+  if(onerror) img.addEventListener('error',()=>{ img.remove(); onerror(); },{once:true});
+  return wrap;
+}
+
+/* ---------- room shapes ---------- */
+function roomShape(kind,i,ft){
+  const big=ft?1.12:1;
+  switch(kind){
+    case 'hallwide':   return {type:'poly',w:238*big,h:150*big};
+    case 'gallery':    return {type:'poly',w:252*big,h:124*big};
+    case 'glasshouse': return {type:'poly',w:182*big,h:142*big};
+    case 'library':    return {type:'poly',w:236*big,h:132*big};
+    case 'bridge':     return {type:'poly',w:224*big,h:112*big};
+    case 'tower':      return {type:'circle',rad:88*big};
+    case 'owlery':     return {type:'circle',rad:74*big};
+    case 'clocktower': return {type:'circle',rad:80*big};
+    case 'well':       return {type:'circle',rad:60*big};
+    case 'windmill':   return {type:'circle',rad:78*big};
+    case 'observatory':return {type:'oct',rad:100*big};
+    case 'maze':       return {type:'oct',rad:96*big};
+    case 'entrance':   return {type:'poly',w:250,h:172};
+    default:           return {type:'poly',w:200*big,h:140*big};
+  }
+}
+function shapeVerts(shape,c){
+  if(shape.type==='poly') return rectVerts(c[0],c[1],shape.w,shape.h);
+  if(shape.type==='oct')  return ngonVerts(c[0],c[1],shape.rad,8,Math.PI/8);
+  return null;
+}
+function shapeBBox(shape,c){
+  if(shape.type==='circle') return [c[0]-shape.rad,c[1]-shape.rad,c[0]+shape.rad,c[1]+shape.rad];
+  const v=shapeVerts(shape,c), xs=v.map(p=>p[0]), ys=v.map(p=>p[1]);
+  return [Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
+}
+function furniture(g,kind,c,seed){
+  const r=mulberry(seed);
+  el('path',{d:inkLine([c[0]-30,c[1]-10],[c[0]+30,c[1]-10],r()*1e4,.5)},g);
+  el('path',{d:inkLine([c[0]-24,c[1]+12],[c[0]+24,c[1]+12],r()*1e4,.5)},g);
+  el('path',{d:wobbleArc(c[0],c[1],16,0,Math.PI*2,r()*1e4,.4)},g);
+}
+
+/* ======================================================================
+   ORGANIC PLANNER — sprawls in every direction, composition-aware
+   ====================================================================== */
+const PLAN=[];
+const PLACED=[];
+const RESERVED={};   // index → forced centre (the newest entry's berth of honour)
+const PLANORDER=[];  // plans in the order they were placed (for the growth pool)
+function inflBB(b){ return [b[0]-58,b[1]-58,b[2]+58,b[3]+92]; }
+/* the centre of the map is the title composition: banderole, names,
+   castle vignette and the dark diamond plaque — like the prop */
+const ENTRANCE={center:[0,-30], shape:{type:'poly',w:390,h:570}};
+PLACED.push(inflBB(shapeBBox(ENTRANCE.shape,ENTRANCE.center)));
+function bbOverlap(a,b){ return a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3]; }
+function planRoom(i,kind,ft){
+  const shape=roomShape(kind,i,ft);
+  const r=mulberry(41000+i*131);
+  const myBB=c=>inflBB(shapeBBox(shape,c));
+  let center=null, parent=null;
+  if(RESERVED[i]){
+    center=RESERVED[i]; parent=ENTRANCE;
+  } else {
+  let G=[1e9,1e9,-1e9,-1e9];
+  PLACED.forEach(b=>{ G=[Math.min(G[0],b[0]),Math.min(G[1],b[1]),Math.max(G[2],b[2]),Math.max(G[3],b[3])]; });
+  let bestScore=1e18;
+  for(let a=0;a<44;a++){
+    // grow off the centrepiece OR any recent chamber (incl. the newest, which
+    // is planned first) — so the castle sprawls to the right as well as left
+    const pool=PLANORDER.length? [ENTRANCE,...PLANORDER.slice(-6)] : [ENTRANCE];
+    const par=pool[(r()*pool.length)|0];
+    const ang=((r()*8)|0)*Math.PI/4;
+    const dist=330+r()*130;
+    const c=[Math.round(par.center[0]+Math.cos(ang)*dist), Math.round(par.center[1]+Math.sin(ang)*dist*.9)];
+    const bb=myBB(c);
+    if(PLACED.some(o=>bbOverlap(o,bb))) continue;
+    const nb=[Math.min(G[0],bb[0]),Math.min(G[1],bb[1]),Math.max(G[2],bb[2]),Math.max(G[3],bb[3])];
+    const w=nb[2]-nb[0], h=nb[3]-nb[1];
+    // keep the whole map screen-shaped AND balanced around the title castle
+    const score=Math.log(w*h)
+      +1.15*Math.abs(Math.log((w/h)/1.75))
+      +(Math.abs(nb[0]+nb[2])+1.5*Math.abs(nb[1]+nb[3]))/1350
+      +r()*.22;
+    if(score<bestScore){ bestScore=score; center=c; parent=par; }
+  }
+  if(!center){
+    outer:
+    for(let R=520;R<520+4000;R+=170){
+      for(let k=0;k<20;k++){
+        const ang=(k/20)*Math.PI*2 + i*.37;
+        const c=[Math.round(Math.cos(ang)*R),Math.round(Math.sin(ang)*R*.9)];
+        if(!PLACED.some(o=>bbOverlap(o,myBB(c)))){ center=c;
+          parent=PLANORDER.length?PLANORDER[PLANORDER.length-1]:ENTRANCE; break outer; }
+      }
+    }
+  }
+  }
+  const [px,py]=parent.center, [cx,cy]=center;
+  const dx=cx-px, dy=cy-py;
+  let mid = Math.abs(dx)>=Math.abs(dy)? [cx,py] : [px,cy];
+  let legs=[[ [px,py], mid ],[ mid, [cx,cy] ]].filter(L=>Math.hypot(L[1][0]-L[0][0],L[1][1]-L[0][1])>4);
+  const pb=shapeBBox(parent.shape,parent.center);
+  const cb=shapeBBox(shape,center);
+  const clip=(pt,box,towards)=>{
+    const [x,y]=pt, [tx,ty]=towards;
+    if(Math.abs(tx-x)>Math.abs(ty-y)) return [tx>x?box[2]:box[0], y];
+    return [x, ty>y?box[3]:box[1]];
+  };
+  legs[0][0]=clip(legs[0][0],pb,legs[0][1]);
+  const last=legs[legs.length-1];
+  last[1]=clip(last[1],cb,last[0]);
+  const arr=last[1];
+  let door;
+  if(shape.type==='circle'){
+    door={ang:Math.atan2(arr[1]-cy,arr[0]-cx)};
+  } else {
+    const verts=shapeVerts(shape,center);
+    let edge=0,best=1e9;
+    verts.forEach((v,k)=>{ const w2=verts[(k+1)%verts.length];
+      const mxe=(v[0]+w2[0])/2, mye=(v[1]+w2[1])/2;
+      const d2=Math.hypot(mxe-arr[0],mye-arr[1]); if(d2<best){best=d2;edge=k;} });
+    const A=verts[edge],B=verts[(edge+1)%verts.length];
+    const eL2=Math.hypot(B[0]-A[0],B[1]-A[1]);
+    let t=((arr[0]-A[0])*(B[0]-A[0])+(arr[1]-A[1])*(B[1]-A[1]))/(eL2*eL2);
+    t=Math.max(.16,Math.min(.84,t));
+    door={edge,t};
+  }
+  const plan={center,shape,legs,door,kind,parent};
+  PLAN[i]=plan;              // keep PLAN[i] aligned to POSTS[i] despite placement order
+  PLANORDER.push(plan);
+  PLACED.push(myBB(center));
+  return plan;
+}
+/* the newest entry gets the berth of honour, right beside “The Grimoire
+   Map”. Plan it FIRST so it claims the spot, then let the older entries
+   sprawl around it (they may branch off it, filling the right too). */
+const NEWEST_I=POSTS.length-1;
+if(NEWEST_I>=0){
+  const shp=roomShape(POSTS[NEWEST_I].kind,NEWEST_I,POSTS[NEWEST_I].ft);
+  const halfRoom=(shp.type==='circle'||shp.type==='oct')?shp.rad:shp.w/2;
+  RESERVED[NEWEST_I]=[Math.round(340+halfRoom),-30];   // just right of the centrepiece
+}
+const order=[...POSTS.keys()];
+if(NEWEST_I>=0){ order.splice(order.indexOf(NEWEST_I),1); order.unshift(NEWEST_I); }
+order.forEach(i=>planRoom(i,POSTS[i].kind,POSTS[i].ft));
+
+/* ======================================================================
+   CONTENT CONSTRUCTION (instant — the reveal is the bloom mask)
+   ====================================================================== */
+const nodes=[];
+const ROADS=[];
+function inkLabel(group,x,y,main,sub){
+  const halo='paint-order:stroke;stroke:#e9d8ac;stroke-width:4px;stroke-linejoin:round;';
+  // a soft parchment plate behind the label so it reads over the busy map
+  // (its fill is an INK_PAIR, so the edition swap darkens it at night)
+  const plate=el('rect',{rx:4,fill:'#efe3c4','fill-opacity':.72,stroke:'#efe3c4','stroke-width':0},group);
+  const t1=el('text',{x,y:y+2,'text-anchor':'middle',fill:'#241505',
+    style:halo+'font-family:var(--sc);font-size:24.5px;letter-spacing:.03em'},group);
+  t1.textContent=main;
+  // darker ink (maps to a brighter bone at night) + larger size: the map fits
+  // to screen, so on-screen these render smaller than their px size
+  const t2=el('text',{x,y:y+23,'text-anchor':'middle',fill:'#3d2514',
+    style:halo+'font-family:var(--text);font-style:italic;font-size:16px;letter-spacing:.015em'},group);
+  t2.textContent=sub;
+  // size the plate to the two lines (fonts are loaded — start() waits on them)
+  try{
+    const b1=t1.getBBox(), b2=t2.getBBox();
+    const left=Math.min(b1.x,b2.x), right=Math.max(b1.x+b1.width,b2.x+b2.width);
+    const top=Math.min(b1.y,b2.y), bot=Math.max(b1.y+b1.height,b2.y+b2.height);
+    const padX=12,padY=6;
+    plate.setAttribute('x',(left-padX).toFixed(1));
+    plate.setAttribute('y',(top-padY).toFixed(1));
+    plate.setAttribute('width',(right-left+padX*2).toFixed(1));
+    plate.setAttribute('height',(bot-top+padY*2).toFixed(1));
+  }catch(e){ plate.remove(); return [t1,t2]; }
+  return [plate,t1,t2];
+}
+function drawCorridors(plan,i,parentCorr=gCorr,parentDecor=gDecor){
+  const made=[];
+  plan.legs.forEach((L,li)=>{
+    const [a,b]=L;
+    const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
+    const px2=-dy/len*9, py2=dx/len*9;
+    const seed=6000+i*47+li*13;
+    // prop anatomy: one wall is drawn ink, the other wall IS tiny script
+    const w1=el('path',{d:inkLine([a[0]+px2,a[1]+py2],[b[0]+px2,b[1]+py2],seed,.9)},parentCorr);
+    const wallTxt=textOnPath(parentCorr,
+      inkLine([a[0]-px2,a[1]-py2+2],[b[0]-px2,b[1]-py2+2],seed+7,.7),
+      latin(len/4.2,seed), {size:6.4,opacity:.62,ls:'.05em'});
+    const dots=dashedDraw(inkLine(a,b,seed+13,.4),{parent:parentCorr,width:1.2});
+    made.push(reg(w1,wallTxt,dots));
+    ROADS.push(samplePts([a,b],10));
+    if(li<plan.legs.length-1)
+      made.push(reg(el('path',{d:wobbleArc(b[0],b[1],6,0,4.8,seed+29,.5)},parentDecor)));
   });
+  return made;
+}
+function drawRoom(post,i,parentRooms=gRooms){
+  const plan=PLAN[i];
+  const c=plan.center, shape=plan.shape;
+  const g=el('g',{class:'bld','data-i':i,style:'cursor:pointer'},parentRooms);
+  const seed=7100+i*53;
+  const doorGap=22;
+  let outD,inD,doorPt,baseAng,towerG=null;
+  if(shape.type==='circle'){
+    const R=shape.rad, a0=plan.door.ang, g0=doorGap/R/2;
+    outD=wobbleArc(c[0],c[1],R,a0+g0,a0+Math.PI*2-g0,seed,.9);
+    inD =wobbleArc(c[0],c[1],R-5,a0+g0*1.2,a0+Math.PI*2-g0*1.2,seed+3,.7);
+    doorPt=[c[0]+Math.cos(a0)*R, c[1]+Math.sin(a0)*R];
+    baseAng=a0;
+    el('circle',{cx:c[0],cy:c[1],r:R,fill:'#000','fill-opacity':0},g);
+    // prop towers are concentric rings with radial stair ticks
+    towerG=el('g',{fill:'none',stroke:'#3d2514','stroke-width':.8,'stroke-linecap':'round',opacity:.85},g);
+    el('path',{d:wobbleArc(c[0],c[1],R-15,a0+g0*2.2,a0+Math.PI*2-g0*2.2,seed+9,.6)},towerG);
+    const NT=Math.round(R*.46);
+    for(let k2=0;k2<NT;k2++){
+      const th=a0+g0*2.6+(k2+.5)/NT*(Math.PI*2-g0*5.2);
+      el('path',{d:inkLine(
+        [c[0]+Math.cos(th)*(R-14),c[1]+Math.sin(th)*(R-14)],
+        [c[0]+Math.cos(th)*(R-6),c[1]+Math.sin(th)*(R-6)],seed+40+k2,.2)},towerG);
+    }
+  } else {
+    const verts=shapeVerts(shape,c);
+    outD=wallPath(verts,plan.door.edge,plan.door.t,doorGap,seed,.9);
+    inD =wallPath(insetVerts(verts,c[0],c[1],5),plan.door.edge,plan.door.t,doorGap*.9,seed+3,.7);
+    const A=verts[plan.door.edge],B=verts[(plan.door.edge+1)%verts.length];
+    doorPt=[lerp(A[0],B[0],plan.door.t),lerp(A[1],B[1],plan.door.t)];
+    baseAng=Math.atan2(doorPt[1]-c[1],doorPt[0]-c[0]);
+    const bb=shapeBBox(shape,c);
+    el('rect',{x:bb[0],y:bb[1],width:bb[2]-bb[0],height:bb[3]-bb[1],fill:'#000','fill-opacity':0},g);
+  }
+  const wallsG=el('g',{fill:'none',stroke:'#2b1a0c','stroke-linejoin':'round','stroke-linecap':'round'},g);
+  const wOut=el('path',{d:outD,'stroke-width':2},wallsG);
+  const wIn=el('path',{d:inD,'stroke-width':.9},wallsG);
+  // a ring of tiny script hugging the outside of the walls, prop-style
+  let ringTxt=null;
+  {
+    let ringD;
+    if(shape.type==='circle') ringD=wobbleArc(c[0],c[1],shape.rad+9,baseAng+.35,baseAng+Math.PI*2-.35,seed+21,.5);
+    else{
+      const ov=insetVerts(shapeVerts(shape,c),c[0],c[1],-9);
+      ringD=jitterPolyline([...ov,ov[0]],seed+21,.6,8);
+    }
+    const per=shape.type==='circle'? (shape.rad+9)*6.28 : (shape.w? 2*(shape.w+shape.h): shape.rad*8*.77)*1.06;
+    ringTxt=textOnPath(g,ringD,latin(per/4.4,seed+2),{size:6,opacity:.5,ls:'.04em'});
+  }
+  const hx=doorPt[0]+Math.cos(baseAng+Math.PI/2)*doorGap/2;
+  const hy=doorPt[1]+Math.sin(baseAng+Math.PI/2)*doorGap/2;
+  const swing=el('path',{d:wobbleArc(hx,hy,doorGap,baseAng-Math.PI,baseAng-Math.PI/2,seed+15,.4),
+    stroke:'#5a4326','stroke-width':.8,fill:'none'},g);
+  const dotsG=el('g',{fill:'#5a4326',opacity:.22},g);
+  const r=mulberry(seed+77);
+  const bb2=shapeBBox(shape,c);
+  for(let k=0;k<16;k++){
+    const x=lerp(bb2[0]+16,bb2[2]-16,r()), y=lerp(bb2[1]+16,bb2[3]-16,r());
+    if(shape.type==='circle' && Math.hypot(x-c[0],y-c[1])>shape.rad-14) continue;
+    if(r()<.4) el('circle',{cx:x,cy:y,r:.9},dotsG);
+  }
+  let vw,vh;
+  if(shape.type==='circle'){ vw=vh=shape.rad*1.44; }
+  else if(shape.type==='oct'){ vw=vh=shape.rad*1.42; }
+  else { vh=shape.h*.84; vw=Math.min(shape.w*.8,vh*1.15); }
+  const art=placeArt(g,post.kind,c[0],c[1],vw,vh,{onerror:()=>{
+    const funG=el('g',{fill:'none',stroke:'#4a3418','stroke-width':1,'stroke-linecap':'round',opacity:.9},g);
+    furniture(funG,post.kind,c,seed+99);
+  }});
+  const lblEls=inkLabel(g,c[0],bb2[3]+22,post.short,post.label+' · '+post.date);
+  let wax=null, newTag=null;
+  if(post.ft) wax=el('circle',{cx:bb2[2]-6,cy:bb2[1]+6,r:4,fill:'#7a2a1a',stroke:'none',opacity:.85},g);
+  if(post.newest){
+    newTag=el('text',{x:c[0],y:bb2[1]-12,'text-anchor':'middle',fill:'#7a2a1a',
+      style:'paint-order:stroke;stroke:#e9d8ac;stroke-width:4px;font-family:var(--text);font-style:italic;font-size:14px;letter-spacing:.06em'},g);
+    newTag.textContent='✶ newly inked ✶';
+  }
+  const made=[ reg(wOut,wIn,swing,dotsG,towerG,ringTxt), reg(art), reg(...lblEls,wax,newTag) ];
+  ROADS.push(samplePts([doorPt,[c[0],c[1]]],10));
+  nodes.push({p:post,pos:c,g,shape});
+  return made;
+}
+/* the prop's heart: banderole → Messrs. → names → “is proud to present”
+   → castle vignette wearing the dark diamond plaque → swirl of script */
+function drawEntrance(){
+  const g=el('g',{},gRooms);
+  const CX=0;
+  // banderole ribbon
+  const rib=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.3,'stroke-linecap':'round'},g);
+  const top='M-158 -256 C -90 -282, 90 -282, 158 -256';
+  el('path',{d:top},rib);
+  el('path',{d:'M-158 -238 C -90 -264, 90 -264, 158 -238'},rib);
+  // swallow-tail ends + folds
+  el('path',{d:'M-158 -256 L-186 -262 L-172 -247 L-186 -232 L-158 -238'},rib);
+  el('path',{d:'M158 -256 L186 -262 L172 -247 L186 -232 L158 -238'},rib);
+  el('path',{d:'M-158 -256 C -150 -250,-150 -244,-158 -238 M158 -256 C 150 -250,150 -244,158 -238','stroke-width':.9},rib);
+  const ribTxt=textOnPath(g,'M-146 -244 C -85 -268, 85 -268, 146 -244','ITINERARIVM · ARCHIVI',
+    {size:13,opacity:.95,ls:'.3em',fill:'#2b1a0c'});
+  // titles
+  const mk=(y,txt,style)=>{ const t=el('text',{x:CX,y,'text-anchor':'middle',fill:'#241505',style},g); t.textContent=txt; return t; };
+  const t1=mk(-208,'Messrs.','font-family:var(--script);font-size:30px');
+  const t2=mk(-176,'XCLOW3N','font-family:var(--sc);font-size:28px;letter-spacing:.3em');
+  const t3=mk(-152,'is proud to present','font-family:var(--text);font-style:italic;font-size:14px');
+  // castle vignette
+  const art=placeArt(g,'entrance',CX,-20,270,232,{});
+  // the dark diamond plaque
+  const plaqueG=el('g',{},g);
+  const dv=[[CX,-8-62],[CX+58,-8],[CX,-8+62],[CX-58,-8]];
+  el('path',{d:jitterPolyline([...dv,dv[0]],5150,2.2,7),fill:'#5e1c10',stroke:'#3a1109','stroke-width':1,opacity:.94},plaqueG);
+  const pt=(y,txt,style)=>{ const t=el('text',{x:CX,y,'text-anchor':'middle',fill:'#ecd9ae',style},plaqueG); t.textContent=txt; return t; };
+  pt(-30,'The','font-family:var(--serif);font-style:italic;font-size:13px');
+  pt(-9,'GRIMOIRE','font-family:var(--sc);font-size:16px;letter-spacing:.04em');
+  pt(12,'MAP','font-family:var(--sc);font-size:19px;letter-spacing:.22em');
+  // stars beside the plaque, like the prop
+  const sg1=starGlyph(g,CX-92,-34,3.6), sg2=starGlyph(g,CX-80,-16,2.6), sg3=starGlyph(g,CX+88,-52,3);
+  // swirl of tiny script beneath
+  const sw1=textOnPath(g,'M-150 132 C -60 108, 60 156, 150 128',latin(66,41),{size:6.5,opacity:.55});
+  const sw2=textOnPath(g,'M-138 148 C -50 126, 50 170, 138 144',latin(60,42),{size:6.5,opacity:.5});
+  const sw3=textOnPath(g,'M-118 164 C -40 146, 40 184, 118 158',latin(50,43),{size:6.5,opacity:.45});
+  reg(rib,ribTxt); reg(t1); reg(t2,t3); reg(art); reg(plaqueG,sg1,sg2,sg3); reg(sw1,sw2,sw3);
+}
+function drawPassages(){
+  const done=new Set();
+  for(let a=0;a<nodes.length;a++) for(let b=a+1;b<nodes.length;b++){
+    const A=nodes[a],B=nodes[b];
+    const shared=(A.p.tags||[]).filter(x=>(B.p.tags||[]).includes(x));
+    if(!shared.length) continue;
+    const key=a+'-'+b; if(done.has(key)) continue; done.add(key);
+    const mx=(A.pos[0]+B.pos[0])/2, my=(A.pos[1]+B.pos[1])/2;
+    const dx=B.pos[0]-A.pos[0], dy=B.pos[1]-A.pos[1], L=Math.hypot(dx,dy)||1;
+    const bend=(a+b)%2?90:-90;
+    const ctrl=[mx-dy/L*bend,my+dx/L*bend];
+    const pth=dashedDraw(jitterPolyline([A.pos,ctrl,B.pos],8800+a*13+b*7,1.2,10),
+      {parent:gPass,width:1.1,color:'#6b4322',dashPat:'.5 5.5'});
+    const lbl=el('text',{x:ctrl[0],y:ctrl[1],'text-anchor':'middle',fill:'#6b4322',
+      style:'paint-order:stroke;stroke:#e9d8ac;stroke-width:3px;font-family:var(--serif);font-style:italic;font-size:10px;letter-spacing:.05em'},gPass);
+    lbl.textContent='secret passage · '+shared[0].toLowerCase();
+    reg(pth,lbl);
+  }
+}
+function drawScatter(count){
+  const r=mulberry(4242);
+  for(let k=0;k<count;k++){
+    const i=(r()*Math.max(1,nodes.length))|0;
+    const base=nodes[i]?nodes[i].pos:[0,0];
+    const x=base[0]+(r()-.5)*340, y=base[1]+(r()-.5)*300;
+    if(Math.hypot(x-base[0],y-base[1])<140){k--;continue;}
+    reg(el('path',{d:wobbleArc(x,y,3.2+r()*2.6,r()*2,4.5+r()*2,r()*1e4,.5)},gDecor));
+  }
+  // prop-style patches of little crosses / florets / rings
+  for(let cl=0;cl<3;cl++){
+    const spot=freeSpot(120,777+cl*55); if(!spot) continue;
+    const gC=el('g',{stroke:'#3d2514','stroke-width':.9,'stroke-linecap':'round',fill:'none',opacity:.7},gDecor);
+    const n=8+((r()*7)|0);
+    for(let k=0;k<n;k++){
+      const x=spot[0]+(r()-.5)*170, y=spot[1]+(r()-.5)*130, kind=r();
+      if(kind<.45){ el('path',{d:`M${x-3} ${y}L${x+3} ${y}M${x} ${y-3}L${x} ${y+3}`},gC); }
+      else if(kind<.75){ for(let p2=0;p2<4;p2++){ const a=p2*Math.PI/2+.4;
+        el('circle',{cx:x+Math.cos(a)*2.4,cy:y+Math.sin(a)*2.4,r:.8,fill:'#3d2514',stroke:'none'},gC); } }
+      else{ el('path',{d:wobbleArc(x,y,2.6,0,Math.PI*2,(r()*1e6)|0,.3)},gC); }
+    }
+    reg(gC);
+  }
+}
 
-  document.getElementById('idxBtn').addEventListener('click',function(){ endIntro(); index.classList.add('show'); });
-  document.getElementById('idxClose').addEventListener('click',function(){ index.classList.remove('show'); });
+/* find an empty patch of parchment near the map (for decor) */
+function freeSpot(rad,seed){
+  const r=mulberry(seed);
+  let G=[1e9,1e9,-1e9,-1e9];
+  PLACED.forEach(b=>{ G=[Math.min(G[0],b[0]),Math.min(G[1],b[1]),Math.max(G[2],b[2]),Math.max(G[3],b[3])]; });
+  for(let a=0;a<60;a++){
+    const x=lerp(G[0]-80,G[2]+80,r()), y=lerp(G[1]-60,G[3]+60,r());
+    const bb=[x-rad,y-rad,x+rad,y+rad];
+    if(!PLACED.some(o=>bbOverlap(o,bb))) return [x,y];
+  }
+  return null;
+}
 
-  computeMin(); initView();
-})();
+/* a ruined ring complex — concentric arcs, radial stair ticks, wedge cells */
+function drawRuin(seed){
+  const spot=freeSpot(150,seed); if(!spot) return;
+  PLACED.push([spot[0]-150,spot[1]-150,spot[0]+150,spot[1]+150]);
+  const r=mulberry(seed);
+  const g=el('g',{fill:'none',stroke:'#3d2514','stroke-width':1,'stroke-linecap':'round',opacity:.8},gDecor);
+  const R=96+r()*34, a0=r()*6.28, span=3.6+r()*1.6;
+  el('path',{d:wobbleArc(spot[0],spot[1],R,a0,a0+span,seed+1,.8)},g);
+  el('path',{d:wobbleArc(spot[0],spot[1],R-13,a0+.1,a0+span-.1,seed+2,.7)},g);
+  el('path',{d:wobbleArc(spot[0],spot[1],R-34,a0+.5,a0+span-.7,seed+3,.7),'stroke-width':.8},g);
+  const NT=Math.round(R*span*.11);
+  for(let k=0;k<NT;k++){
+    const th=a0+.12+(k+.5)/NT*(span-.24);
+    el('path',{d:inkLine(
+      [spot[0]+Math.cos(th)*(R-12),spot[1]+Math.sin(th)*(R-12)],
+      [spot[0]+Math.cos(th)*R,spot[1]+Math.sin(th)*R],seed+30+k,.2),'stroke-width':.7},g);
+  }
+  // a few wedge cells on the inner arc
+  for(let k=0;k<3;k++){
+    const th=a0+.6+k*(span-1.2)/3;
+    el('path',{d:inkLine(
+      [spot[0]+Math.cos(th)*(R-34),spot[1]+Math.sin(th)*(R-34)],
+      [spot[0]+Math.cos(th)*(R-13),spot[1]+Math.sin(th)*(R-13)],seed+70+k,.3),'stroke-width':.8},g);
+  }
+  const label=textOnPath(gDecor,wobbleArc(spot[0],spot[1],R-23,a0+.3,a0+span-.3,seed+4,.4),
+    'SERPENTINE · RVIN · '+latin(30,seed),{size:7.5,opacity:.6,ls:'.14em'});
+  reg(g,label);
+}
+
+/* an organic paragraph-blob of tiny script, like the Dark Forest text */
+function drawTextBlob(seed,title){
+  const spot=freeSpot(120,seed); if(!spot) return;
+  PLACED.push([spot[0]-120,spot[1]-90,spot[0]+120,spot[1]+90]);
+  const r=mulberry(seed);
+  const widths=[52,96,128,142,136,112,74,40];
+  const els=[];
+  if(title){
+    const t=el('text',{x:spot[0],y:spot[1]-38,'text-anchor':'middle',fill:'#3d2514',
+      style:'font-family:var(--serif);font-style:italic;font-size:10px;letter-spacing:.06em',opacity:.8},gDecor);
+    t.textContent=title; els.push(t);
+  }
+  widths.forEach((w,li)=>{
+    const y=spot[1]-28+li*8.2;
+    els.push(textOnPath(gDecor,
+      inkLine([spot[0]-w+(r()-.5)*8,y],[spot[0]+w+(r()-.5)*8,y],seed+li*3,.4),
+      latin(w/2.1,seed+li),{size:6,opacity:.5,ls:'.03em'}));
+  });
+  reg(...els);
+}
+
+/* a radiating line burst, like the prop's corner sunburst */
+function drawBurst(seed){
+  const spot=freeSpot(140,seed); if(!spot) return;
+  PLACED.push([spot[0]-140,spot[1]-140,spot[0]+140,spot[1]+140]);
+  const r=mulberry(seed);
+  const g=el('g',{fill:'none',stroke:'#3d2514','stroke-width':.7,'stroke-linecap':'round',opacity:.65},gDecor);
+  const a0=r()*6.28, span=2.4+r()*1.4, N=16+((r()*7)|0);
+  for(let k=0;k<=N;k++){
+    const th=a0+k/N*span, L=70+r()*70;
+    el('path',{d:inkLine([spot[0]+Math.cos(th)*10,spot[1]+Math.sin(th)*10],
+      [spot[0]+Math.cos(th)*L,spot[1]+Math.sin(th)*L],seed+k,.3)},g);
+  }
+  el('circle',{cx:spot[0],cy:spot[1],r:3,fill:'none'},g);
+  const lbl=textOnPath(gDecor,wobbleArc(spot[0],spot[1],26,a0+span+.4,a0+span+2.2,seed+5,.3),
+    'cave scriptorem',{size:8,opacity:.6,italic:true});
+  reg(g,lbl);
+}
+
+/* wandering curved marginalia, prop-style */
+function drawAnnotations(){
+  const NOTES=['mind the wet ink','readers wander here often','here be unwritten entries'];
+  NOTES.forEach((n,i)=>{
+    const spot=freeSpot(90,2500+i*77); if(!spot) return;
+    const r=mulberry(3000+i*13);
+    const d=`M${spot[0]-78} ${spot[1]+(r()-.5)*20} C ${spot[0]-22} ${spot[1]-24+(r()-.5)*10}, ${spot[0]+22} ${spot[1]+24+(r()-.5)*10}, ${spot[0]+78} ${spot[1]+(r()-.5)*20}`;
+    reg(textOnPath(gDecor,d,n,{size:12,opacity:.78,italic:true,ls:'.04em'}));
+  });
+}
+function drawFrame(){
+  const W=innerWidth,H=innerHeight;
+  /* one edge band: survey numbers above, double rule, latin text between */
+  function band(parent){
+    const gB=el('g',{},parent);
+    const r1=el('path',{d:jitterPolyline([[14,16],[W-14,16]],101,1,10),stroke:'#2b1a0c','stroke-width':1.6,fill:'none'},gB);
+    const r2=el('path',{d:jitterPolyline([[14,34],[W-14,34]],102,.8,10),stroke:'#2b1a0c','stroke-width':.8,fill:'none'},gB);
+    const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
+    let s=''; while(s.length*7.4<W-60) s+=phrase;
+    const bt=el('text',{x:22,y:29,fill:'#2b1a0c',
+      style:'font-family:var(--sc);font-size:11px;letter-spacing:.12em'},gB);
+    bt.textContent=s.slice(0,Math.floor((W-44)/7.4));
+    const rr=mulberry(606);
+    for(let x=60;x<W-40;x+=118+rr()*36){
+      const tick=el('path',{d:`M${x} 4L${x} 12`,stroke:'#4a3418','stroke-width':.8},gB);
+      const num=el('text',{x:x+4,y:11,fill:'#4a3418',
+        style:'font-family:var(--serif);font-style:italic;font-size:9.5px',opacity:.8,
+        transform:`rotate(${(rr()-.5)*8} ${x} 8)`},gB);
+      num.textContent=String(291+((x/97)|0)%4);
+    }
+    return gB;
+  }
+  reg(band(frameWrap));
+  const gBot=el('g',{transform:`rotate(180 ${W/2} ${H/2})`},frameWrap);
+  reg(band(gBot));
+  /* side rules */
+  const sL=el('path',{d:jitterPolyline([[16,40],[16,H-40]],103,.9,10),stroke:'#2b1a0c','stroke-width':.9,fill:'none'},frameWrap);
+  const sR=el('path',{d:jitterPolyline([[W-16,40],[W-16,H-40]],104,.9,10),stroke:'#2b1a0c','stroke-width':.9,fill:'none'},frameWrap);
+  reg(sL,sR);
+  /* compass rose, kept small */
+  const cx=74,cy=H-92;
+  const gC=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.1,'stroke-linecap':'round',opacity:.9},frameWrap);
+  el('path',{d:wobbleArc(cx,cy,28,0,6.4,501,.8)},gC);
+  el('path',{d:wobbleArc(cx,cy,22,0,6.4,502,.7),'stroke-width':.7},gC);
+  el('path',{d:jitterPolyline([[cx,cy+17],[cx-6,cy],[cx,cy-22],[cx+6,cy],[cx,cy+17]],503,.6,5),'stroke-width':1.4},gC);
+  el('path',{d:jitterPolyline([[cx-17,cy],[cx+17,cy]],504,.5,5),'stroke-width':.8},gC);
+  const nT=el('text',{x:cx,y:cy-32,'text-anchor':'middle',fill:'#2b1a0c',style:'font-family:var(--sc);font-size:14px'},frameWrap);
+  nT.textContent='N';
+  reg(gC,nT);
+}
+
+/* ======================================================================
+   THE MATERIALIZE REVEAL — pieces of the map soak into view at random
+   places across the parchment, each one once and for good, like ink
+   developing on paper; Mischief Managed drains them the same way.
+   ====================================================================== */
+function revealAll({window:W=5000,onDone}={}){
+  if(reduced||SKIP){ UNITS.forEach(u=>u.els.forEach(e=>{ e.style.opacity=''; e.style.filter=''; })); onDone&&onDone(); return; }
+  UNITS.forEach(u=>{
+    const delay=Math.random()*W;
+    const dur=2300+Math.random()*1200;
+    materialize(u,delay,dur);
+  });
+  schedule(()=>{ onDone&&onDone(); }, W+2600);
+}
+/* dissolve for Mischief Managed — the ink drains away once, softly */
+function dissolveAll(cb){
+  if(reduced){ cb&&cb(); return; }
+  UNITS.forEach(u=>{
+    const delay=Math.random()*950;
+    u.els.forEach((e,k)=>{
+      e.animate([{opacity:1,filter:'blur(0px)'},{opacity:0,filter:'blur(2px)'}],
+        {duration:950,delay:delay+k*90,easing:'cubic-bezier(.5,.05,.75,.6)',fill:'forwards'});
+    });
+  });
+  setTimeout(()=>cb&&cb(),2100);
+}
+
+/* ======================================================================
+   FOOTPRINTS
+   ====================================================================== */
+function stampPrint(x,y,ang,side,ttl=2400,label){
+  /* footprints spawn continuously — ink them for the edition in force */
+  const night=ED.cur==='night';
+  const g=el('g',{transform:`translate(${x} ${y}) rotate(${ang*180/Math.PI})`,
+    fill:night?'#d9cba2':'#2b1a0c',stroke:'none',opacity:0},gPrints);
+  const off=side*3.2;
+  el('ellipse',{cx:0,cy:off,rx:2.6,ry:1.4},g);
+  el('ellipse',{cx:-3.6,cy:off,rx:1.15,ry:.9},g);
+  if(label){
+    const t=el('text',{x:7,y:off-5,fill:night?'#b9a87f':'#4a3418',
+      style:'paint-order:stroke;stroke:'+(night?'#15100a':'#e9d8ac')+
+        ';stroke-width:'+(night?'1.6px':'3px')+';font-family:var(--text);font-style:italic;font-size:11.5px'},g);
+    t.textContent=label;
+  }
+  g.animate([{opacity:0},{opacity:.6,offset:.12},{opacity:.6,offset:.62},{opacity:0}],
+    {duration:ttl,easing:'linear',fill:'forwards'}).finished.then(()=>g.remove()).catch(()=>{});
+}
+function startWalker(name,speed=1){
+  let seg=(Math.random()*ROADS.length)|0, forward=Math.random()<.5;
+  function leg(){
+    if(document.hidden){ setTimeout(leg,3000); return; }
+    const road=ROADS[seg]; if(!road){ setTimeout(leg,2000); return; }
+    const pts=forward?road:[...road].reverse();
+    let s=0, side=1;
+    const iv=setInterval(()=>{
+      if(s>=pts.length){ clearInterval(iv);
+        if(Math.random()<.7){ seg=Math.min(ROADS.length-1,Math.max(0,seg+(forward?1:-1))); }
+        else { seg=(Math.random()*ROADS.length)|0; forward=Math.random()<.5; }
+        setTimeout(leg,1300+Math.random()*2600); return; }
+      const p=pts[s], q=pts[Math.min(pts.length-1,s+1)];
+      const ang=Math.atan2(q[1]-p[1],q[0]-p[0]);
+      stampPrint(p[0],p[1],ang,side,2600, s===0?name:null);
+      side*=-1; s+=2;
+    },300/speed);
+  }
+  leg();
+}
+let lastPrint=null, cursorSide=1;
+function cursorPrints(e){
+  if(!mapReady||flooding) return;
+  const wp=screenToWorld(e.clientX,e.clientY);
+  if(lastPrint && Math.hypot(wp[0]-lastPrint[0],wp[1]-lastPrint[1])<34/view.s) return;
+  const ang=lastPrint?Math.atan2(wp[1]-lastPrint[1],wp[0]-lastPrint[0]):0;
+  cursorSide*=-1;
+  stampPrint(wp[0],wp[1],ang,cursorSide,1500, Math.random()<.1?'you':null);
+  lastPrint=wp;
+}
+
+/* ======================================================================
+   PAN / ZOOM
+   ====================================================================== */
+const view={x:0,y:0,s:1,fit:1};
+const zl=document.getElementById('zl');
+function applyView(){
+  world.setAttribute('transform',`translate(${view.x} ${view.y}) scale(${view.s})`);
+  zl.textContent=Math.round(view.s/view.fit*100)+'%';
+}
+function screenToWorld(sx,sy){ return [(sx-view.x)/view.s,(sy-view.y)/view.s]; }
+function fitMap(pad=90,animate=false){
+  const pts=[[-200,-330],[200,250],[0,0]].concat(PLAN.map(p=>p.center));
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  pts.forEach(pos=>{ x0=Math.min(x0,pos[0]-165); y0=Math.min(y0,pos[1]-155); x1=Math.max(x1,pos[0]+165); y1=Math.max(y1,pos[1]+165); });
+  const W=innerWidth,H=innerHeight;
+  const s=Math.min((W-pad*2)/(x1-x0),(H-pad*2-46)/(y1-y0));
+  const nx=W/2-(x0+x1)/2*s, ny=(H+52)/2-(y0+y1)/2*s;
+  view.fit=s;
+  if(animate&&!reduced){
+    const f={...view}, t0=performance.now(), D=900;
+    (function an(){ const k=Math.min(1,(performance.now()-t0)/D), e=k*k*(3-2*k);
+      view.x=lerp(f.x,nx,e); view.y=lerp(f.y,ny,e); view.s=lerp(f.s,s,e); applyView();
+      if(k<1) requestAnimationFrame(an); })();
+  } else { view.x=nx; view.y=ny; view.s=s; applyView(); }
+}
+let dragging=false,moved=false,px=0,py=0,captured=false,downId=null;
+const pointers={}; let pinch=0;
+svg.addEventListener('pointerdown',e=>{ pointers[e.pointerId]=[e.clientX,e.clientY];
+  if(Object.keys(pointers).length===1){ dragging=true;moved=false;captured=false;downId=e.pointerId;
+    px=e.clientX;py=e.clientY;svg.classList.add('drag');} });
+svg.addEventListener('pointermove',e=>{
+  cursorPrints(e);
+  if(!(e.pointerId in pointers)) return;
+  pointers[e.pointerId]=[e.clientX,e.clientY];
+  const ids=Object.keys(pointers);
+  if(ids.length>=2){ const a=pointers[ids[0]],b=pointers[ids[1]],d=Math.hypot(a[0]-b[0],a[1]-b[1]);
+    if(pinch) zoomAt((a[0]+b[0])/2,(a[1]+b[1])/2,d/pinch);
+    pinch=d; moved=true; return; }
+  if(dragging){ const dx=e.clientX-px,dy=e.clientY-py;
+    if(Math.abs(dx)+Math.abs(dy)>3){ moved=true;
+      if(!captured){ try{svg.setPointerCapture(downId);}catch(err){} captured=true; } }
+    view.x+=dx;view.y+=dy;px=e.clientX;py=e.clientY;applyView(); }
+});
+function up(e){ delete pointers[e.pointerId]; if(Object.keys(pointers).length<2)pinch=0;
+  if(!Object.keys(pointers).length){dragging=false;svg.classList.remove('drag');} }
+svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+function zoomAt(cx,cy,f){
+  const ns=Math.max(view.fit*.55,Math.min(view.fit*5,view.s*f)); f=ns/view.s;
+  view.x=cx-(cx-view.x)*f; view.y=cy-(cy-view.y)*f; view.s=ns; applyView();
+}
+/* Non-passive so we can swallow the trackpad pinch (ctrl+wheel) that the
+   browser would otherwise turn into a whole-page zoom. Nothing scrolls
+   under the map, so preventing default here is safe. */
+addEventListener('wheel',e=>{ if(flooding||!mapReady)return;
+  if(e.target.closest&&e.target.closest('.index,.reader'))return;
+  e.preventDefault();
+  // pinch gestures arrive as ctrlKey wheels with large deltas → zoom harder
+  const f=e.ctrlKey? Math.exp(-Math.max(-40,Math.min(40,e.deltaY))*.012)
+                   : Math.exp(-Math.max(-60,Math.min(60,e.deltaY))*.0032);
+  zoomAt(e.clientX,e.clientY,f); },{passive:false});
+document.getElementById('zin').addEventListener('click',()=>zoomAt(innerWidth/2,innerHeight/2,1.35));
+document.getElementById('zout').addEventListener('click',()=>zoomAt(innerWidth/2,innerHeight/2,1/1.35));
+document.getElementById('zfit').addEventListener('click',()=>fitMap(90,true));
+svg.addEventListener('dblclick',e=>{ if(mapReady) zoomAt(e.clientX,e.clientY,1.6); });
+
+/* ======================================================================
+   HOVER CARD + CLICK → INK FLOOD → READER
+   ====================================================================== */
+const card=document.getElementById('card');
+const cT=document.getElementById('cT'),cE=document.getElementById('cE'),cCat=document.getElementById('cCat'),
+      cDate=document.getElementById('cDate'),cCh=document.getElementById('cCh');
+let hoverI=-1, flooding=false, mapReady=false;
+card.style.cursor='pointer';
+card.addEventListener('click',e=>{ if(hoverI>=0&&!flooding&&mapReady) openReader(hoverI,e.clientX,e.clientY); });
+svg.addEventListener('pointerover',e=>{
+  if(!mapReady) return;
+  const b=e.target.closest('.bld'); if(!b) return;
+  hoverI=+b.dataset.i; const n=nodes[hoverI]; if(!n) return;
+  const p=n.p;
+  cCh.textContent=p.short+' · '+p.label;
+  cT.textContent=p.t;                 // the full title…
+  cE.textContent=p.e;                 // …and the full tl;dr
+  cCat.textContent=p.ft?'✦ Featured':p.cat; cCat.className=p.ft?'ft':'';
+  cDate.textContent=p.date;
+  n.g.style.filter='contrast(1.5)';
+  card.classList.add('show');
+});
+svg.addEventListener('pointerout',e=>{
+  const b=e.target.closest('.bld'); if(!b) return;
+  const n=nodes[+b.dataset.i]; if(n) n.g.style.filter='';
+  hoverI=-1; card.classList.remove('show');
+});
+svg.addEventListener('pointermove',e=>{
+  if(hoverI<0) return;
+  const x=Math.max(10,Math.min(e.clientX+22,innerWidth-306));
+  const y=Math.max(10,Math.min(e.clientY-160,innerHeight-250));
+  card.style.left=x+'px'; card.style.top=y+'px';
+});
+svg.addEventListener('click',e=>{
+  if(moved||flooding||!mapReady) return;
+  const b=e.target.closest&&e.target.closest('.bld');
+  const idx=(b&&b.dataset.i!=='')? +b.dataset.i : hoverI;
+  if(idx<0||!nodes[idx]) return;
+  openReader(idx, e.clientX, e.clientY);
+});
+/* clicking a chamber (or its card) floods the screen with ink and
+   carries the reader straight into the article page */
+const flood=document.getElementById('flood');
+function openReader(i,sx,sy){
+  const n=nodes[i]; if(!n) return;
+  flooding=true; card.classList.remove('show');
+  flood.innerHTML='';
+  const R=Math.hypot(Math.max(sx,innerWidth-sx),Math.max(sy,innerHeight-sy))+40;
+  const c=el('circle',{cx:sx,cy:sy,r:0,fill:ED.cur==='day'?'#241708':'#080604'},flood);
+  const D=reduced?10:800;
+  c.animate([{r:0},{r:R}],{duration:D,easing:'cubic-bezier(.6,.1,.8,1)',fill:'forwards'});
+  setTimeout(()=>{
+    if(n.p.href){ location.href=n.p.href; }
+    else { flooding=false; flood.innerHTML=''; }
+  },D+60);
+}
+
+/* ======================================================================
+   EDITIONS — night is the default; the swap is in-place, no reload.
+   JS draws in day ink; these directional maps re-ink the whole document.
+   ====================================================================== */
+const INK_PAIRS=[
+  ['#2b1a0c','#d9cba2'],['#241505','#ecdfba'],['#3d2514','#c4b389'],
+  ['#4a3418','#b9a87f'],['#4a2c12','#cabc92'],['#5a4326','#a79670'],
+  ['#5f4526','#b6a57d'],['#6b4322','#aa9366'],['#7a2a1a','#d55a3e'],
+  ['#e9d8ac','#15100a'],['#3a1109','#2a0d06'],
+  ['#efe3c4','#080604'],   // label plate: light parchment ↔ dark parchment
+];
+const D2N=Object.fromEntries(INK_PAIRS);
+const N2D=Object.fromEntries(INK_PAIRS.map(([a,b])=>[b,a]));
+const FILT_DAY='contrast(1.18) brightness(.94)';
+const FILT_NIGHT='invert(.93) sepia(.55) saturate(1.3) brightness(1.9) contrast(.98)';
+const ED={cur:'day'};   // matches the ink the JS just drew; corrected at start()
+/* browsers re-serialize style attributes (hex → rgb) the moment CSSOM
+   touches them, so the swap must speak both dialects */
+function hexToRgb(hx){
+  return 'rgb('+parseInt(hx.slice(1,3),16)+', '+parseInt(hx.slice(3,5),16)+', '+parseInt(hx.slice(5,7),16)+')';
+}
+const COLOR_KEY={};   // hex AND rgb form → canonical hex, both directions
+INK_PAIRS.forEach(([d,n])=>{
+  COLOR_KEY[d]=d; COLOR_KEY[hexToRgb(d)]=d;
+  COLOR_KEY[n]=n; COLOR_KEY[hexToRgb(n)]=n;
+});
+const WIDTHS_DN={'5px':'2.4px','4px':'2px','3px':'1.6px'};
+const WIDTHS_ND=Object.fromEntries(Object.entries(WIDTHS_DN).map(([a,b])=>[b,a]));
+function applyEdition(theme){
+  ED.cur=theme;
+  const M=theme==='night'?D2N:N2D;
+  const W=theme==='night'?WIDTHS_DN:WIDTHS_ND;
+  document.documentElement.classList.toggle('day',theme==='day');
+  const tb=document.getElementById('themeBtn');
+  if(tb) tb.textContent=theme==='night'?'Day Edition':'Night Edition';
+  const mapColor=v=>{ const k=COLOR_KEY[v]; return k&&M[k]?M[k]:null; };
+  [svg,fixedSvg].forEach(root=>{
+    root.querySelectorAll('*').forEach(e2=>{
+      for(const at of ['fill','stroke']){
+        const v=e2.getAttribute(at);
+        if(v){ const nv=mapColor(v); if(nv) e2.setAttribute(at,nv); }
+      }
+      const s=e2.style;
+      if(s&&s.length!==undefined){
+        if(s.stroke){ const nv=mapColor(s.stroke); if(nv) s.stroke=nv; }
+        if(s.fill){ const nv=mapColor(s.fill); if(nv) s.fill=nv; }
+        if(s.strokeWidth&&W[s.strokeWidth]) s.strokeWidth=W[s.strokeWidth];
+        if(s.filter){
+          if(theme==='night'&&!s.filter.includes('invert')&&s.filter.includes('contrast')) s.filter=FILT_NIGHT;
+          else if(theme==='day'&&s.filter.includes('invert')) s.filter=FILT_DAY;
+        }
+      }
+    });
+  });
+  try{localStorage.setItem('archive-ed',theme);}catch(err){}
+}
+const savedEd=(()=>{ try{return localStorage.getItem('archive-ed');}catch(err){return null;} })()||'night';
+if(savedEd==='day') document.documentElement.classList.add('day');
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const next=ED.cur==='night'?'day':'night';
+  const veil=document.getElementById('veil');
+  veil.classList.add('on');
+  setTimeout(()=>{ applyEdition(next); setTimeout(()=>veil.classList.remove('on'),140); },400);
+});
+
+/* ======================================================================
+   CONTENTS + WIPE + GROW DEMO
+   ====================================================================== */
+const index=document.getElementById('index'), idxList=document.getElementById('idxList');
+function rebuildIndex(){
+  idxList.innerHTML='';
+  [...nodes].reverse().forEach((n,ri)=>{
+    const p=n.p, li=document.createElement('li');
+    li.innerHTML='<span class="n">'+String(nodes.length-ri).padStart(2,'0')+'</span><div><div class="mm">'+(p.ft?'<span class="ft">Featured</span>':p.cat)+' · '+p.date+' · <i>'+p.short+'</i></div><div class="t">'+p.t+'</div><div class="e">'+p.e+'</div></div>';
+    li.querySelector('.t').addEventListener('click',()=>{ index.classList.remove('show'); openReader(nodes.indexOf(n),innerWidth/2,innerHeight/2); });
+    idxList.appendChild(li);
+  });
+}
+document.getElementById('idxBtn').addEventListener('click',()=>{ rebuildIndex(); index.classList.add('show'); });
+document.getElementById('idxClose').addEventListener('click',()=>index.classList.remove('show'));
+document.getElementById('wipeBtn').addEventListener('click',()=>{
+  if(flooding) return;
+  try{ sessionStorage.removeItem('grimoire-seen'); }catch(e){}   // let the reload re-ink the map
+  document.querySelectorAll('.plate,.tools,.hint,.zoom').forEach(n=>n.style.opacity=0);
+  dissolveAll(()=>location.reload());
+});
+
+/* ======================================================================
+   MASTER TIMELINE — oath, then the ink develops
+   ====================================================================== */
+const skipInk=document.getElementById('skipInk');
+function life(){
+  if(mapReady) return;
+  mapReady=true;
+  /* remember we've inked the map this session, so returning from a post
+     shows it at once instead of redrawing */
+  try{ sessionStorage.setItem('grimoire-seen','1'); }catch(e){}
+  skipInk.classList.add('gone');
+  document.getElementById('hint').classList.add('on');
+  document.getElementById('plate').classList.add('on');
+  document.getElementById('tools').classList.add('on');
+  document.getElementById('zoom').classList.add('on');
+  if(!reduced){ startWalker('r. raghav',1); setTimeout(()=>startWalker('a curious reader',.85),2600); }
+  setTimeout(()=>document.getElementById('hint').classList.remove('on'),9000);
+}
+let introSkipped=false;
+function start(){
+  /* build the whole finished map now — every piece registers hidden */
+  drawStains();
+  drawEntrance();
+  POSTS.forEach((p,i)=>{ drawCorridors(PLAN[i],i); drawRoom(p,i); });
+  drawPassages();
+  drawRuin(6100); drawRuin(6300);
+  drawTextBlob(7100,'the unwritten drafts'); drawTextBlob(7300,null);
+  drawBurst(8200);
+  drawAnnotations();
+  drawScatter(22);
+  drawFrame();
+  applyEdition(savedEd);   // ink everything for the chosen edition (night by default)
+  /* the first visit AND any hard refresh ink the map in; only a return
+     from a post (same session, no reload) shows it finished at once —
+     no oath, no redraw */
+  const nav=(()=>{ try{return performance.getEntriesByType('navigation')[0]?.type;}catch(e){return '';} })();
+  const seen=(()=>{ try{return sessionStorage.getItem('grimoire-seen');}catch(e){return null;} })();
+  const skipReveal=seen && nav!=='reload';
+  if(reduced||introSkipped||skipReveal){
+    UNITS.forEach(u=>u.els.forEach(e=>e.style.opacity=''));
+    life(); return; }
+  revealAll({window:4600,onDone:life});
+}
+function skipIntro(){
+  if(mapReady) return;
+  introSkipped=true;
+  skipAll();
+  fastForward();
+  UNITS.forEach(u=>u.els.forEach(e=>{ e.style.opacity=''; }));
+  life();
+}
+skipInk.addEventListener('click',skipIntro);
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ if(!mapReady){skipIntro();} else index.classList.remove('show'); }
+});
+
+fitMap();
+addEventListener('resize',()=>fitMap());
+document.fonts.ready.then(()=>setTimeout(start,reduced?50:450));
 </script> </body> </html>
