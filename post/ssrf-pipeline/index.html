@@ -1,0 +1,756 @@
+<!DOCTYPE html><html lang="en" style="--hue:#92DEFF;--tint:#E2F7FF"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The URL Parser Cheatsheet · xclow3n</title><meta name="description" content="What fourteen URL parsers actually do with the same crafted input, at pinned versions, plus the oracle behind it. Fifteen bug families indexed by pipeline stage, a differential oracle that feeds one crafted input to sixteen validators and five clients across eight languages, 1855 wire-backed verdicts, the seam cells nobody has checked, and an honest account of every mechanism that never reached a shipped product."><link rel="canonical" href="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:type" content="article"><meta property="og:title" content="The URL Parser Cheatsheet · xclow3n"><meta property="og:description" content="What fourteen URL parsers actually do with the same crafted input, at pinned versions, plus the oracle behind it. Fifteen bug families indexed by pipeline stage, a differential oracle that feeds one crafted input to sixteen validators and five clients across eight languages, 1855 wire-backed verdicts, the seam cells nobody has checked, and an honest account of every mechanism that never reached a shipped product."><meta property="og:url" content="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The URL Parser Cheatsheet · xclow3n"><meta name="twitter:description" content="What fourteen URL parsers actually do with the same crafted input, at pinned versions, plus the oracle behind it. Fifteen bug families indexed by pipeline stage, a differential oracle that feeds one crafted input to sixteen validators and five clients across eight languages, 1855 wire-backed verdicts, the seam cells nobody has checked, and an honest account of every mechanism that never reached a shipped product."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
+</style><link rel="stylesheet" href="/_astro/_slug_.DmeYV662.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 08</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">08</span> <span>14 parsers, pinned</span> <span class="flag">Featured</span> </div> <h1>The URL Parser Cheatsheet</h1> <p class="stand">What fourteen URL parsers actually do with the same crafted input, at pinned versions, plus the oracle behind it. Fifteen bug families indexed by pipeline stage, a differential oracle that feeds one crafted input to sixteen validators and five clients across eight languages, 1855 wire-backed verdicts, the seam cells nobody has checked, and an honest account of every mechanism that never reached a shipped product.</p> <ul class="facts"><li class="fact">15 families</li><li class="fact">1,855 verdicts</li><li class="fact">8 languages</li><li class="fact">16 validators x 5 clients</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li><li>Tooling</li></ul> </div> <div class="head__art" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+     preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><pattern id="moire-ssrf-pipeline-ssp-fa" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-3)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s0" width="7.66" height="7.66" patternUnits="userSpaceOnUse" patternTransform="rotate(-3.4)"><line x1="3.83" y1="0" x2="3.83" y2="7.66" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s1" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-1.7)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s2" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(-0.4)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s3" width="7.78" height="7.78" patternUnits="userSpaceOnUse" patternTransform="rotate(1.6)"><line x1="3.89" y1="0" x2="3.89" y2="7.78" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s4" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(4.2)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s5" width="7.42" height="7.42" patternUnits="userSpaceOnUse" patternTransform="rotate(7.6)"><line x1="3.71" y1="0" x2="3.71" y2="7.42" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s6" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(12)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-s7" width="7.6" height="7.6" patternUnits="userSpaceOnUse" patternTransform="rotate(17.6)"><line x1="3.8" y1="0" x2="3.8" y2="7.6" stroke="var(--ground)" stroke-width="2"/></pattern><pattern id="moire-ssrf-pipeline-ssp-rg" width="20" height="14" patternUnits="userSpaceOnUse"><line x1="10" y1="0" x2="10" y2="14" stroke="var(--tint)" stroke-width="2"/></pattern></defs>
+<rect x="0" y="0" width="640" height="240" fill="url(#moire-ssrf-pipeline-ssp-fa)"/>
+<rect x="0" y="6" width="66" height="220" fill="url(#moire-ssrf-pipeline-ssp-s0)"/>
+<rect x="66" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s1)"/>
+<rect x="138" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s2)"/>
+<rect x="210" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s3)"/>
+<rect x="282" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s4)"/>
+<rect x="354" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s5)"/>
+<rect x="426" y="6" width="72" height="220" fill="url(#moire-ssrf-pipeline-ssp-s6)"/>
+<rect x="498" y="6" width="142" height="220" fill="url(#moire-ssrf-pipeline-ssp-s7)"/>
+<g fill="var(--tint)"><rect x="62.5" y="6" width="7" height="220"/><rect x="134.5" y="6" width="7" height="220"/><rect x="206.5" y="6" width="7" height="220"/><rect x="278.5" y="6" width="7" height="220"/><rect x="350.5" y="6" width="7" height="220"/><rect x="422.5" y="6" width="7" height="220"/><rect x="494.5" y="6" width="7" height="220"/></g>
+<g fill="var(--hue)"><rect x="62" y="6" width="8" height="9"/><rect x="134" y="6" width="8" height="9"/><rect x="206" y="6" width="8" height="9"/><rect x="278" y="6" width="8" height="9"/><rect x="350" y="6" width="8" height="9"/><rect x="422" y="6" width="8" height="9"/><rect x="494" y="6" width="8" height="9"/><rect x="62" y="217" width="8" height="9"/><rect x="134" y="217" width="8" height="9"/><rect x="206" y="217" width="8" height="9"/><rect x="278" y="217" width="8" height="9"/><rect x="350" y="217" width="8" height="9"/><rect x="422" y="217" width="8" height="9"/><rect x="494" y="217" width="8" height="9"/></g>
+<g fill="none" stroke="var(--tint)" stroke-linejoin="round" stroke-linecap="round"><path d="M0,124 L69,124" stroke-width="11"/><path d="M60,124 Q79.5,114 99,124 T138,124" stroke-width="11.5"/><path d="M132,124 Q151.5,102 171,124 T210,124" stroke-width="12.5"/><path d="M204,124 Q217,88 230,124 T256,124 T282,124" stroke-width="13.5"/><path d="M276,124 Q289,72 302,124 T328,124 T354,124" stroke-width="15"/><path d="M348,124 Q357.75,56 367.5,124 T387,124 T406.5,124 T426,124" stroke-width="17"/><path d="M420,124 Q429.75,48 439.5,124 T459,124 T478.5,124 T498,124" stroke-width="19.5"/><path d="M492,124 Q501.5,40 511,124 T530,124 T549,124 T568,124 T587,124 T606,124 T625,124 T644,124" stroke-width="22"/></g>
+<g fill="none" stroke="var(--hue)" stroke-linejoin="round" stroke-linecap="round"><path d="M0,124 L69,124" stroke-width="3"/><path d="M60,124 Q79.5,114 99,124 T138,124" stroke-width="3.5"/><path d="M132,124 Q151.5,102 171,124 T210,124" stroke-width="4.5"/><path d="M204,124 Q217,88 230,124 T256,124 T282,124" stroke-width="5.5"/><path d="M276,124 Q289,72 302,124 T328,124 T354,124" stroke-width="7"/><path d="M348,124 Q357.75,56 367.5,124 T387,124 T406.5,124 T426,124" stroke-width="9"/><path d="M420,124 Q429.75,48 439.5,124 T459,124 T478.5,124 T498,124" stroke-width="11.5"/><path d="M492,124 Q501.5,40 511,124 T530,124 T549,124 T568,124 T587,124 T606,124 T625,124 T644,124" stroke-width="14"/></g>
+<g fill="var(--hue)" stroke="var(--tint)" stroke-width="3" stroke-linejoin="round"><polygon points="66,118 72,124 66,130 60,124"/><polygon points="138,117 145,124 138,131 131,124"/><polygon points="210,116 218,124 210,132 202,124"/><polygon points="282,115 291,124 282,133 273,124"/><polygon points="354,114 364,124 354,134 344,124"/><polygon points="426,113 437,124 426,135 415,124"/><polygon points="498,112 510,124 498,136 486,124"/></g>
+<rect x="88" y="14" width="444" height="17" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.6"/>
+<rect x="88" y="43" width="444" height="17" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.6"/>
+<g fill="var(--hue)"><rect x="100" y="18" width="20" height="9"/><rect x="154" y="18" width="20" height="9"/><rect x="208" y="18" width="20" height="9"/><rect x="262" y="18" width="20" height="9"/><rect x="316" y="18" width="20" height="9"/><rect x="370" y="18" width="20" height="9"/><rect x="424" y="18" width="20" height="9"/><rect x="478" y="18" width="20" height="9"/><rect x="100" y="47" width="20" height="9"/><rect x="154" y="47" width="20" height="9"/><rect x="210" y="47" width="20" height="9"/><rect x="266" y="47" width="20" height="9"/><rect x="323" y="47" width="20" height="9"/><rect x="382" y="47" width="20" height="9"/><rect x="441" y="47" width="20" height="9"/><rect x="502" y="47" width="20" height="9"/></g>
+<g fill="var(--tint)"><rect x="114" y="31" width="12" height="12"/><rect x="168" y="31" width="12" height="12"/><rect x="222" y="31" width="14" height="12"/><rect x="276" y="31" width="16" height="12"/><rect x="330" y="31" width="19" height="12"/><rect x="384" y="31" width="24" height="12"/><rect x="438" y="31" width="29" height="12"/><rect x="492" y="31" width="36" height="12"/></g><g fill="var(--ground)"><rect x="120" y="33" width="2" height="8"/><rect x="174" y="33" width="2" height="8"/></g><g fill="var(--hue)"><rect x="228" y="33" width="2" height="8"/><rect x="282" y="33" width="4" height="8"/><rect x="336" y="33" width="7" height="8"/><rect x="390" y="33" width="12" height="8"/><rect x="444" y="33" width="17" height="8"/><rect x="498" y="33" width="24" height="8"/></g>
+<g stroke="var(--ground)" stroke-width="2.4"><line x1="132" y1="17" x2="132" y2="28"/><line x1="186" y1="17" x2="186" y2="28"/><line x1="240" y1="17" x2="240" y2="28"/><line x1="294" y1="17" x2="294" y2="28"/><line x1="348" y1="17" x2="348" y2="28"/><line x1="402" y1="17" x2="402" y2="28"/><line x1="456" y1="17" x2="456" y2="28"/><line x1="510" y1="17" x2="510" y2="28"/><line x1="132" y1="46" x2="132" y2="57"/><line x1="188" y1="46" x2="188" y2="57"/><line x1="244" y1="46" x2="244" y2="57"/><line x1="301" y1="46" x2="301" y2="57"/><line x1="360" y1="46" x2="360" y2="57"/><line x1="419" y1="46" x2="419" y2="57"/><line x1="479" y1="46" x2="479" y2="57"/></g>
+<rect x="88" y="182" width="444" height="32" rx="3" fill="var(--tint)" stroke="var(--ground)" stroke-width="2.5"/>
+<line x1="94" y1="206" x2="526" y2="206" stroke="var(--hue)" stroke-width="3"/>
+<g stroke="var(--hue)" stroke-width="3"><line x1="100" y1="206" x2="100" y2="198"/><line x1="129.5" y1="206" x2="129.5" y2="197"/><line x1="159" y1="206" x2="159" y2="196"/><line x1="188.5" y1="206" x2="188.5" y2="195"/><line x1="218" y1="206" x2="218" y2="194"/><line x1="247.5" y1="206" x2="247.5" y2="193"/><line x1="277" y1="206" x2="277" y2="192"/><line x1="306.5" y1="206" x2="306.5" y2="191"/><line x1="336" y1="206" x2="336" y2="190"/><line x1="365.5" y1="206" x2="365.5" y2="189"/><line x1="395" y1="206" x2="395" y2="188"/><line x1="424.5" y1="206" x2="424.5" y2="187"/><line x1="454" y1="206" x2="454" y2="186"/><line x1="483.5" y1="206" x2="483.5" y2="185"/><line x1="513" y1="206" x2="513" y2="184"/></g>
+<g stroke="var(--ground)" stroke-width="2.6"><line x1="114.75" y1="209" x2="114.75" y2="212"/><line x1="203.25" y1="209" x2="203.25" y2="212"/><line x1="291.75" y1="209" x2="291.75" y2="212"/><line x1="380.25" y1="209" x2="380.25" y2="212"/><line x1="468.75" y1="209" x2="468.75" y2="212"/></g>
+<rect x="0" y="0" width="640" height="6" fill="var(--ground)"/><rect x="88" y="0" width="200" height="6" fill="var(--hue)"/>
+<rect x="0" y="226" width="640" height="14" fill="var(--ground)"/><rect x="354" y="229" width="178" height="8" fill="var(--hue)"/><rect x="0" y="226" width="640" height="14" fill="url(#moire-ssrf-pipeline-ssp-rg)"/>
+</svg>
+</div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#start-with-the-article" data-sec="start-with-the-article"> <i>01</i><span>Start with the article</span> </a></li><li><a href="#the-cheatsheet" data-sec="the-cheatsheet"> <i>02</i><span>The cheatsheet</span> </a></li><li><a href="#the-quirks-a-differential-cannot-see" data-sec="the-quirks-a-differential-cannot-see"> <i>03</i><span>The quirks a differential cannot see</span> </a></li><li><a href="#what-the-measurements-show" data-sec="what-the-measurements-show"> <i>04</i><span>What the measurements show</span> </a></li><li><a href="#the-fifteen-families" data-sec="the-fifteen-families"> <i>05</i><span>The fifteen families</span> </a></li><li><a href="#the-oracle" data-sec="the-oracle"> <i>06</i><span>The oracle</span> </a></li><li><a href="#the-seam-space" data-sec="the-seam-space"> <i>07</i><span>The seam space</span> </a></li><li><a href="#where-the-blade-stopped" data-sec="where-the-blade-stopped"> <i>08</i><span>Where the blade stopped</span> </a></li> </ol> </nav> <article class="doc"><h2 id="start-with-the-article">Start with the article</h2>
+<p>This page is the working reference behind
+<a href="/post/the-validator-can-lie/">The Validator Can Lie</a>: the cheatsheet, the raw
+measurements, and the parts that did not fit into a narrative. Read that article
+first. It carries the argument and the product case studies, and this page assumes them.</p>
+<p>If you only want one thing from this page, it is the cheatsheet directly below:
+what fourteen URL parsers actually do with the same crafted input, at pinned
+versions. Everything after it is the method, the taxonomy and the dead ends.</p>
+<h2 id="the-cheatsheet">The cheatsheet</h2>
+<p>One crafted input goes to every library at the version pinned below. Each block
+is what they returned as the host. Where the lines disagree is where a guard and
+a fetcher can disagree.</p>
+<h3 id="pinned-versions">Pinned versions</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Go net/url         go1.26.4</span></span>
+<span class="line"><span>Go fasthttp        go1.26.4</span></span>
+<span class="line"><span>Go whatwg-url      go1.26.4</span></span>
+<span class="line"><span>Py urlsplit        3.12.13</span></span>
+<span class="line"><span>Py yarl            1.24.2</span></span>
+<span class="line"><span>Node URL           22.22.3</span></span>
+<span class="line"><span>Node url.parse     22.22.3</span></span>
+<span class="line"><span>Java URI           21.0.11</span></span>
+<span class="line"><span>Java URL           21.0.11</span></span>
+<span class="line"><span>Rust url           url@2.5.8</span></span>
+<span class="line"><span>.NET Uri           8.0.27</span></span>
+<span class="line"><span>PHP parse_url      8.3.31</span></span>
+<span class="line"><span>Ruby URI           3.3.11</span></span>
+<span class="line"><span>Ruby addressable   2.9.0</span></span></code></pre>
+<h3 id="backslash-before-the-">Backslash before the @</h3>
+<p>The changedetection.io shape. Three answers from fourteen parsers.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://safe.local\@evil.local/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>REJECT                Go net/url, Py yarl, Java URI, Java URL,</span></span>
+<span class="line"><span>                      .NET Uri, Ruby URI</span></span>
+<span class="line"><span>evil.local            Go fasthttp, Py urlsplit, PHP parse_url,</span></span>
+<span class="line"><span>                      Ruby addressable</span></span>
+<span class="line"><span>safe.local            Go whatwg-url, Node URL, Node url.parse,</span></span>
+<span class="line"><span>                      Rust url</span></span></code></pre>
+<h3 id="percent-encoded-backslash">Percent-encoded backslash</h3>
+<p>The negative control: encoding it makes every parser agree again.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://safe.local%5C@evil.local/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>evil.local            Go net/url, Go fasthttp, Go whatwg-url, Py</span></span>
+<span class="line"><span>                      urlsplit, Py yarl, Node URL, Node</span></span>
+<span class="line"><span>                      url.parse, Java URI, Java URL, Rust url,</span></span>
+<span class="line"><span>                      .NET Uri, PHP parse_url, Ruby URI, Ruby</span></span>
+<span class="line"><span>                      addressable</span></span></code></pre>
+<h3 id="multiple--in-authority">Multiple @ in authority</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://a:b@safe.local@internal.local/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>internal.local        Go net/url, Go whatwg-url, Py urlsplit, Py</span></span>
+<span class="line"><span>                      yarl, Node URL, Node url.parse, Rust url,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby addressable</span></span>
+<span class="line"><span>REJECT                Go fasthttp, .NET Uri, Ruby URI</span></span>
+<span class="line"><span>a:b@safe.local@inter  Java URI</span></span>
+<span class="line"><span>(empty)               Java URL</span></span></code></pre>
+<h3 id="encoded-dot-in-the-host">Encoded dot in the host</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://safe%2elocal/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>safe%2elocal          Py urlsplit, Py yarl, Java URI, Java URL,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>REJECT                Go net/url, Go fasthttp, .NET Uri</span></span>
+<span class="line"><span>safe.local            Go whatwg-url, Node URL, Rust url</span></span>
+<span class="line"><span>safe                  Node url.parse</span></span></code></pre>
+<h3 id="scheme-relative">Scheme-relative</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>//evil.local/path</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>evil.local            Go net/url, Go fasthttp, Py urlsplit, Py</span></span>
+<span class="line"><span>                      yarl, Java URI, .NET Uri, PHP parse_url,</span></span>
+<span class="line"><span>                      Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>REJECT                Go whatwg-url, Node URL, Java URL, Rust</span></span>
+<span class="line"><span>                      url</span></span>
+<span class="line"><span>(empty)               Node url.parse</span></span></code></pre>
+<h3 id="backslashes-after-scheme">Backslashes after scheme</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http:\\evil.local/path</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>(empty)               Go net/url, Go fasthttp, Py urlsplit, Java</span></span>
+<span class="line"><span>                      URL, PHP parse_url, Ruby addressable</span></span>
+<span class="line"><span>evil.local            Go whatwg-url, Node URL, Node url.parse,</span></span>
+<span class="line"><span>                      Rust url, .NET Uri</span></span>
+<span class="line"><span>REJECT                Java URI, Ruby URI</span></span>
+<span class="line"><span>:80                   Py yarl</span></span></code></pre>
+<h3 id="three-slashes">Three slashes</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http:///evil.local/path</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>(empty)               Go net/url, Go fasthttp, Py urlsplit, Node</span></span>
+<span class="line"><span>                      url.parse, Java URI, Java URL, Ruby URI,</span></span>
+<span class="line"><span>                      Ruby addressable</span></span>
+<span class="line"><span>evil.local            Go whatwg-url, Node URL, Rust url</span></span>
+<span class="line"><span>REJECT                .NET Uri, PHP parse_url</span></span>
+<span class="line"><span>:80                   Py yarl</span></span></code></pre>
+<h3 id="ipv4-as-hex">IPv4 as hex</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://0x7f000001/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>0x7f000001            Go net/url, Go fasthttp, Py urlsplit, Py</span></span>
+<span class="line"><span>                      yarl, Node url.parse, Java URI, Java URL,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>127.0.0.1             Go whatwg-url, Node URL, Rust url, .NET</span></span>
+<span class="line"><span>                      Uri</span></span></code></pre>
+<h3 id="ipv4-as-decimal">IPv4 as decimal</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://2130706433/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>2130706433            Go net/url, Go fasthttp, Py urlsplit, Py</span></span>
+<span class="line"><span>                      yarl, Node url.parse, Java URI, Java URL,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>127.0.0.1             Go whatwg-url, Node URL, Rust url, .NET</span></span>
+<span class="line"><span>                      Uri</span></span></code></pre>
+<h3 id="ipv4-as-octal">IPv4 as octal</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://0177.0.0.1/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>0177.0.0.1            Go net/url, Go fasthttp, Py urlsplit, Py</span></span>
+<span class="line"><span>                      yarl, Node url.parse, Java URI, Java URL,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>127.0.0.1             Go whatwg-url, Node URL, Rust url, .NET</span></span>
+<span class="line"><span>                      Uri</span></span></code></pre>
+<h3 id="ipv4-mapped-ipv6">IPv4-mapped IPv6</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://[::ffff:127.0.0.1]/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>::ffff:127.0.0.1      Go net/url, Py urlsplit, Py yarl, Node</span></span>
+<span class="line"><span>                      url.parse, Java URI, Java URL, .NET Uri,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>::ffff:7f00:1         Node URL, Rust url</span></span>
+<span class="line"><span>[::ffff:127.0.0.1]    Go fasthttp</span></span>
+<span class="line"><span>[::ffff:7f00:1]       Go whatwg-url</span></span></code></pre>
+<h3 id="trailing-dot-mixed-case">Trailing dot, mixed case</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://Safe.Local./</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>safe.local.           Go fasthttp, Go whatwg-url, Py urlsplit,</span></span>
+<span class="line"><span>                      Py yarl, Node URL, Node url.parse, Rust</span></span>
+<span class="line"><span>                      url, .NET Uri</span></span>
+<span class="line"><span>Safe.Local.           Go net/url, Java URI, Java URL, PHP</span></span>
+<span class="line"><span>                      parse_url, Ruby URI, Ruby addressable</span></span></code></pre>
+<h3 id="ideographic-full-stop">Ideographic full stop</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://safe。local/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>safe。local            Go net/url, Go fasthttp, Py urlsplit, Java</span></span>
+<span class="line"><span>                      URI, Java URL, .NET Uri, PHP parse_url,</span></span>
+<span class="line"><span>                      Ruby addressable</span></span>
+<span class="line"><span>safe.local            Go whatwg-url, Py yarl, Node URL, Node</span></span>
+<span class="line"><span>                      url.parse, Rust url</span></span>
+<span class="line"><span>REJECT                Ruby URI</span></span></code></pre>
+<h3 id="null-byte-in-the-host">Null byte in the host</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://safe.local%00.evil.local/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>safe.local%00.evil.l  Py urlsplit, Py yarl, Java URI, Java URL,</span></span>
+<span class="line"><span>                      PHP parse_url, Ruby URI, Ruby addressable</span></span>
+<span class="line"><span>REJECT                Go net/url, Go fasthttp, Go whatwg-url,</span></span>
+<span class="line"><span>                      Node URL, Rust url, .NET Uri</span></span>
+<span class="line"><span>safe.local            Node url.parse</span></span></code></pre>
+<h3 id="ip-classifiers-the-special-use-gap">IP classifiers: the special-use gap</h3>
+<p>Every stdlib classifier below was asked about the same 53 wire-confirmed
+transition-class addresses: NAT64 well-known and local, CGNAT, IPv4-compatible,
+SIIT, 6to4, Teredo, IPv4-mapped, and the rest.</p>
+<p>A gap is any address the classifier fails to identify as special-use: it either
+calls it ordinary public space, or refuses to parse it at all. Both leave the caller
+unprotected, so both count.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>classifier         version                           public  reject   gap</span></span>
+<span class="line"><span>--------------------------------------------------------------------------</span></span>
+<span class="line"><span>Ruby IPAddr        3.3.11                                41       5    46</span></span>
+<span class="line"><span>Go net.IP.Is*      go1.26.4                              40       5    45</span></span>
+<span class="line"><span>Java InetAddress   21.0.11                               40       5    45</span></span>
+<span class="line"><span>Node ipaddr.js     2.4.0                                 41       0    41</span></span>
+<span class="line"><span>.NET IPAddress     8.0.27                                40       0    40</span></span>
+<span class="line"><span>Rust std::net      1.95.0                             35       5    40</span></span>
+<span class="line"><span>PHP filter_var     8.3.31                                30       5    35</span></span>
+<span class="line"><span>Python ipaddress   3.12.13                               26       5    31</span></span>
+<span class="line"><span>--------------------------------------------------------------------------</span></span>
+<span class="line"><span>                                                                 of    53</span></span></code></pre>
+<h3 id="how-to-read-this">How to read this</h3>
+<p>Two libraries on different lines of the same block are a seam. If one of them is
+your guard and the other is your fetcher, the seam is in your application, and
+the only question left is whether an attacker can reach it.</p>
+<p>Which parser is correct is usually the wrong question. Several of these are
+defensible readings of a genuinely ambiguous grammar. What matters is whether the
+component that decides and the component that dials sit on the same line.</p>
+<p>Everything reproduces: <code>bash orchestrate.sh all</code> in <code>tinker/oracle/</code>, Docker only,
+no manual steps. Version drift is expected, which is why they are pinned.</p>
+<h2 id="the-quirks-a-differential-cannot-see">The quirks a differential cannot see</h2>
+<p>A differential oracle only reports disagreement, which leaves it blind in two
+directions. Both of them matter.</p>
+<h3 id="agreement-is-not-safety">Agreement is not safety</h3>
+<p>These inputs produce no differential at all. Every one of the fourteen parsers
+returns the same host, and for five of them, that agreed host is the
+attacker’s. A guard built by comparing two parsers sees consensus and passes.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>http://169.254.169.254%5C@example.com/../latest/api/token</span></span>
+<span class="line"><span>    all 14 -> example.com</span></span>
+<span class="line"><span>http://safe.local%23@evil.local/</span></span>
+<span class="line"><span>    all 14 -> evil.local</span></span>
+<span class="line"><span>http://safe.local%3F@evil.local/</span></span>
+<span class="line"><span>    all 14 -> evil.local</span></span>
+<span class="line"><span>http://safe.local@internal.local/</span></span>
+<span class="line"><span>    all 14 -> internal.local</span></span>
+<span class="line"><span>https://safe.local%5C@evil.local/</span></span>
+<span class="line"><span>    all 14 -> evil.local</span></span></code></pre>
+<p>The last one is the marquee payload’s own negative control. Every parser agrees,
+which is why it is safe. It is also why unanimity tells you nothing about the
+string itself: all it reports is that the parsers behaved the same way.</p>
+<h3 id="how-strict-is-each-parser">How strict is each parser</h3>
+<p>Refusal rate over the same 80 crafted inputs. A low number is a design choice
+rather than a defect, but a parser that never refuses hands every decision to you.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Ruby URI           26/80   32%  ###########</span></span>
+<span class="line"><span>.NET Uri           20/80   25%  ########</span></span>
+<span class="line"><span>Go net/url         15/80   19%  ######</span></span>
+<span class="line"><span>Java URL           13/80   16%  ######</span></span>
+<span class="line"><span>Java URI           11/80   14%  #####</span></span>
+<span class="line"><span>Go fasthttp        11/80   14%  #####</span></span>
+<span class="line"><span>Py yarl             7/80    9%  ###</span></span>
+<span class="line"><span>Rust url            6/80    8%  ###</span></span>
+<span class="line"><span>Node URL            6/80    8%  ###</span></span>
+<span class="line"><span>Go whatwg-url       6/80    8%  ###</span></span>
+<span class="line"><span>Ruby addressable    2/80    2%  #</span></span>
+<span class="line"><span>Node url.parse      2/80    2%  #</span></span>
+<span class="line"><span>PHP parse_url       1/80    1%  </span></span>
+<span class="line"><span>Py urlsplit         0/80    0%  </span></span></code></pre>
+<p><code>urllib.parse.urlsplit</code> refused nothing at all, and PHP’s <code>parse_url</code> refused
+one input in eighty. Both are documented as splitters rather than validators, so
+this is honest behaviour, but a guard that treats either as a validator has no
+validator.</p>
+<h3 id="lone-outliers">Lone outliers</h3>
+<p>Cases where exactly one parser out of fourteen produced its answer. These are the
+behaviours to remember per library.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Ruby URI  (10 lone results)</span></span>
+<span class="line"><span>    http://127。0。0。1/</span></span>
+<span class="line"><span>        -> REJECT</span></span>
+<span class="line"><span>    http://169．254．169．254/</span></span>
+<span class="line"><span>        -> REJECT</span></span>
+<span class="line"><span>Node url.parse  (8 lone results)</span></span>
+<span class="line"><span>    //evil.local/path</span></span>
+<span class="line"><span>        -> (empty)</span></span>
+<span class="line"><span>    http://%31%32%37%2e%30%2e%30%2e%31/</span></span>
+<span class="line"><span>        -> (empty)</span></span>
+<span class="line"><span>Go fasthttp  (8 lone results)</span></span>
+<span class="line"><span>    http://[0:0:0:0:0:0:0:1]/</span></span>
+<span class="line"><span>        -> [0:0:0:0:0:0:0:1]</span></span>
+<span class="line"><span>    http://[::ffff:127.0.0.1]/</span></span>
+<span class="line"><span>        -> [::ffff:127.0.0.1]</span></span>
+<span class="line"><span>.NET Uri  (5 lone results)</span></span>
+<span class="line"><span>    http://[::a9fe:a9fe]/</span></span>
+<span class="line"><span>        -> ::169.254.169.254</span></span>
+<span class="line"><span>    http://[fe80::1%25eth0]/</span></span>
+<span class="line"><span>        -> fe80::1</span></span>
+<span class="line"><span>Java URL  (5 lone results)</span></span>
+<span class="line"><span>    http://a:b@safe.local@internal.local/</span></span>
+<span class="line"><span>        -> (empty)</span></span>
+<span class="line"><span>    http://a@b@c/</span></span>
+<span class="line"><span>        -> (empty)</span></span>
+<span class="line"><span>Py yarl  (4 lone results)</span></span>
+<span class="line"><span>    http:///evil.local/path</span></span>
+<span class="line"><span>        -> :80</span></span>
+<span class="line"><span>    http:/evil.local/path</span></span>
+<span class="line"><span>        -> :80</span></span>
+<span class="line"><span>Go whatwg-url  (3 lone results)</span></span>
+<span class="line"><span>    http://[0:0:0:0:0:0:0:1]/</span></span>
+<span class="line"><span>        -> [::1]</span></span>
+<span class="line"><span>    http://[::ffff:127.0.0.1]/</span></span>
+<span class="line"><span>        -> [::ffff:7f00:1]</span></span>
+<span class="line"><span>Java URI  (3 lone results)</span></span>
+<span class="line"><span>    http://a:b@safe.local@internal.local/</span></span>
+<span class="line"><span>        -> a:b@safe.local@internal.local</span></span>
+<span class="line"><span>    http://a@b@c/</span></span>
+<span class="line"><span>        -> a@b@c</span></span>
+<span class="line"><span>Go net/url  (1 lone results)</span></span>
+<span class="line"><span>    http://[fe80::1%25eth0]/</span></span>
+<span class="line"><span>        -> fe80::1%eth0</span></span></code></pre>
+<h3 id="what-nobody-normalises">What nobody normalises</h3>
+<p>The other blind spot. Two inputs that name the same host are handed back as two
+different strings, by almost everyone, so the disagreement is not between
+parsers, it is between a parser and your allowlist.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>A  https://safe.local./</span></span>
+<span class="line"><span>B  https://Safe.Local./</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>returns them differently (6 of 14):</span></span>
+<span class="line"><span>  Go net/url         safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>  Java URI           safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>  Java URL           safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>  PHP parse_url      safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>  Ruby URI           safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>  Ruby addressable   safe.local.  |  Safe.Local.</span></span>
+<span class="line"><span>folds them together (8 of 14):</span></span>
+<span class="line"><span>  Go fasthttp        both -> safe.local.</span></span>
+<span class="line"><span>  Go whatwg-url      both -> safe.local.</span></span>
+<span class="line"><span>  Py urlsplit        both -> safe.local.</span></span>
+<span class="line"><span>  Py yarl            both -> safe.local.</span></span>
+<span class="line"><span>  Node URL           both -> safe.local.</span></span>
+<span class="line"><span>  Node url.parse     both -> safe.local.</span></span>
+<span class="line"><span>  Rust url           both -> safe.local.</span></span>
+<span class="line"><span>  .NET Uri           both -> safe.local.</span></span></code></pre>
+<p>Host case. RFC 3986 6.2.2.1 makes the host case-insensitive and says a
+normaliser SHOULD lowercase it.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>A  http://[::1]/</span></span>
+<span class="line"><span>B  http://[0:0:0:0:0:0:0:1]/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>returns them differently (9 of 14):</span></span>
+<span class="line"><span>  Go net/url         ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Go fasthttp        [::1]  |  [0:0:0:0:0:0:0:1]</span></span>
+<span class="line"><span>  Py urlsplit        ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Node url.parse     ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Java URI           ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Java URL           ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  PHP parse_url      ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Ruby URI           ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>  Ruby addressable   ::1  |  0:0:0:0:0:0:0:1</span></span>
+<span class="line"><span>folds them together (5 of 14):</span></span>
+<span class="line"><span>  Go whatwg-url      both -> [::1]</span></span>
+<span class="line"><span>  Py yarl            both -> ::1</span></span>
+<span class="line"><span>  Node URL           both -> ::1</span></span>
+<span class="line"><span>  Rust url           both -> ::1</span></span>
+<span class="line"><span>  .NET Uri           both -> ::1</span></span></code></pre>
+<p>IPv6 compression. RFC 5952 gives one canonical text form; these are the same
+address.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>A  http://0x7f000001/</span></span>
+<span class="line"><span>B  http://2130706433/</span></span>
+<span class="line"><span>----------------------------------------------------------------</span></span>
+<span class="line"><span>returns them differently (10 of 14):</span></span>
+<span class="line"><span>  Go net/url         0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Go fasthttp        0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Py urlsplit        0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Py yarl            0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Node url.parse     0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Java URI           0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Java URL           0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  PHP parse_url      0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Ruby URI           0x7f000001  |  2130706433</span></span>
+<span class="line"><span>  Ruby addressable   0x7f000001  |  2130706433</span></span>
+<span class="line"><span>folds them together (4 of 14):</span></span>
+<span class="line"><span>  Go whatwg-url      both -> 127.0.0.1</span></span>
+<span class="line"><span>  Node URL           both -> 127.0.0.1</span></span>
+<span class="line"><span>  Rust url           both -> 127.0.0.1</span></span>
+<span class="line"><span>  .NET Uri           both -> 127.0.0.1</span></span></code></pre>
+<p>IPv4 numeric forms. Both are 127.0.0.1 once the resolver sees them. The four
+WHATWG-aligned parsers canonicalise at parse time; the other ten hand the literal
+string straight through and let the resolver decide later. That split is the F2
+handoff in one line: whether your guard sees <code>0x7f000001</code> or <code>127.0.0.1</code> depends
+entirely on which parser you reached for.</p>
+<p>If your allowlist holds <code>safe.local</code> and the parser hands you <code>Safe.Local.</code>, the
+comparison fails open or closed depending on which way you wrote it. That is not
+a parser bug. It is a normalisation step nobody agreed to own.</p>
+<h2 id="what-the-measurements-show">What the measurements show</h2>
+<p>One full <code>orchestrate.sh all</code> run emits 1855 verdicts over 16 validators × 5 clients across eight languages: SURVIVES=302, BLOCKED=580, AGREE=803, PARSE-REJECT=166, NO-OP=4. Every SURVIVES is backed by a captured wire line in <code>out/capture_*.jsonl</code>, the emitted <code>:authority</code> was observed, not inferred. The tuple diffed at each hop is <code>{validator-host, resolver-IP, emitted :authority, dialed-IP}</code>.</p>
+<h3 id="the-marquee-composition-gap-1">The marquee composition (gap #1)</h3>
+<p>The changedetection.io shape <code>http://169.254.169.254\@example.com/../latest/api/token</code>, delivered through an F5b redirect, at the redirect hop:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>validator (guard parses the redirect target)   -> host              client              -> dialed            verdict</span></span>
+<span class="line"><span>------------------------------------------------------------------------------------------------------------------------</span></span>
+<span class="line"><span>fasthttp / urllib.parse / Python urlsplit /…      example.com        urllib3                169.254.169.254   SURVIVES</span></span>
+<span class="line"><span>whatwg-url / Node WHATWG / legacy url.parse       169.254.169.254    urllib3                169.254.169.254   BLOCKED</span></span>
+<span class="line"><span>net/url / yarl                                    REJECT (\ invalid) urllib3                —                 PARSE-REJECT</span></span>
+<span class="line"><span>any                                               example.com        libcurl / Go net/http  example.com /     AGREE /</span></span>
+<span class="line"><span>                                                                                            refused           BLOCKED</span></span></code></pre>
+<p>Four (validator, client) pairs SURVIVE. The blocked rows are blocked for an accidental reason: the guard’s own extracted host is itself internal, so the guard catches the request by classifying <code>169.254.169.254</code>, not by agreeing with its fetcher. In the full run the parse-rejecting set is wider than the two named above: <code>out/prevalence.md</code> §1 also records <code>System.Uri</code>, <code>java.net.URI</code>, <code>java.net.URL</code> and Ruby stdlib <code>URI</code> rejecting the literal backslash.</p>
+<p>Four real clients split four ways: urllib3 survives, stdlib <code>urllib</code> errors, Go <code>net/http</code> parse-rejects, libcurl stays safe. That is honest non-uniformity, not a uniform client-side bug.</p>
+<p>The <code>%5C@</code> variant makes every parser re-agree on <code>example.com</code>: 0 survivals, negative-control gate PASS. That is what isolates the defect. The bug is not “backslash is dangerous” and not “urllib3 is dangerous”. It is precisely a validator that reads the backslash as userinfo paired with a fetcher that reads it as a host-terminator. Percent-encode the character and the disagreement disappears, which means the disagreement, not the character: is the vulnerability.</p>
+<p>For a guard: your parser choice is the exploit surface. Extracting the host with <code>urllib.parse</code> and fetching with <code>requests</code> is a survivable pair on this input; extracting with <code>net/url</code> is not, because it refuses to hand you a host at all.</p>
+<h3 id="the-special-use-classifier-gap-gaps-67">The special-use classifier gap (gaps #6/#7)</h3>
+<p>Across the wire-confirmed F12 corpus (NAT64 well-known and local, CGNAT, IPv4-compat, SIIT, 6to4, Teredo, …), every transition class is allowed as <code>public</code> by 8 of 8 stdlib IP classifiers. Per-classifier gap totals, of 53 addresses:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Ruby IPAddr                        46</span></span>
+<span class="line"><span>Java InetAddress                   45</span></span>
+<span class="line"><span>Go net.IP.Is*                      45</span></span>
+<span class="line"><span>Node ipaddr.js                     41</span></span>
+<span class="line"><span>.NET IPAddress                     40</span></span>
+<span class="line"><span>Rust std                           40</span></span>
+<span class="line"><span>PHP filter_var(NO_PRIV|NO_RES)     35</span></span>
+<span class="line"><span>Python ipaddress                   31</span></span></code></pre>
+<p>Eight of the eight call every transition class public. CGNAT <code>100.64.0.1</code> and the NAT64 set are 8/8: no mainstream stdlib <code>is_private</code>-style predicate covers RFC 6598 or the IPv6 transition prefixes. <code>100.100.100.100</code>, <code>100.127.255.254</code>, <code>168.63.129.16</code>, <code>::ffff:0:7f00:1</code> and <code>::ffff:0:a9fe:a9fe</code> are also 8/8. This is the library-level distribution behind the Lemmy, Strapi, Directus, imagor and Gitea product scalps.</p>
+<p>One cross-library split surfaces: <code>::ffff:169.254.169.254</code> is un-embedded and blocked by Python, Rust, Java, .NET and PHP, but passes as public under Node <code>ipaddr.js</code> and Ruby <code>IPAddr</code>.</p>
+<p>For a guard: <code>ip.is_private()</code> is not a deny list. Nothing in any of the eight standard libraries knows that <code>64:ff9b::a9fe:a9fe</code> or <code>100.64.0.1</code> reaches anything. Those prefixes have to be enumerated by hand.</p>
+<h3 id="idn-engine-divergence-gaps-34">IDN engine divergence (gaps #3/#4)</h3>
+<p>On the inputs the UTS-46 corpus itself marks 2003≠2008, the 15 engines split cleanly:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>input        IDNA2003 fold                          IDNA2008 / UTS46-N</span></span>
+<span class="line"><span>----------------------------------------------------------------------------------------</span></span>
+<span class="line"><span>faß.de       fass.de   — Python codecs.idna,        xn--fa-hia.de — Go, Rust, Node</span></span>
+<span class="line"><span>                         PHP UTS46-transitional,                    (domainToASCII+tr46),</span></span>
+<span class="line"><span>                         Java IDN.toASCII                           .NET, Ruby, Python idna</span></span>
+<span class="line"><span>a‌b (ZWNJ)    ab        — same three                 xn--ab-j1t    — the 2008 engines</span></span></code></pre>
+<p>Over the whole 6390-row UTS-46 corpus, transitional matches concentrate in the same places: <code>codecs.idna</code> 896, PHP <code>idn_to_ascii(UTS46-transitional)</code> 238, <code>java.net.IDN.toASCII</code> 106; the remaining engines score 0 or 2. Errored counts are high for the strict engines (Python <code>idna</code>, .NET <code>IdnMapping</code>) because the corpus is full of intentionally-invalid registrable inputs, the match and deviation columns carry the signal, not the error rate.</p>
+<p>A guard on Java <code>IDN</code> computes <code>fass.de</code>. A fetcher on Go or Rust computes <code>xn--fa-hia.de</code>. Those are different domains, and an attacker registers the one the guard allowlists while the fetcher reaches the other. Footgun bonus: Go <code>idna.Punycode</code> and <code>idna.Registration</code> do not lowercase, so <code>Faß.de</code> → <code>xn--Fa-hia.de</code>.</p>
+<h3 id="h2-host--authority-desync-gap-2">H2 <code>Host</code> ≠ <code>:authority</code> desync (gap #2)</h3>
+<p>A raw h2c framer sending <code>:authority=allowed.example</code> with <code>Host=&#x3C;internal></code> is accepted, 200, both values exposed, by the Go <code>x/net/http2</code> origin for all four internal Host targets (<code>169.254.169.254</code>, <code>10.0.0.1</code>, <code>100.64.0.1</code>, <code>127.0.0.1</code>). The synced control is AGREE. 4 of 5 pairs SURVIVE. The origin is 7540-pinned and does not enforce RFC 9113 §8.3.1.</p>
+<p>Reach is bounded exactly as the standalone <code>tinker/http2_desync_7540/</code> lab found: origin libraries, not a forwarding proxy chain. This is a single-node confused deputy, a guard reading <code>:authority</code> and a sink reading <code>Host</code> inside one process, not a proxy-chain smuggle.</p>
+<h3 id="validator-host-extraction-divergence">Validator host-extraction divergence</h3>
+<p>Per family, inputs on which the registered URL parsers disagree about the extracted host:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>family                                   disagree   total</span></span>
+<span class="line"><span>---------------------------------------------------------</span></span>
+<span class="line"><span>wpt                                          470      809</span></span>
+<span class="line"><span>P14_redirect_reparse                          10       15</span></span>
+<span class="line"><span>P06_idn_mapping_and_ignored_chars              6        6</span></span>
+<span class="line"><span>P03_malformed_slashes_special_scheme           5        5</span></span>
+<span class="line"><span>P05_unicode_label_separators                   5        5</span></span>
+<span class="line"><span>P08_ipv6_text_and_zone                         5        5</span></span>
+<span class="line"><span>P09_trailing_dot_case_default_port             5        6</span></span>
+<span class="line"><span>P01_backslash_at_authority                     4        5</span></span>
+<span class="line"><span>P04_percent_encoded_host_delimiters            4        6</span></span>
+<span class="line"><span>P07_ipv4_numeric_forms                         4        4</span></span>
+<span class="line"><span>P02_multi_at_userinfo                          3        4</span></span>
+<span class="line"><span>P12_control_null_bytes                         3        5</span></span></code></pre>
+<p>Three families disagree on every input in them. “The host” is not a property of a URL string; it is a property of the parser you asked.</p>
+<h3 id="dial-layer-splits">Dial-layer splits</h3>
+<p>SURVIVES verdicts by corpus family and client:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>family                                operator       client                SURVIVES</span></span>
+<span class="line"><span>------------------------------------------------------------------------------------</span></span>
+<span class="line"><span>P14_redirect_reparse                  F5b_redirect   requests/urllib3            54</span></span>
+<span class="line"><span>P14_redirect_reparse                  F5b_redirect   libcurl                     42</span></span>
+<span class="line"><span>P14_redirect_reparse                  F5b_redirect   net/http                    42</span></span>
+<span class="line"><span>P14_redirect_reparse                  F5b_redirect   urllib(stdlib)              42</span></span>
+<span class="line"><span>f12                                   none           net/http                    24</span></span>
+<span class="line"><span>f12                                   none           requests/urllib3            24</span></span>
+<span class="line"><span>f12                                   none           urllib(stdlib)              24</span></span>
+<span class="line"><span>f12                                   none           libcurl                     18</span></span>
+<span class="line"><span>P04_percent_encoded_host_delimiters   none           requests/urllib3            12</span></span>
+<span class="line"><span>P04_percent_encoded_host_delimiters   none           urllib(stdlib)              12</span></span>
+<span class="line"><span>P01_backslash_at_authority            none           libcurl                      4</span></span>
+<span class="line"><span>H2_desync                             H2_desync      go-x-net-http2-framer(7540)  4</span></span></code></pre>
+<p>Per gap rank: #1 → 184 SURVIVES, #6 → 90, #7 → 90, #2 → 4.</p>
+<p>No client is uniformly safe. libcurl is the safe client on the marquee redirect shape and the only surviving client on the <code>P01_backslash_at_authority</code> family dialled directly. Picking a “safer” HTTP client moves which inputs survive; it does not remove the class.</p>
+<h3 id="honest-empty-cells">Honest empty cells</h3>
+<p>F14 (Alt-Svc / SVCB) is a PREDICTED operator with zero product scalps. The <code>altsvc_probe</code> emits NO-OP, no dialed client acted on the advertised hint. It is not faked positive.</p>
+<p><code>decodes_vs_routes</code> is taken from the wire-confirmed F12 routability map, never from lab routing: NAT64 well-known says <em>decodes to</em>, CGNAT and NAT64-local say <em>routes to</em>.</p>
+<p>The resolve stage runs the Go pure-Go and cgo resolver interfaces side by side plus synthetic NAT64/compat/mapped un-embedding, and its rows are on record in <code>out/resolve_go.jsonl</code>. The run publishes no resolver divergence total. There is no number to quote here, so none is quoted.</p>
+<p>Re-running <code>dial</code> and <code>diff</code> yields identical verdicts, modulo the ephemeral source port in <code>dialed_ip</code> and the documented SVCB equal-priority shuffle (gap #10).</p>
+<h2 id="the-fifteen-families">The fifteen families</h2>
+<p>Indexed by the pipeline stage where two components can legally disagree, not by
+symptom. Tier <strong>A/B</strong> means confirmed in a shipped product, <strong>C</strong> a specimen wired
+in real code, <strong>D</strong> a mechanism assembled from library APIs with no product behind
+it. The full derivation, spec anchors and per-product evidence are in the article.</p>
+<h3 id="f1-raw-authority-boundary-split">F1: Raw authority boundary split</h3>
+<p>Two parsers disagree about where the authority ends: backslash, <code>@</code>, malformed
+slashes, encoded delimiters. <strong>A</strong>: five products. changedetection.io reached live
+IMDS through it; spring-cloud-gateway turned it into admin auth bypass.</p>
+<h3 id="f2-resolver-handoff-after-safe-parse">F2: Resolver handoff after safe parse</h3>
+<p>The parser returns a harmless host; the resolver canonicalises it to loopback or
+metadata. <strong>A</strong>: Mealie approved an A record while the client dialled AAAA; Firefly
+III did the same through <code>gethostbyname</code> against Guzzle.</p>
+<h3 id="f3-idn--unicode-normalisation-drift">F3: IDN / Unicode normalisation drift</h3>
+<p>The validator stores Unicode host text; something downstream maps it onto a
+different DNS name. Two sanctioned ToASCII pipelines exist. <strong>C</strong>: Misskey stores
+blocklist entries lowercased but checks them punified, so they never match.</p>
+<h3 id="f4-authority-identity-split">F4: Authority identity split</h3>
+<p>Validation, DNS, wire authority and cache key disagree about the canonical
+authority: trailing dot, default port, case. <strong>A (partial)</strong>: tuwunel’s IPv6-bracket
+mismatch. No clean port or pool case found.</p>
+<h3 id="f5-path-normalisation-join-redirect-reparse">F5: Path normalisation, join, redirect reparse</h3>
+<p>The verdict is computed before encoded dot-segments or a redirect change the
+target. F5b is the redirect half, where the validator is never re-run on
+<code>Location:</code>. <strong>A</strong>: Thumbor at default config; Open WebUI’s Playwright loader
+follows 302 with no knob to stop it.</p>
+<h3 id="f6-header-controlled-authority-after-validation">F6: Header-controlled authority after validation</h3>
+<p>The URL passes, then a caller-controlled <code>Host</code> or <code>X-Forwarded-Host</code> changes what
+is trusted or what goes on the wire. <strong>A</strong>: XWiki poisons <code>trustedDomains</code>
+unauthenticated; n8n’s Host header walks past its own SSRF allowlist.</p>
+<h3 id="f7-h2-pseudo-header-construction-split">F7: H2 pseudo-header construction split</h3>
+<p>The app validates a URL; the H/2 client API accepts an opaque <code>:authority</code> or
+<code>:path</code> the validator never saw. <strong>D</strong>: six libraries expose the surface. No
+audited product exposed all three required conditions at once.</p>
+<h3 id="f8-mutable-builder--accessor-toctou">F8: Mutable builder / accessor TOCTOU</h3>
+<p>One accessor is validated; a builder, setter or serialiser then emits a different
+authority. No spec covers the URL-object lifecycle inside a program, the absence
+is the seam. <strong>A</strong>: Apache ShenYu overwrites its upstream from an attacker header,
+wire-confirmed to IMDS credential theft on live EC2.</p>
+<h3 id="f9-string-to-byte-delimiter-injection">F9: String-to-byte delimiter injection</h3>
+<p>High-Unicode survives validation as a <code>String</code>, then a framer narrows it to bytes
+and manufactures ASCII delimiters on the wire. <strong>D</strong>: primitive disclosed to
+Node.js. A hunt across seven products found none combining all the conditions.</p>
+<h3 id="f10-deployment-dependent-parser-backend">F10: Deployment-dependent parser backend</h3>
+<p>Same application, different behaviour under cgo versus pure resolver, or curl
+versus native. <strong>Dropped</strong> from the article; kept only so report numbering resolves.</p>
+<h3 id="f11-validate-then-discard-the-pin">F11: Validate-then-discard-the-pin</h3>
+<p>The guard resolves and approves; the fetcher re-resolves with nothing binding the
+two lookups. <strong>A</strong>: GitLab computes a correct DNS pin and then throws it away.
+Rebinding is old; the discard-the-pin variant inside modern guard libraries is not.</p>
+<h3 id="f12-address-family--classifier-gap">F12: Address-family / classifier gap</h3>
+<p>The resolver returns an address family the denylist never covered: NAT64, 6to4,
+IPv4-mapped, CGNAT. <strong>A</strong> at default config in Lemmy, Strapi and Directus, plus
+nine more. The oracle measures the gap at 8 of 8 stdlib classifiers.</p>
+<h3 id="f13-tls-server-identity-split">F13: TLS server-identity split</h3>
+<p>The certificate the network trusts is not the host that was approved. <strong>Honest
+negative</strong>: RFC 9525 is tight enough here that thin coverage is spec rigour, not
+under-hunting. Three shipped stacks ship cert-off anyway, all bounded: Elixir Gun
+QUIC <code>verify => none</code>, Radarr/Sonarr/Lidarr SNI bypass, Jenkins URL Trigger
+trust-all since 2013.</p>
+<h3 id="f14-post-validation-routing">F14: Post-validation routing</h3>
+<p>After validation, the response or DNS steers the next fetch elsewhere via Alt-Svc,
+SVCB, ORIGIN or CONNECT-UDP. <strong>C</strong> in library code: curl honours a hostile
+<code>Alt-Svc</code> and carries the original <code>:authority</code> cross-host. No product chains it.</p>
+<h3 id="f15-qpack-framing-divergence">F15: QPACK framing divergence</h3>
+<p>The H/3 analogue of F7, in the field-section codec rather than the URL. <strong>D</strong> —
+.NET’s managed QPACK encoder emits forbidden NUL, CR and LF; picoquic uses raw
+Huffman bytes when decode fails. The shape that lands it is an H3-to-H1
+intermediary. None audited end-to-end.</p>
+<h3 id="scoreboard">Scoreboard</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>  Confirmed in a product (tier A/B)      F1 F2 F4 F5 F6 F8 F11 F12   = 8</span></span>
+<span class="line"><span>  Probe + vendor advisory, no product    F9                          = 1</span></span>
+<span class="line"><span>  Shipped-code specimen, no CVE (C)      F3                          = 1</span></span>
+<span class="line"><span>  Probe-only, forward-looking lab demo   F14 F15                     = 2</span></span>
+<span class="line"><span>  Honest negative (spec-tight, RFC 9525) F13                         = 1</span></span>
+<span class="line"><span>  Probe-only, SaaS hunt active           F7                          = 1</span></span>
+<span class="line"><span>  Dropped from the article               F10                         = 1</span></span></code></pre>
+<p>Eight families have a product behind them. Four do not, and say so. One is a negative result that survives because the spec at that stage is tight enough to make thin coverage evidence rather than absence of effort.</p>
+<h2 id="the-oracle">The oracle</h2>
+<p>A seam map says a gap exists. It does not say who falls into it. This is the instrument that closes that distance: it feeds the same crafted input to N real parsers, classifiers, IDN engines, resolvers and HTTP clients, follows redirect and Alt-Svc hops, and diffs a four-value tuple across every hop. The output is not “this is a GAP”. It is “K of N libraries disagree, here is which, and here is the wire line”.</p>
+<p>The per-product scalps in <code>reports/</code> give instances. This gives the distribution.</p>
+<h3 id="the-tuple">The tuple</h3>
+<p>Every verdict is one comparison of four values at one hop:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>{ validator-host , resolver-IP , emitted :authority , dialed-IP }</span></span>
+<span class="line"><span>       │                │               │                  │</span></span>
+<span class="line"><span>   what a guard     what DNS       what the client     what the socket</span></span>
+<span class="line"><span>   would extract    handed back    committed to on     actually connected</span></span>
+<span class="line"><span>   from this hop    for that host  the wire            to</span></span></code></pre>
+<p>The third value is the one that matters and the one most tools infer. The oracle does not infer it. The capture sink echoes back <code>{authority, host_hdr, path, peer, nonce}</code> for every request it sees, so the emitted <code>:authority</code> is read off the wire and joined to the hop by an <code>X-Oracle-Nonce</code> header the dial view sets itself. <code>peer</code> is the dialed IP. A hop with no <code>captured</code> block means the client never reached capture at that hop, blocked, or DNS failure. That is data, not a gap.</p>
+<h3 id="five-stages">Five stages</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stage      libraries on record (8 languages)</span></span>
+<span class="line"><span>--------   ------------------------------------------------------------------</span></span>
+<span class="line"><span>parse      Go net/url · fasthttp · whatwg-url ; Python urllib.parse · yarl ;</span></span>
+<span class="line"><span>           Node WHATWG-URL · legacy url.parse ; Rust url ; Java URI · URL ;</span></span>
+<span class="line"><span>           .NET System.Uri ; PHP parse_url ; Ruby URI · addressable</span></span>
+<span class="line"><span>classify   Go net.IP.Is* ; Python ipaddress ; Node ipaddr.js ; Rust</span></span>
+<span class="line"><span>           std::net::IpAddr ; Java InetAddress ; .NET IPAddress ;</span></span>
+<span class="line"><span>           PHP filter_var ; Ruby IPAddr</span></span>
+<span class="line"><span>idn        15 engines incl. Python idna (2008) · codecs.idna (2003) ;</span></span>
+<span class="line"><span>           Java IDN (2003) ; PHP idn_to_ascii UTS46-N/T ; Go idna.Lookup ·</span></span>
+<span class="line"><span>           Registration · Punycode ; Rust idna ; Node domainToASCII · tr46 ;</span></span>
+<span class="line"><span>           .NET IdnMapping ; Ruby Addressable::IDNA</span></span>
+<span class="line"><span>resolve    Go pure-Go vs cgo resolver, + synthetic NAT64 / compat / mapped</span></span>
+<span class="line"><span>           un-embed</span></span>
+<span class="line"><span>dial       Go net/http ; requests / urllib3 ; stdlib urllib ; libcurl ;</span></span>
+<span class="line"><span>           raw h2c framer (gap #2)</span></span></code></pre>
+<p>Library version pins are read out of each image at run time and carried in every row, so obsoleted-versus-current drift: RFC 7540 against 9113, IDNA2003 against 2008, RFC 6125 against 9525: is measurable rather than asserted.</p>
+<h3 id="the-lab">The lab</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                    lab bridge oracle_oraclenet  (100.64.0.0/24, RFC 6598)</span></span>
+<span class="line"><span> ┌───────────┐  --dns 100.64.0.2   ┌──────────┐</span></span>
+<span class="line"><span> │ dial view │ ───────────────────▶│ dnsmasq  │  every hostname (incl. computed</span></span>
+<span class="line"><span> │ (per lang)│                     └──────────┘  IDN A-labels) → capture</span></span>
+<span class="line"><span> │           │   redirect.lab:8081 ┌──────────┐  302 Location per ?case=</span></span>
+<span class="line"><span> │  hop walk │ ───────────────────▶│ redirect │  + echoes X-Seen-* so hop-0 lands</span></span>
+<span class="line"><span> │  + force  │   altsvc.lab:8082   ┌──────────┐  Alt-Svc: h2=":internal"</span></span>
+<span class="line"><span> │ IP-lit →  │ ───────────────────▶│  altsvc  │</span></span>
+<span class="line"><span> │  capture  │   capture.lab:80    ┌──────────┐  logs + ECHOES {authority,</span></span>
+<span class="line"><span> └───────────┘ ───────────────────▶│ capture  │  host_hdr, path, peer, nonce}</span></span>
+<span class="line"><span>                                    └──────────┘</span></span></code></pre>
+<p>The dial view follows each redirect hop manually, so every hop is observed and none is collapsed by the client’s own redirect loop. Hostname targets resolve through the wildcard lab DNS. IP-literal targets are forced onto the capture sink by the view: Python <code>getaddrinfo</code> patch, Go <code>DialContext</code> override, curl <code>--connect-to</code>, while the Host the client committed to is left intact. The bridge sits in RFC 6598 CGNAT space, so <code>100.64.x</code> targets route natively: a real peer, not a synthetic one.</p>
+<h3 id="the-verdict-record">The verdict record</h3>
+<p><code>out/verdicts.jsonl</code> carries one record per <code>input × library-pair × hop</code>:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>input, corpus_family, corpus_source</span></span>
+<span class="line"><span>hop, hop_url, operator            operator ∈ none | F5b_redirect | F14_altsvc | F14_svcb</span></span>
+<span class="line"><span>pair       { validator, client }  each "lib@version"</span></span>
+<span class="line"><span>tuple      { validator_host, validator_class, resolver_ip,</span></span>
+<span class="line"><span>             emitted_authority, dialed_ip }</span></span>
+<span class="line"><span>validator_rerun            did a re-validation actually run at this hop</span></span>
+<span class="line"><span>validator_would_have_caught</span></span>
+<span class="line"><span>verdict    SURVIVES | BLOCKED | AGREE | PARSE-REJECT | NEGATIVE-CONTROL | NO-OP</span></span>
+<span class="line"><span>divergence [ "validator_host=example.com but</span></span>
+<span class="line"><span>              emitted_authority=169.254.169.254" ]</span></span>
+<span class="line"><span>gap_refs, decodes_vs_routes, lib_versions</span></span></code></pre>
+<p><code>SURVIVES</code> is the found signal: a validator extracted an allowed host at some hop while the wire shows a disallowed authority or peer, and no re-validation ran. It must be backed by a real captured wire line. <code>BLOCKED</code> means the client refused or the guard’s own host classified internal. <code>NO-OP</code> is the honest empty cell, an operator advertised a hint the client ignored.</p>
+<p><code>decodes_vs_routes</code> is taken from the wire-confirmed F12 routability map, never from lab routing. The verdict says <em>decodes to</em> unless a routable class proves <em>routes to</em>. The well-known NAT64 prefix never routes non-global.</p>
+<p>Joins are by <code>id</code> for parse to dial, by <code>nonce</code> for dial to capture, by host string for resolve to dial. No view binary calls another. They communicate only through JSONL on disk, so any one can be re-run in isolation, and adding a library is one file plus one Dockerfile under <code>views/</code>.</p>
+<h3 id="run-shape">Run shape</h3>
+<p>A full <code>orchestrate.sh all</code> run produces 1855 verdicts over 16 validators × 5 clients. The corpus behind them:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>source</th><th>rows</th><th>role</th></tr></thead><tbody><tr><td><code>payloads.yaml</code> (P01–P15, promoted)</td><td>70</td><td>hand-curated SSRF-shaped core</td></tr><tr><td>WPT <code>urltestdata.json</code></td><td>888</td><td>WHATWG parse differential + expected-host oracle</td></tr><tr><td>UTS-46 <code>IdnaTestV2.txt</code></td><td>6390</td><td>IDNA2003-vs-2008-vs-UTS46 ToASCII vectors</td></tr><tr><td>F12 <code>bypass_corpus.txt</code> (+controls)</td><td>54</td><td>wire-confirmed special-use classifier vectors</td></tr><tr><td>redirect targets (marquee + F12 set)</td><td>13</td><td>F5b operator case table</td></tr></tbody></table>
+<p><code>corpus/dial_subset.jsonl</code> narrows this to the SSRF-shaped inputs worth the expensive wire stage. The corpus is assembled and hash-verified by <code>corpus/build_corpus.py</code> against <code>corpus/corpus.lock</code>. No cell is filled by analogy: every <code>input × library-pair × hop</code> is individually dialed and captured.</p>
+<h3 id="the-negative-control">The negative control</h3>
+<p>A differential oracle that fires on everything measures nothing. The gate is an input that must agree.</p>
+<p>The marquee is <code>http://169.254.169.254\@example.com/../latest/api/token</code> delivered through an F5b redirect. It survives on 4 (validator, client) pairs: validators that read the backslash as userinfo and extract <code>example.com</code>, fasthttp, <code>urllib.parse</code>, Python <code>urlsplit</code>, paired with <code>urllib3</code>, which dials <code>169.254.169.254</code>.</p>
+<p>The control is the same input with the backslash percent-encoded: <code>%5C@</code>. Every parser re-agrees on <code>example.com</code>. Zero survivals. The gate holds.</p>
+<p>That pairing is what makes the positive mean something. The divergence is not a property of the URL shape in general; it is a property of the raw byte the two libraries disagree about. Encode the byte and the disagreement disappears. A <code>SURVIVES</code> on a <code>NEGATIVE-CONTROL</code> input is not a finding, it is an oracle bug, the record is stamped <code>"oracle_bug":true</code> and flagged loudly.</p>
+<p>The same discipline runs through the rest. F14 (Alt-Svc / SVCB) is a predicted operator with zero product scalps, so it emits <code>NO-OP</code> until a client is observed acting on the hint. The H2 desync run carries a synced control that returns <code>AGREE</code>. High IDN error counts on strict engines are noise from a corpus full of intentionally-invalid inputs; the match and deviation columns carry the signal, not the error rate.</p>
+<h3 id="reproduce">Reproduce</h3>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>cd tinker/oracle &#x26;&#x26; bash orchestrate.sh all</span></span></code></pre>
+<p>Zero manual steps, Docker-only: Go via <code>golang:latest</code>, every other view via its official image. <code>up → corpus → parse → resolve → dial → diff → down</code>. Stages run individually if the lab should stay up for inspection:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>bash orchestrate.sh up corpus parse resolve dial diff</span></span>
+<span class="line"><span>bash orchestrate.sh down</span></span></code></pre>
+<p>Then:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>less out/prevalence.md          # family × stage × library-pair matrix + gap tallies</span></span>
+<span class="line"><span>less out/verdicts.jsonl         # one record per input × library-pair × hop</span></span>
+<span class="line"><span>less out/capture_*.jsonl        # the durable wire-evidence audit log</span></span></code></pre>
+<p><code>out/capture_*.jsonl</code> is the lab servers’ own audit log of every observed request, written independently of any client. Re-running <code>dial</code> and <code>diff</code> yields identical verdicts modulo the ephemeral source port in <code>dialed_ip</code>. That was verified, not assumed.</p>
+<h2 id="the-seam-space">The seam space</h2>
+<p>The pipeline is fourteen stages long. A URL string enters at stage 1 and wire bytes leave at stage 14, and between them sit thirteen handoffs where one component passes a representation of the request to the next. The spec walk behind the thesis establishes the shape of it: the specs authorise validator/fetcher disagreement at every handoff except TLS identity verification. Nine stages are spec-loose, one is tight, four are mixed.</p>
+<p>The catalogue takes that shape and makes it enumerable. One cell is one RFC clause that authorises at least two defensible implementations of the same step. Not a bug, not a payload, a clause. Each cell carries its governing text, its looseness class (<code>MUST</code>/<code>SHOULD</code>/<code>MAY</code>/<code>unspecified</code>/<code>implementation-defined</code>/<code>conflicting-specs</code>/<code>obsoleted-vs-current-drift</code>/<code>non-normative</code>), the bug family it feeds, and a status:</p>
+<ul>
+<li><code>FOUND</code>: live or probe-confirmed.</li>
+<li><code>PARTIAL</code>: spec-anchored, half-confirmed. One leg observed, the other assumed.</li>
+<li><code>GAP</code>, the spec says the disagreement is permitted; nobody has confirmed it.</li>
+</ul>
+<h3 id="coverage">Coverage</h3>
+<p><code>seam_space/map/catalog.md</code> was generated on 2026-06-08 from the 14-stage enumeration workflow <code>ssrf-seam-space-enumeration</code>. Its header line declares 205 seams at 36 FOUND, 60 PARTIAL, 109 GAP. The fourteen per-stage rows do not sum to that. They sum to 187, and the file contains exactly 187 enumerated cells, one for each row’s arithmetic. The header total is unreconciled; the per-stage rows are what the cells support.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Stage                                    total   FOUND  PARTIAL    GAP</span></span>
+<span class="line"><span> 1  URL acquisition + pre-parse            13       1       8        4</span></span>
+<span class="line"><span> 2  URI generic parse (component split)    15       6       4        5</span></span>
+<span class="line"><span> 3  Authority subparse (user/host/port)    14       3       3        8</span></span>
+<span class="line"><span> 4  Host classification (IP / reg-name)    12       7       2        3</span></span>
+<span class="line"><span> 5  IDN / Unicode label processing         13       0       4        9</span></span>
+<span class="line"><span> 6  Normalisation ladder (3986 §6.2)       14       2       3        9</span></span>
+<span class="line"><span> 7  Origin construction                    12       3       5        4</span></span>
+<span class="line"><span> 8  Name resolution (DNS/hosts/NSS/SVCB)   15       5       2        8</span></span>
+<span class="line"><span> 9  Address-set ordering / selection       10       3       3        4</span></span>
+<span class="line"><span>10  Connect / ALPN / TLS handshake         13       0       4        9</span></span>
+<span class="line"><span>11  SNI emission                           10       1       5        4</span></span>
+<span class="line"><span>12  TLS identity verification              12       1       6        5</span></span>
+<span class="line"><span>13  Authority emission (Host/:authority)   14       3       6        5</span></span>
+<span class="line"><span>14  Post-validation routing                20       1       6       13</span></span>
+<span class="line"><span>-----------------------------------------------------------------------</span></span>
+<span class="line"><span>    sum of rows                           187      36      61       90</span></span>
+<span class="line"><span>    catalogue header line                 205      36      60      109</span></span></code></pre>
+<p>Thirteen of the 36 FOUND cells sit in stages 2 and 4, the component split and the host classifier. That is the layer Tsai’s 2017 work opened, and it is the layer that has been worked.</p>
+<p>Stage 14 holds the most unchecked cells in absolute terms: 13 GAP of 20, against a single FOUND. Stages 5, 6 and 10 hold nine GAP cells each. Stages 5 and 10 hold thirteen cells apiece and zero FOUND, no cell in IDN label processing or in connection establishment has been wire-confirmed. Stage 3 and stage 8 hold eight GAP each.</p>
+<p>Part of that is a corpus problem, not a hunting problem. Each stage brief lists the specs it needed and did not have. UTS-46, the actual ToASCII algorithm, the mapping table, the <code>Transitional_Processing</code>/<code>UseSTD3ASCIIRules</code>/<code>CheckBidi</code> flag definitions: is absent from <code>specs/</code>, and it is named as the single most load-bearing missing document for Stage 5. RFC 7301 (ALPN) is absent from Stage 10’s governing set. The WHATWG Infra Standard, which defines the codepoint membership of every Stage-1 strip step, is absent. <code>urltestdata.json</code>, the differential oracle for stages 1-3, is absent. Stage 12 is the one stage the thesis calls genuinely tight, and it still carries 6 PARTIAL and 5 GAP.</p>
+<h3 id="the-ranked-gaps">The ranked gaps</h3>
+<p><code>seam_space/map/gaps.md</code> ranks fifteen GAP cells by spec-looseness × reach × novelty. These are open problems. They are published as open problems.</p>
+<p>#1: control-octet wire-injection at authority emission. RFC 9110 §5.5 says field values are octets carrying no CR/LF/NUL; RFC 9112 §2.2 handles bare CR; RFC 3986 §3.3 and §3.2 leave control octets in path and authority unspecified <em>for emission</em>. A CR, LF or NUL: or a re-decoded <code>%0d</code>/<code>%0a</code>, that survived validation inside the path or authority is written into the request line. Stage 1 already has this on the input side: S1.2 and S2.4 record that a WHATWG fetcher deletes interior tab/LF/CR while a non-WHATWG validator splits the authority on them. Neither has a terminal cell to land on. Confirmation means one HTTP client that does not re-sanitise an interior control octet between the parsed URL object and the emitted request, demonstrated on the wire. Looseness class: unspecified: validator and emitter disagree on whether a byte is a value byte or a structural delimiter.</p>
+<p>#3: numeral folding beyond fullwidth. UTS-46 §5’s mapping table folds Arabic-Indic digits (U+0660-U+0669), Devanagari digits and enclosed digits (U+2460 onward) to ASCII 0-9. RFC 3986 §7.4 then permits the platform resolver to read the result as an IPv4 literal. A validator running an ASCII-only IPv4 regex on the pre-normalisation host sees a reg-name. The fetcher resolves 127.0.0.1. The map already grants the fullwidth case at S5.12, where UTS-46 deletes soft-hyphen and ZWSP and decomposes fullwidth letters, but S5.12 is PARTIAL, named in the family description and not product-confirmed. The looseness is non-normative: UTS-46 mapping is informational per RFC 5895 §3. Confirmation needs a stack that UTS-46- or NFKC-normalises the host before resolution while validating before that step.</p>
+<p>#4: three IDN contracts in one corpus. IDNA2003 (RFC 3490 §3.1, RFC 3491) carries a Nameprep deviation map: ß→ss, ς→σ, ZWJ/ZWNJ deleted, and four codepoints recognised as label separators (U+002E, U+3002, U+FF0E, U+FF61). IDNA2008 (RFC 5890/5891/5892) has no map and no multi-dot recognition. UTS-46 maps by table. The split is deployed as libidn versus libidn2, and as PHP’s <code>INTL_IDNA_VARIANT_2003</code> versus <code>INTL_IDNA_VARIANT_2008</code>. A guard on IDNA2003 computes <code>fass.example</code>; a fetcher on IDNA2008 computes <code>xn--fa-hia.example</code>. Those are two different attacker-registrable domains. Rank #9 is the separator half of the same split: <code>host｡evil.com</code> with U+FF61 is two labels to an IDNA2003 guard and one label to an IDNA2008 guard, which moves the registrable-domain boundary the allowlist is drawn on. Confirmation is a product whose guard and fetcher sit on different library families, plus both registrations.</p>
+<p>#6: SVCB <code>ipv4hint</code> under NAT64. RFC 9460 §7.3 makes hint use a <code>MAY</code> and explicitly permits NAT64 synthesis per RFC 7050; §4.2.1 covers DNS64. The internal target arrives inside the DNS response’s SvcParams rather than in an A or AAAA record. This is the highest-confidence entry into the Stage-14 cluster because the receiving half is already wire-confirmed repeatedly as F12, and niquests is confirmed to accept metadata IPs. Reach covers niquests, curl 8.x with HTTPS-RR, and headless browser-engine loaders that inherit DNS HTTPS upgrade. The routing vector itself has zero product tests.</p>
+<p>#7: <code>http://0/</code>. RFC 3986 §7.4 plus RFC 1122 §3.2.1.3(a) ‘this-host’ plus Linux <code>inet_aton</code>: bare <code>0</code> decodes to 0.0.0.0, and <code>connect()</code> to 0.0.0.0 routes to services on 127.0.0.1. Low novelty, it is on every SSRF cheat sheet. It is listed because S4.9 covers 0.0.0.0/8 as a denylist-enumeration miss and never states the reachability fact, and a map that claims to be exhaustive owes it a cell.</p>
+<h3 id="what-confirmation-looks-like">What confirmation looks like</h3>
+<p>Rank #2 is no longer a gap, and its resolution sets the standard. The seam was the obsoleted-versus-current drift between RFC 7540 §8.1.2.3, which contains no <code>Host</code>/<code>:authority</code> comparison rule at all, and RFC 9113 §8.3.1, which makes divergence SHOULD-malformed. Lab at <code>tinker/http2_desync_7540/</code>. As of 2026-06-10 the prediction fires on origin stacks: Go <code>x/net/http2</code>, Node <code>http2</code> v26.1.0 and nghttp2 <code>nghttpd</code> (1.12 and 1.52) all accept <code>Host</code> ≠ <code>:authority</code>, and Go and Node expose both values to application code: <code>r.Host</code> and <code>req.authority</code> carry the <code>:authority</code>, the <code>Host</code> header carries the divergent value. That is a single-node confused deputy.</p>
+<p>It is also bounded, and the bounds were published with it. hyper-h2 rejects. Apache <code>mod_http2</code> normalises <code>Host</code> from <code>:authority</code>. No mainstream proxy forwards the divergence: nginx returns 400, and Caddy, HAProxy and Envoy all normalise to <code>:authority</code> on both H2→H2 and H2→H1.1, so the proxy-chained vhost confusion does not assemble from that set. CR/LF on downgrade was a negative: HAProxy rejects at HPACK decode. The forwarding-proxy path and the TLS/ALPN path remain predicted and unconfirmed.</p>
+<p>The claim that survives is: obsoleted-versus-current drift between RFC 7540 and RFC 9113, confirmed on real origin libraries, reach limited to single-node applications. Not “all H2”. Every remaining cell in the table is open on those terms.</p>
+<h2 id="where-the-blade-stopped">Where the blade stopped</h2>
+<p>The standard applied throughout this post: a primitive is not a product bug, a classifier pass is not a routed packet, and two working legs are not a chain. Every item below cleared one of those bars and failed another. They are recorded here because the ones that cleared all three are only meaningful against them.</p>
+<p>Three kinds of stop. They are not interchangeable, and collapsing them would be the dishonest move.</p>
+<h3 id="1-mechanisms-with-no-guarded-product">1. Mechanisms with no guarded product</h3>
+<p>The primitive is real and reachable through a shipped library API. No audited application held all the required conditions open at the same time.</p>
+<p>F9: charset-boundary delimiter injection. High-Unicode characters survive validation as <code>String</code>/<code>Char</code>; the fetcher narrows them to bytes and manufactures <code>@ . / ? NUL</code> on the wire. Demonstrated in <code>node:http2</code> (LATIN1 narrowing) and in Haskell <code>String</code> → <code>ByteString</code>. Disclosed to the Node.js project as a primitive (<code>reports/nodejs_http2_reported/</code>). The missing condition is a conjunction: an app must combine (a) explicit <code>node:http2</code> to a user-controlled authority, (b) validation at the JS string-codepoint layer, and (c) no percent-encoding between user input and the wire. Smithy/AWS SDK v3 (SigV4 self-defence), Nitroping, pass-js, openclaw, Novu, GroundControl and atproto were checked; none holds all three. Most Node applications reach H1 through undici or axios, where (a) never happens. The decision recorded on 2026-05-21 was that this is structural, not under-hunting.</p>
+<p>F7: H2 pseudo-header construction split. Probe-lab only: Node H2, OkHttp <code>:authority</code>-from-Host. The usual objection, “no app opts into HTTP/2”, does not hold, because .NET <code>SocketsHttpHandler</code> and Java/Spring stacks auto-negotiate H2 via ALPN, and the attacker supplies the destination. The condition that never assembled is a product that validates a URL and then hands the lower-level H2 API an opaque <code>:authority</code> the validator never saw. The nearest real instance, Radarr/Sonarr/Lidarr, is API-key-bounded and was <code>_skipped</code>.</p>
+<p>F14: post-validation routing. Wire-confirmed in real OSS, in lab: curl 8.20.0 honours <code>Alt-Svc: h3="attacker:port"</code> and steers future requests cross-host carrying the original <code>:authority</code>/<code>:path</code> (Docker-confirmed, plus Alt-Svc cache-file injection); lsquic → OpenLiteSpeed converts an absolute-form <code>:path</code> into a forward-proxy request past an allowlisted <code>:authority</code>. Primitive-tier across stacks: niquests routes QUIC to a SVCB/HTTPS-RR <code>ipv4hint</code>/<code>ipv6hint</code> with no loopback, link-local or RFC 1918 filter; .NET 10 Alt-Svc accepts an arbitrary host and a port in <code>0..2^32</code>; JDK26 <code>AltSvcProcessor</code>; ORIGIN-frame coalescing in Go <code>x/net/http2</code>, OkHttp and JDK; QUIC version-negotiation forgery across quic-go, quiche, msquic, ngtcp2, lsquic and aioquic. No product chains any of these to attacker-controlled URL fetching across a trust boundary. The oracle records this rather than hiding it: the <code>altsvc_probe</code> emits NO-OP, the hint was advertised, no dialled client acted on it. Four NO-OP verdicts out of 1855.</p>
+<p>F15: QPACK framing divergence. The .NET 10 managed QPACK encoder (<code>Ascii.FromUtf16</code>) emits RFC 9114 §4.2-forbidden NUL/CR/LF and accepts all of <code>0x00-0x7F</code>; picoquic/h3zero silently uses raw Huffman bytes as the literal on decode failure; Haskell http3 stores but never enforces <code>SETTINGS_MAX_FIELD_SECTION_SIZE</code>; Gun/Cowlib <code>cow_qpack</code> has a dynamic-table <code>:authority</code> absolute-index bug. The missing condition is a deployment: an H3 forwarding intermediary that re-encodes H3 → H1/H2, which is where a CRLF-emit or raw-byte fallback would smuggle. None audited end-to-end.</p>
+<p>F4: authority identity split. Partial only: the tuwunel IPv6-bracket parse mismatch. RFC 3986 §6.2 and RFC 9110 §4.2.3 authorise three different cache keys for one URL, but no audited app pairs a syntax-based-normalising validator with a protocol-based-normalising cache or pool.</p>
+<p>H2 <code>Host</code> ≠ <code>:authority</code> desync, the legs exist, the chain does not. Origin libraries accept the divergence: Go <code>x/net/http2</code>, Node <code>http2</code> v26.1.0 and nghttp2 nghttpd (1.12 and 1.52) all take it, and Go and Node expose both values to application code: four of five crafted pairs SURVIVE. That is a single-node confused deputy. It is not the proxy-chained vhost confusion, because no mainstream proxy forwards the divergence: nginx rejects with 400; Caddy, HAProxy and Envoy all normalise <code>Host</code> ← <code>:authority</code> on H2→H2 and H2→H1.1. hyper-h2 rejects outright; Apache mod_http2 normalises. Two working legs, no chain.</p>
+<p>Two candidates refuted outright. iFLYTEK Astron Agent’s <code>UrlCheckTool</code>: both the IDNA2003-vs-raw-fetch and null-host seams failed end-to-end under a verbatim-real-code harness, the <code>checkUrlForIPv6</code> null-host throw fires before the blacklist-skip; zero victim hits. Mastodon is F5-clean by architecture, because <code>check_private_address</code> runs per socket open in <code>app/lib/request.rb</code>. Misskey’s IDN store-vs-check split (<code>update-meta.ts:250</code> lowercases, <code>UtilityService.ts:52-54,117-118</code> punycodes) is real in shipped code and harness-confirmed, but it lands in the federation blocklist, not in the SSRF guard: the separate post-DNS <code>isPrivateIp</code> check is not bypassed. Blocklist evasion, not a routed internal packet.</p>
+<h3 id="2-spec-tight-stages-a-different-kind-of-negative">2. Spec-tight stages, a different kind of negative</h3>
+<p>The first list is about hunting. This one is about the standard. At TLS server-identity verification the RFC does not authorise the seam, so thin coverage is signal about the spec, not about effort.</p>
+<p>RFC 9525 (2023) is the tight document in the corpus. §6.1 normatively constructs reference identifiers from URL/IRI input; §6.3 restricts wildcards to a single leftmost label; §6.4 mandates octet-for-octet IP-in-SAN matching; §6.6 requires automated clients to hard-fail. Its one loose clause, §7.4 on classifier drift, lands at the F12 surface: host classification, not at the cert-match step.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stage                                          cells  FOUND  PARTIAL  GAP</span></span>
+<span class="line"><span>S10 connection establishment / ALPN / TLS         13      0        4    9</span></span>
+<span class="line"><span>S11 SNI emission                                  10      1        5    4</span></span>
+<span class="line"><span>S12 TLS identity verification (cert vs ref-id)    12      1        6    5</span></span>
+<span class="line"><span>TOTAL (14 stages)                                205     36       60  109</span></span></code></pre>
+<p>What ships broken at this stage is not a seam but an opt-out. Three shipped stacks turn verification off: Radarr/Sonarr/Lidarr accept an untrusted self-signed cert (chain and name mismatch both) from a plain <code>https://localhost:PORT/</code> URL via an <code>SNI=localhost / 127.0.0.1</code> auto-bypass (<code>_skipped</code>, API-key-bounded); the Jenkins URL Trigger plugin installs an unconditional trust-all <code>SSLContext</code> and an always-true hostname verifier (<code>URLTrigger.java:404-434</code>, present since HTTPS support was added in 2013, no opt-in), wire-confirmed end-to-end in a real Jenkins and retained unreported as MITM-bounded CWE-295; Elixir Gun’s <code>gun_quicer:connect/2</code> ships <code>verify => none</code> over QUIC, acknowledged by an in-tree <code>@todo</code>. All three are bounded to MITM or loopback positions. None is a validator/fetcher disagreement. The honest qualifier on “tight” is RFC 6125: CN-ID fallback and partial wildcards are MAY in 6125 and MUST-ignore in 9525, and both texts are still deployed. That drift is verifiable, and it is the one place the carve-out is soft.</p>
+<p>RFC 9525 §7.2 also hedges that URL-vs-URI parser divergence “is not expected” to manifest in cert matching. That hedge is unverified here. It is an assumption in the spec, not a measurement.</p>
+<h3 id="3-bytes-that-did-not-become-routes">3. Bytes that did not become routes</h3>
+<p>An address that decodes to something internal has not sent a packet. The F12 corpus is 53 wire-confirmed addresses, every one of them observed being allowed as public by a real classifier. Twenty of them route. Thirty-three only decode.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>class              prefix               n   verdict        missing routing precondition</span></span>
+<span class="line"><span>NAT64 well-known   64:ff9b::/96        10   decodes-only   a translator willing to translate a non-global</span></span>
+<span class="line"><span>                                                           IPv4 target; RFC 6052 §3.1 forbids it, so</span></span>
+<span class="line"><span>                                                           link-local and loopback time out on real clouds</span></span>
+<span class="line"><span>NAT64 local-use    64:ff9b:1::/48       3   routes         operator-deployed NSP (RFC 8215) — present</span></span>
+<span class="line"><span>CGNAT              100.64.0.0/10        4   routes         none; literal IPv4 on a CGNAT network</span></span>
+<span class="line"><span>IPv4-compatible    ::/96                5   decodes-only   deprecated by RFC 4291 §2.5.5.1; nothing forwards it</span></span>
+<span class="line"><span>SIIT               ::ffff:0:0:0/96      5   decodes-only   a SIIT translator on path (RFC 7915 / 6145)</span></span>
+<span class="line"><span>6to4               2002::/16            7   decodes-only   a 6to4 relay; the prefix embeds a *public* IPv4</span></span>
+<span class="line"><span>                                                           by construction (RFC 3056)</span></span>
+<span class="line"><span>Teredo             2001::/32            4   decodes-only   a Teredo relay (RFC 4380)</span></span>
+<span class="line"><span>IPv4-mapped        ::ffff:169.254.169.254   decodes-only   un-embedded and blocked by Python, Rust, Java,</span></span>
+<span class="line"><span>                                                           .NET and PHP; allowed only by Node ipaddr.js</span></span>
+<span class="line"><span>                                                           and Ruby IPAddr</span></span>
+<span class="line"><span>Azure WireServer   168.63.129.16        1   routes         Azure fabric — present on Azure</span></span>
+<span class="line"><span>                   ::ffff:168.63.129.16 1   decodes-only   same host, embedded form, no translator</span></span>
+<span class="line"><span>controls (loopback, 0.0.0.0, 0, RFC 1918,</span></span>
+<span class="line"><span>169.254.169.254, [::1], dword/hex/octal/short) 12  routes  none</span></span></code></pre>
+<p><code>64:ff9b::a9fe:a9fe</code> is allowed by 8 of 8 stdlib IP classifiers: Ruby <code>IPAddr</code>, Java <code>InetAddress</code>, Go <code>net.IP.Is*</code>, Node <code>ipaddr.js</code>, .NET <code>IPAddress</code>, Rust <code>std</code>, PHP <code>filter_var(NO_PRIV|NO_RES)</code>, Python <code>ipaddress</code>. That is a unanimous classifier pass and, absent a NAT64 gateway configured against the well-known prefix, zero packets. The product scalps that landed, Lemmy, Strapi, Directus, landed on the routing rows: CGNAT <code>100.64.0.0/10</code> and the bare-<code>0</code> form, not on the decoding ones. The article’s tables say “decodes to”, never “routes to”, for the 33.</p>
+<p>Two further non-deliveries, recorded the same way. The <code>%5C@</code> negative control makes every registered parser re-agree on <code>example.com</code>: 0 survivals across the same validator × client pairs that yield 4 survivals for the literal backslash. And of 1855 wire-backed verdicts, 302 SURVIVE, 580 are BLOCKED, 166 are PARSE-REJECT: <code>net/url</code> and <code>yarl</code> refuse the backslash outright, and 4 are NO-OP.</p>
+<h3 id="what-would-move-an-item-out-of-this-section">What would move an item out of this section</h3>
+<ul>
+<li>F9: one application combining explicit <code>node:http2</code> to a user-controlled authority, codepoint-level validation, and no percent-encoding before the wire. A Haskell <code>String</code> → <code>ByteString</code> equivalent counts equally. Seven ecosystems were checked and did not have it.</li>
+<li>F7, a .NET or Spring application that validates a URL and then passes an opaque <code>:authority</code> or <code>:path</code> to the lower H2 API, without an API key bounding the reach. Removing that bound from the Radarr-class instance graduates it.</li>
+<li>F14: one product, in at least one language, chaining Alt-Svc, SVCB/HTTPS-RR, ORIGIN or CONNECT-UDP to attacker-controlled URL fetching across a trust boundary. The measurable trigger already exists: the <code>altsvc_probe</code> verdict flipping from NO-OP to SURVIVES on any dial client.</li>
+<li>F15, an audited H3 forwarding intermediary that re-encodes to H1 or H2, where the .NET NUL/CR/LF emit or the picoquic raw-byte fallback reaches the downstream parser.</li>
+<li>F4, an application whose validator performs syntax-based normalisation while its cache key or fetcher performs protocol-based normalisation, per RFC 9110 §4.2.3.</li>
+<li>H2 desync, a forwarding proxy that carries <code>Host</code> ≠ <code>:authority</code> rather than normalising it. nginx, Caddy, HAProxy and Envoy all refuse; a CDN, service mesh, or older proxy that does not would complete the chain.</li>
+<li>F13, a cert-identity failure that is neither MITM- nor loopback-bounded, or a 6125-pinned verifier reachable from an attacker-supplied URL inside a product. That would convert an insecure default into a seam, and would narrow the spec-tight claim.</li>
+<li>The 33 decodes-only rows, a deployment where the translator exists: a NAT64 gateway configured with a non-well-known NSP, a SIIT translator, a 6to4 or Teredo relay on path. The bytes do not change. The network does. Then the same input that decodes becomes an input that routes, and it belongs in a different section.</li>
+</ul></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#FFB9D7"> <a href="/post/the-validator-can-lie/"> <span class="rn">09</span> <b>SSRF Beyond Validation</b> <em>shared &middot; ssrf</em> </a> </li> </ul> </div> <nav class="pager"> <a class="pg" href="/post/the-validator-can-lie/" style="--hue:#FFB9D7"> <span class="dir">&larr; Newer</span> <b>The Validator Can Lie: SSRF Beyond URL Validation</b> </a> <a class="pg r" href="/post/ai-vuln-research/" style="--hue:#E2C3FF"> <span class="dir">Older &rarr;</span> <b>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</b> </a> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
+(function () {
+  var doc = document.documentElement;
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
+  var tick = false;
+
+  function paint() {
+    tick = false;
+    var max = Math.max(1, doc.scrollHeight - innerHeight);
+    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
+    var y = scrollY + innerHeight * 0.3, cur = -1;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }
+  addEventListener('scroll', function () {
+    if (!tick) { tick = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  addEventListener('resize', paint);
+  paint();
+})();
+</script>  </body></html>

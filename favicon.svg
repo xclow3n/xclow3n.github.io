@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="5" fill="#0e0b08"/>
-  <path d="M16 5 L23 16 L16 27 L9 16 Z" fill="#5e1c10" stroke="#3a1109" stroke-width="1"/>
-  <g fill="none" stroke="#ecdfba" stroke-width="1.1" stroke-linecap="round">
-    <path d="M16 9.5 L16 22.5 M11 16 L21 16"/>
-    <path d="M16 9.5 L14.2 16 L16 22.5 L17.8 16 Z" fill="#ecdfba" stroke="none"/>
-  </g>
+  <rect width="32" height="32" fill="#0B0E14"/>
+  <!-- the fuse cord, running up to the spark -->
+  <path d="M4 28 C 9 24 11 21 13 17" stroke="#22D3EE" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <!-- the spark: the site's signature charge -->
+  <path d="M17 4 L19.4 12.2 L28 15 L19.4 17.8 L17 26 L14.6 17.8 L6 15 L14.6 12.2 Z" fill="#FF2D82"/>
+  <circle cx="26" cy="7" r="1.7" fill="#C8FF29"/>
+  <circle cx="8" cy="9" r="1.2" fill="#C8FF29"/>
 </svg>
