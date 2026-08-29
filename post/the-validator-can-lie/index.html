@@ -183,27 +183,22 @@ choices. Others are invalid-input recovery or implementation bugs. The
 sections that follow state which kind each finding is and what reached the
 wire.</p>
 <h3 id="what-the-findings-are-for">What the findings are for</h3>
-<p>Thirty-three product audits sit behind this article. I did most of the hunting in
-a week off in May 2026. The lens was already written down, so the week was about
-finding out how much of it held up against shipped code. It went fast because the
-question was narrow. The rest took months, and most of that was not up to me:
-reporting, waiting on triage, waiting on patches, checking the fixes.</p>
-<p>Twenty-five were reported to the vendor. Six are recorded as skipped, because the impact was bounded by
-an API key, a MITM position or a loopback SNI, and did not clear the bar for a
-report. Two were reported and came back duplicate. Outcomes across the reported
-set vary the way they always do: some were fixed, some carry a CVE, some were
-closed as won’t-fix, some are still open.</p>
-<p>None of that is the argument. The disposition of a single report says something
-about one vendor’s triage queue, not about whether the shape is real. A finding
-that a vendor declined still shows the same validator and fetcher reading the
-same bytes differently, and a finding that earned a CVE proves nothing extra
-about the lens.</p>
-<p>The cases in the sections that follow are here as evidence for one claim: that
-a verdict which does not survive into the object, the resolver, the socket, the
-authority and the next hop is only a comment on an earlier state. Each one is
-included because it demonstrates a handoff, and each states plainly what
-reached the wire. Where a mechanism never reached a product at all, it is in
-“Where the blade stopped” instead, and says so.</p>
+<p>I did most of the hunting in a week off in May 2026. The lens was already written
+down, so the week was about finding out how much of it held up against shipped
+code. It went fast because the question was narrow. The rest took months, and most
+of that was not up to me: reporting, waiting on triage, waiting on patches,
+checking the fixes.</p>
+<p>The cases below are here to test the idea, not to count scalps. Some were reported
+and fixed, some carry a CVE, some came back duplicate, some were closed as
+won’t-fix, and some I never reported, because the impact was bounded by an API key
+or a MITM position and did not clear the bar. None of that changes what they show.</p>
+<p>The disposition of a report says something about one vendor’s triage queue. It says
+nothing about whether the shape is real. A finding a vendor declined still shows a
+validator and a fetcher reading the same bytes differently, and a finding that
+earned a CVE proves nothing extra about the lens.</p>
+<p>So each case is here for one reason: it demonstrates a handoff, and it states
+plainly what reached the wire. Where a mechanism never reached a product at all, it
+is in “Where the blade stopped” instead, and says so.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stage           family   the disagreement</span></span>
 <span class="line"><span>-----------------------------------------------------------------</span></span>
 <span class="line"><span>parse           F1       authority boundary: \, @, scheme regex</span></span>
