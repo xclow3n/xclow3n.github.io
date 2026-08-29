@@ -183,8 +183,13 @@ choices. Others are invalid-input recovery or implementation bugs. The
 sections that follow state which kind each finding is and what reached the
 wire.</p>
 <h3 id="what-the-findings-are-for">What the findings are for</h3>
-<p>Thirty-three product audits sit behind this article. Twenty-five were reported
-to the vendor. Six are recorded as skipped, because the impact was bounded by
+<p>Thirty-three product audits sit behind this article. Most of the hunting happened
+in one week off in May 2026: the lens was already written down, and the point of
+the week was to find out how much of it survived contact with shipped code. The
+audits came fast because the question was narrow. Everything after that week was
+slower work that cannot be rushed, and mostly is not mine to schedule: disclosure,
+vendor triage, waiting for patches, verifying the fixes.</p>
+<p>Twenty-five were reported to the vendor. Six are recorded as skipped, because the impact was bounded by
 an API key, a MITM position or a loopback SNI, and did not clear the bar for a
 report. Two were reported and came back duplicate. Outcomes across the reported
 set vary the way they always do: some were fixed, some carry a CVE, some were
