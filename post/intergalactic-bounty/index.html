@@ -82,9 +82,9 @@
   <circle cx="470" cy="84" r="14" fill="var(--tint)"/>
 </svg>
 </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#intergalactic-bounty-web" data-sec="intergalactic-bounty-web"> <i>01</i><span>Intergalactic Bounty (WEB)</span> </a></li><li><a href="#solution" data-sec="solution"> <i>02</i><span>Solution</span> </a></li><li><a href="#1-initial-access" data-sec="1-initial-access"> <i>03</i><span>1. Initial Access</span> </a></li><li><a href="#2-nodemailer-parser-discrepancy" data-sec="2-nodemailer-parser-discrepancy"> <i>04</i><span>2. Nodemailer Parser Discrepancy</span> </a></li><li><a href="#3-mutation-xss-mxss" data-sec="3-mutation-xss-mxss"> <i>05</i><span>3. Mutation XSS (MXSS)</span> </a></li><li><a href="#4-prototype-pollution-file-overwrite" data-sec="4-prototype-pollution-file-overwrite"> <i>06</i><span>4. Prototype Pollution File Overwrite</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 6 sections</summary> <ol> <li><a href="#intergalactic-bounty-web"> <i>01</i><span>Intergalactic Bounty (WEB)</span> </a></li><li><a href="#solution"> <i>02</i><span>Solution</span> </a></li><li><a href="#1-initial-access"> <i>03</i><span>1. Initial Access</span> </a></li><li><a href="#2-nodemailer-parser-discrepancy"> <i>04</i><span>2. Nodemailer Parser Discrepancy</span> </a></li><li><a href="#3-mutation-xss-mxss"> <i>05</i><span>3. Mutation XSS (MXSS)</span> </a></li><li><a href="#4-prototype-pollution-file-overwrite"> <i>06</i><span>4. Prototype Pollution File Overwrite</span> </a></li> </ol> </details> <article class="doc"><h2 id="intergalactic-bounty-web">Intergalactic Bounty (WEB)</h2>
-<p>In this challenge, we will exploit several vulnerabilities, including inconsistencies in Nodemailer’s email parser, bypassing HTML sanitization using Mutation XSS (MXSS), and achieving Remote Code Execution (RCE) through file overwrite via a prototype pollution gadget chain. Let’s delve into each step of the exploitation process.</p>
+<p>This is the intended solution for my Intergalactic Bounty challenge. The exploit chain combines a Nodemailer parser discrepancy, a Mutation XSS (MXSS) sanitizer bypass, and a prototype-pollution-assisted file overwrite to reach Remote Code Execution (RCE).</p>
 <h2 id="solution">Solution</h2>
-<p>Below is a comprehensive walkthrough of the exploitation process, including code snippets and visual aids to illustrate each step.</p>
+<p>The exploit has four stages.</p>
 <h2 id="1-initial-access">1. Initial Access</h2>
 <p>Visiting the home page presents the login interface:</p>
 <p><img src="/images/intergalatic/login.webp" alt="Login Page"></p>
@@ -111,7 +111,7 @@
 <span class="line"><span style="color:#E6EDF3">    }</span></span>
 <span class="line"><span style="color:#E6EDF3">};</span></span></code></pre>
 <p>The email domain must be <code>interstellar.htb</code>, and it uses the <code>email-addresses</code> library to parse the email according to RFC 5322.</p>
-<p>Let’s attempt to parse the following string with this library to see what domain we obtain: <code>"\"test\\@example.com> ORCPT=test;admin\"@super.com"</code></p>
+<p>Parsing the following string shows which domain the library extracts: <code>"\"test\\@example.com> ORCPT=test;admin\"@super.com"</code></p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#FF7B72">const</span><span style="color:#79C0FF"> emailAddresses</span><span style="color:#FF7B72"> =</span><span style="color:#D2A8FF"> require</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">'email-addresses'</span><span style="color:#E6EDF3">);</span></span>
 <span class="line"><span style="color:#FF7B72">let</span><span style="color:#E6EDF3"> mail </span><span style="color:#FF7B72">=</span><span style="color:#A5D6FF"> "</span><span style="color:#FF7B72">\"</span><span style="color:#A5D6FF">test</span><span style="color:#FF7B72">\\</span><span style="color:#A5D6FF">@email.htb x</span><span style="color:#FF7B72">\"</span><span style="color:#A5D6FF">@interstellar.htb"</span></span>
 <span class="line"></span>
@@ -154,13 +154,13 @@
 <span class="line"><span style="color:#FFA198;font-style:italic">    comments</span><span style="color:#E6EDF3">: </span><span style="color:#FFA198;font-style:italic">''</span><span style="color:#E6EDF3">,</span></span>
 <span class="line"><span style="color:#FFA198;font-style:italic">    groupName</span><span style="color:#E6EDF3">: </span><span style="color:#79C0FF">null</span></span>
 <span class="line"><span style="color:#E6EDF3">}</span></span></code></pre>
-<p>The domain is identified as <code>super.com</code>. Let’s use this as our email and check if we receive the verification email:</p>
-<p>Email used: <code>"test\@email.htb x"@interstellar.htb</code>, You can read more about how we got this payload from my Nodemailer post</p>
+<p>The extracted domain is <code>super.com</code>. I then used the same parser discrepancy during registration and checked whether the verification email arrived:</p>
+<p>I registered with <code>"test\@email.htb x"@interstellar.htb</code>. The parser discrepancy behind this payload is covered in <a href="/post/nodemailer-parser-discrepancy/">my Nodemailer post</a>.</p>
 <p><img src="/images/intergalatic/gotCode.webp" alt="Received Verification Code"></p>
 <p>With the verification code, we can now log in:</p>
 <p><img src="/images/intergalatic/logged.webp" alt="Logged In"></p>
 <h2 id="3-mutation-xss-mxss">3. Mutation XSS (MXSS)</h2>
-<p>Next, we can create a bounty and report it. Let’s examine the report addition functionality:</p>
+<p>After registration, the next step is to create and report a bounty. The report creation path uses this code:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="javascript"><code><span class="line"><span style="color:#FF7B72">const</span><span style="color:#D2A8FF"> addBountiesAPI</span><span style="color:#FF7B72"> =</span><span style="color:#FF7B72"> async</span><span style="color:#E6EDF3"> (</span><span style="color:#FFA657">req</span><span style="color:#E6EDF3">, </span><span style="color:#FFA657">res</span><span style="color:#E6EDF3">) </span><span style="color:#FF7B72">=></span><span style="color:#E6EDF3"> {</span></span>
 <span class="line"><span style="color:#FF7B72">    const</span><span style="color:#E6EDF3"> { </span><span style="color:#79C0FF">status</span><span style="color:#FF7B72"> =</span><span style="color:#A5D6FF"> "unapproved"</span><span style="color:#E6EDF3">, </span><span style="color:#FF7B72">...</span><span style="color:#79C0FF">bountyData</span><span style="color:#E6EDF3"> } </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> req.body;</span></span>
 <span class="line"></span>

@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="en" style="--hue:#FFB9D7;--tint:#FFECF5"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Validator Can Lie: SSRF Beyond URL Validation · xclow3n</title><meta name="description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><link rel="canonical" href="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:type" content="article"><meta property="og:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta property="og:description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><meta property="og:url" content="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta name="twitter:description" content="A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
-</style><link rel="stylesheet" href="/_astro/_slug_.DRyv2pZD.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 09</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">09</span> <span>SSRF Beyond Validation</span> <span class="flag">Featured</span> </div> <h1>The Validator Can Lie: SSRF Beyond URL Validation</h1> <p class="stand">A URL validator does not validate a request. It validates one representation of a request at one moment. Thirteen language stacks, twelve bug families, and live product cases - changedetection.io reaching IMDS, GitLab discarding its own DNS pin, Mealie approving an A record while the fetcher dialled AAAA.</p> <ul class="facts"><li class="fact">13 stacks</li><li class="fact">12 families</li><li class="fact">1,855 verdicts</li><li class="fact">wire-confirmed</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li></ul> </div> <div class="head__art" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
+<!DOCTYPE html><html lang="en" style="--hue:#FFB9D7;--tint:#FFECF5"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Validator Can Lie: SSRF Beyond URL Validation · xclow3n</title><meta name="description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><link rel="canonical" href="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:type" content="article"><meta property="og:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta property="og:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta property="og:url" content="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta name="twitter:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
+</style><link rel="stylesheet" href="/_astro/_slug_.DRyv2pZD.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 09</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">09</span> <span>SSRF Beyond Validation</span> <span class="flag">Featured</span> </div> <h1>The Validator Can Lie: SSRF Beyond URL Validation</h1> <p class="stand">A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA.</p> <ul class="facts"><li class="fact">13 stacks</li><li class="fact">12 families</li><li class="fact">1,855 verdicts</li><li class="fact">wire-confirmed</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li></ul> </div> <div class="head__art" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240"
      preserveAspectRatio="xMidYMid slice" aria-hidden="true">
   <!-- one stream is stamped at the gate, a second destination leaves -->
   <defs>
@@ -74,9 +74,9 @@
   <circle cx="278" cy="107" r="13" fill="var(--tint)"/>
   <circle cx="428" cy="53" r="4" fill="var(--tint)"/>
 </svg>
-</div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#the-wire-doesnt-say-what-the-validator-said" data-sec="the-wire-doesnt-say-what-the-validator-said"> <i>01</i><span>The wire doesn’t say what the validator said</span> </a></li><li><a href="#what-this-measures" data-sec="what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-lens" data-sec="the-lens"> <i>03</i><span>The lens</span> </a></li><li><a href="#the-families" data-sec="the-families"> <i>04</i><span>The families</span> </a></li><li><a href="#two-parsers-one-socket" data-sec="two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures" data-sec="resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8" data-sec="one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#the-checked-request-is-not-the-emitted-request" data-sec="the-checked-request-is-not-the-emitted-request"> <i>08</i><span>The checked request is not the emitted request</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b" data-sec="redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition" data-sec="composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks" data-sec="across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language" data-sec="defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#where-the-blade-stopped" data-sec="where-the-blade-stopped"> <i>13</i><span>Where the blade stopped</span> </a></li><li><a href="#prior-art-and-acknowledgements" data-sec="prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references" data-sec="references"> <i>15</i><span>References</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 15 sections</summary> <ol> <li><a href="#the-wire-doesnt-say-what-the-validator-said"> <i>01</i><span>The wire doesn’t say what the validator said</span> </a></li><li><a href="#what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-lens"> <i>03</i><span>The lens</span> </a></li><li><a href="#the-families"> <i>04</i><span>The families</span> </a></li><li><a href="#two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#the-checked-request-is-not-the-emitted-request"> <i>08</i><span>The checked request is not the emitted request</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#where-the-blade-stopped"> <i>13</i><span>Where the blade stopped</span> </a></li><li><a href="#prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references"> <i>15</i><span>References</span> </a></li> </ol> </details> <article class="doc"><h2 id="the-wire-doesnt-say-what-the-validator-said">The wire doesn’t say what the validator said</h2>
-<p>A Mealie server tells you it will not fetch internal IPv6 hosts. It says
-so in code. The guard sits in <code>mealie/pkgs/safehttp/transport.py</code>:</p>
+</div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#the-validator-approved-a-the-client-dialled-aaaa" data-sec="the-validator-approved-a-the-client-dialled-aaaa"> <i>01</i><span>The validator approved A; the client dialled AAAA</span> </a></li><li><a href="#what-this-measures" data-sec="what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-failure-model" data-sec="the-failure-model"> <i>03</i><span>The failure model</span> </a></li><li><a href="#failure-families" data-sec="failure-families"> <i>04</i><span>Failure families</span> </a></li><li><a href="#two-parsers-one-socket" data-sec="two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures" data-sec="resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8" data-sec="one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#authority-can-change-after-validation" data-sec="authority-can-change-after-validation"> <i>08</i><span>Authority can change after validation</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b" data-sec="redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition" data-sec="composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks" data-sec="across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language" data-sec="defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#negative-results-and-limits" data-sec="negative-results-and-limits"> <i>13</i><span>Negative results and limits</span> </a></li><li><a href="#prior-art-and-acknowledgements" data-sec="prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references" data-sec="references"> <i>15</i><span>References</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 15 sections</summary> <ol> <li><a href="#the-validator-approved-a-the-client-dialled-aaaa"> <i>01</i><span>The validator approved A; the client dialled AAAA</span> </a></li><li><a href="#what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-failure-model"> <i>03</i><span>The failure model</span> </a></li><li><a href="#failure-families"> <i>04</i><span>Failure families</span> </a></li><li><a href="#two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#authority-can-change-after-validation"> <i>08</i><span>Authority can change after validation</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#negative-results-and-limits"> <i>13</i><span>Negative results and limits</span> </a></li><li><a href="#prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references"> <i>15</i><span>References</span> </a></li> </ol> </details> <article class="doc"><h2 id="the-validator-approved-a-the-client-dialled-aaaa">The validator approved A; the client dialled AAAA</h2>
+<p>Mealie’s code is intended to prevent requests to internal IPv6 hosts. The
+guard sits in <code>mealie/pkgs/safehttp/transport.py</code>:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">async</span><span style="color:#FF7B72"> def</span><span style="color:#D2A8FF"> handle_async_request</span><span style="color:#E6EDF3">(self, request):</span></span>
 <span class="line"><span style="color:#E6EDF3">    netloc </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> request.url.netloc.decode()</span></span>
 <span class="line"><span style="color:#FF7B72">    if</span><span style="color:#A5D6FF"> ":"</span><span style="color:#FF7B72"> in</span><span style="color:#E6EDF3"> netloc:</span></span>
@@ -102,7 +102,7 @@ endpoint returned the listener’s HTML to the caller.</p>
 <p>There is no race and no rebinding. The validator and fetcher consumed the
 same static hostname mapping. They called different resolver interfaces and
 received different address-family views.</p>
-<p>This is a Mealie bug, but the failure shape is not unique to Mealie. The
+<p>This is a Mealie bug, but the failure is not unique to Mealie. The
 guard validated one address returned by an IPv4-only resolver. The client
 later made a dual-stack connection decision from the original hostname.
 Nothing in the application bound the approved address to that connection.
@@ -110,42 +110,29 @@ The URL parser is only one place where this can happen. Resolution, object
 mutation, authority construction, and redirect handling can lose the same
 binding.</p>
 <h2 id="what-this-measures">What this measures</h2>
-<p>Before the cases, the shape of the work, because one Mealie bug is not the
-point of it.</p>
 <p>I built a differential oracle for URL handling and ran it across eight
-languages: sixteen validators against five HTTP clients, 1,855 verdicts, each
-one checked against what actually went on the wire rather than what a library
-returned. That produced a set of disagreements. Every disagreement then got a
-narrower question put to it, which is the only question that matters here: does
-this survive contact with shipped code?</p>
-<p>What came back is a map of twelve families spread across the six handoffs a URL
-makes between a security check and a socket. Confirmed across thirteen language
-stacks, and tested against live products.</p>
+languages: sixteen validators against five HTTP clients, producing 1,855
+verdicts. Each verdict was checked against the wire rather than only a library
+return value. I then tested whether each disagreement was reachable through
+shipped code.</p>
+<p>The results cover twelve families across the six handoffs between a URL security
+check and a socket, with tests across thirteen language stacks and live products.</p>
 <p>The contribution is not that the class exists. RFC 9525 §7.4 described this
 failure in 2023 and OWASP already publishes the mitigations. The contribution is
 knowing <strong>where</strong> the binding breaks: which of those six handoffs the
 specifications leave unbound, which ones hold, and which ones no amount of
 parser comparison will ever catch.</p>
-<p>Evidence carries one grade the whole way through. <code>P</code> means the request ran
-through a shipped product interface. <code>L</code> means shipping component code ran in a
-lab. <code>M</code> means mechanism only. Every case states where its proof stops, and the
-cases that stopped short of a product are in “Where the blade stopped” rather
-than quietly upgraded.</p>
-<p>If you are reading selectively: “The lens” is the idea in three paragraphs,
-“Across thirteen audited stacks” is the breadth check in one table, and “Where
-the blade stopped” is the part that says what the method failed to find.</p>
-<h2 id="the-lens">The lens</h2>
-<p>A URL validator does not validate a request. It validates one representation
-of a request at one moment. OWASP’s broader SSRF guidance [34] correctly says
+<h2 id="the-failure-model">The failure model</h2>
+<p>A URL validator checks one representation of a request at one moment. OWASP’s
+broader SSRF guidance [34] says
 to inspect IPv4 and IPv6, check A and AAAA, disable redirects, and enforce
-egress policy. The missing verb is <em>bind</em>: how does the accepted address and
-authority stay attached to the connection the client opens?</p>
-<p>A security check approves one representation of a request, but the client
-later connects or emits from another representation that is not bound to the
-first verdict. Sometimes two parsers disagree.
-Sometimes one resolver returns half the address set. Sometimes the caller
-drops a validated IP. In each case, the approved destination differs from
-the destination used on the wire.</p>
+egress policy. The remaining requirement is to bind the accepted address and
+authority to the connection the client opens.</p>
+<p>A security check can approve one representation while the client later connects
+or emits from another that is not bound to the verdict. This happens when two
+parsers disagree, a resolver returns only part of the address set, or a caller
+drops a validated IP. In each case, the approved destination differs from the
+one used on the wire.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>       +-------+   +--------+   +----------------+   +---------+</span></span>
 <span class="line"><span>URL ---> parse |-->| object |-->| resolve/select |-->| connect |</span></span>
 <span class="line"><span>       +-------+   +--------+   +----------------+   +---------+</span></span>
@@ -170,13 +157,13 @@ behavior a specification permits. Some use invalid-input recovery, an
 unsafe API, or plain implementation nonconformance. The specifications do
 not authorize the whole class. They also do not bind an application’s
 validation result to the socket a client eventually opens.</p>
-<p>The parser cases below establish the lineage. The new spine is downstream:
+<p>The parser cases below establish the lineage. The downstream cases include:
 Mealie checks A and dials AAAA; GitLab computes a DNS pin and throws it away;
 ShenYu selects a configured upstream and mutates it from a header; NAT64
 can carry an approved IPv6 connection to a private IPv4 destination; Node
 emits different ASCII from Unicode a caller validated; redirects re-enter
-only part of a guard.
-Different stages, one failure: the verdict never reached the wire.</p>
+only part of a guard. In each case, the validation result is not preserved to
+the wire.</p>
 <p>Five production conditions put those downstream stages within reach:</p>
 <ul>
 <li>HTTP/2 carries <code>:authority</code>, <code>:path</code>, and <code>:scheme</code> as separate fields. The protocol constrains their meaning, but several client APIs still let application state override the authority derived from the URL.</li>
@@ -200,30 +187,26 @@ already warned about inconsistent syntax components and numeric-IP filtering in
 §7.3 and §7.4. RFC 9525 does not define the composition model used later in
 this article. Its example is a useful instance of the same handoff failure.
 The sections below test each handoff.</p>
-<h2 id="the-families">The families</h2>
+<h2 id="failure-families">Failure families</h2>
 <p>This article uses ten numbered families, named by the stage where they occur.
 F5 has two subtypes. Each is a place where an application can lose the
 binding between a check and the request. Some disagreements are permitted
 choices. Others are invalid-input recovery or implementation bugs. The
 sections that follow state which kind each finding is and what reached the
 wire.</p>
-<h3 id="what-the-findings-are-for">What the findings are for</h3>
-<p>I did most of the hunting in a week off in May 2026. The lens was already written
-down, so the week was about finding out how much of it held up against shipped
-code. It went fast because the question was narrow. The rest took months, and most
-of that was not up to me: reporting, waiting on triage, waiting on patches,
-checking the fixes.</p>
-<p>The cases below are here to test the idea, not to count scalps. Some were reported
+<h3 id="scope-and-evidence">Scope and evidence</h3>
+<p>I did most of the hunting during a week off in May 2026. I had written the
+failure model first, so that week tested it against shipped code. Reporting,
+triage, patches, and fix verification took the following months.</p>
+<p>The cases below test the model. Some were reported
 and fixed, some carry a CVE, some came back duplicate, some were closed as
 won’t-fix, and some I never reported, because the impact was bounded by an API key
 or a MITM position and did not clear the bar. None of that changes what they show.</p>
-<p>The disposition of a report says something about one vendor’s triage queue. It says
-nothing about whether the shape is real. A finding a vendor declined still shows a
-validator and a fetcher reading the same bytes differently, and a finding that
-earned a CVE proves nothing extra about the lens.</p>
-<p>So each case is here for one reason: it demonstrates a handoff, and it states
-plainly what reached the wire. Where a mechanism never reached a product at all, it
-is in “Where the blade stopped” instead, and says so.</p>
+<p>Report disposition and evidence are recorded separately. A finding a vendor
+declined can still show a validator and fetcher reading the same bytes differently;
+a CVE does not add evidence beyond the reproduced request.</p>
+<p>Each case identifies the handoff and the deepest observed result. Mechanisms that
+did not reach a product are listed under “Negative results and limits.”</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stage           family   the disagreement</span></span>
 <span class="line"><span>-----------------------------------------------------------------</span></span>
 <span class="line"><span>parse           F1       authority boundary: \, @, scheme regex</span></span>
@@ -253,7 +236,7 @@ columns in §10; “one composition” means one wire-confirmed across the produ
 paths exercised here. A <code>-</code> in the matrix or an unconfirmed pairing means
 not observed here, not impossible elsewhere.</p>
 <h2 id="two-parsers-one-socket">Two parsers, one socket</h2>
-<p>The authority boundary is the oldest seam and still the busiest. F1 is <code>U</code>
+<p>Authority-boundary disagreement is the most common parser case in this audit. F1 is <code>U</code>
 in all thirteen audited stack columns in §10. Two findings use it directly.</p>
 <h3 id="changedetectionio-backslash--to-live-imds">changedetection.io: backslash-@ to live IMDS</h3>
 <p>RFC 9110 §4.2.4 [2] deprecates <code>user@host</code> and says a recipient SHOULD treat
@@ -279,13 +262,13 @@ and the instance ID lands back as stored watch content:</p>
 <span class="line"><span>[watch 2] GET 169.254.169.254/latest/meta-data/instance-id</span></span>
 <span class="line"><span>          -> i-0fcdb766aa5062aa5</span></span></code></pre>
 <p>This is <code>P</code> evidence at response-body depth through the shipped watch path.
-Default Docker image, unauthenticated. The important point is the third parser:
-it is a third-party library imported <em>specifically to validate URLs</em>, and it
-is the one that accepts the backslash-port form. The 2026 patch
+Default Docker image, unauthenticated. The third parser is a third-party library
+imported <em>specifically to validate URLs</em>, and it accepts the backslash-port form.
+The 2026 patch
 (CVE-2026-27696 [26]) added <code>is_private_hostname</code> at fetch time and on every
 redirect hop. It wired the check to <code>urlparse(url).hostname</code>, the
-same parser the disagreement is about. The right check, in the wrong parser.
-Validate the bytes the fetcher dials: <code>urllib3.util.parse_url(url).host</code>.</p>
+same parser involved in the disagreement. The check needs to use the fetcher’s
+representation: <code>urllib3.util.parse_url(url).host</code>.</p>
 <h3 id="apache-solr-two-scheme-regexes-one-project">Apache Solr: two scheme regexes, one project</h3>
 <p>RFC 3986 §3.1 defines one scheme grammar:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )</span></span></code></pre>
@@ -387,8 +370,8 @@ capture and require different fixes:</p>
 <span class="line"><span>F2       part of the address set: A is checked, AAAA is dialed</span></span>
 <span class="line"><span>F11      time: a checked address is discarded and DNS runs again</span></span>
 <span class="line"><span>F12      policy: the checked address itself is misclassified</span></span></code></pre>
-<p>F2 needs no race. F11 is the rebinding window. F12 survives perfect
-pinning. Keep those three sentences in mind; they are the whole section.</p>
+<p>F2 needs no race, F11 creates a rebinding window, and F12 remains possible even
+with correct address pinning.</p>
 <h3 id="f2-half-the-address-set">F2, half the address set</h3>
 <p><code>getaddrinfo(AF_UNSPEC)</code> can return both families. <code>gethostbyname</code> cannot.
 A guard that asks the second question and a client that asks the first do
@@ -408,7 +391,7 @@ involved.</p>
 dual-stack reach. The guard was added after CVE-2024-31991 and
 CVE-2024-31993 [27]; the bug is in the replacement guard, not the old
 absence.</p>
-<p>Firefly III has the same component shape:</p>
+<p>Firefly III uses the same component pairing:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// app/Rules/Webhook/IsValidWebhookUrl.php:23</span></span>
 <span class="line"><span>$resolved = gethostbyname(parse_url($value, PHP_URL_HOST));</span></span></code></pre>
 <p>The fetcher is Guzzle’s curl handler. In the matching PHP/curl environment,
@@ -544,7 +527,7 @@ A real TAYGA gateway translated <code>2001:db8:64::a83:2</code> to <code>10.131.
 listener recorded <code>GET /r3-attack</code>. The guard defaults off and the full
 ThingsBoard transaction was not run. Proof: <code>L</code>, HTTP-request depth,
 configured NAT64.</p>
-<p>Managed NAT64 makes these more than laboratory address trivia. AWS documents
+<p>Managed NAT64 makes these addresses relevant to deployed environments. AWS documents
 the well-known prefix to same-VPC, connected, on-premises, and internet
 routes; GCP Private NAT64 can apply private VPC routes [37][38]. Translating
 the well-known prefix to non-global IPv4 falls outside RFC 6052 §3.1, but it
@@ -571,7 +554,7 @@ and made the bytes downloadable:</p>
 <p>On Linux, <code>0.0.0.0:1337</code> also reached Strapi’s own listener. The metadata IP
 was correctly blocked. Proof: <code>P</code>, raw response-body depth, authenticated
 panel role.</p>
-<p>Lemmy and Directus widen the same lesson without changing the technique:</p>
+<p>Lemmy and Directus provide two more examples of the same classifier omission:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>product    guard omission                         returned</span></span>
 <span class="line"><span>-----------------------------------------------------------------------</span></span>
 <span class="line"><span>Lemmy      Rust is_private(): no 100.64/10        parsed OpenGraph</span></span>
@@ -590,10 +573,10 @@ and Sieve sockets call <code>stream_socket_client</code> directly. The shipping
 validator plus socket connected to <code>localhost.</code> and private trailing-dot
 names. Resolver behavior is deployment-dependent and no Mail account
 transaction was run. Proof: <code>L</code>, connection depth.</p>
-<p>F12 is the reminder pinning cannot carry: the address on the socket can be
-exactly the address the guard approved and still violate the deployment’s
-policy. A fixed “private IP” list is not enough. The classifier must know
-the direct ranges and translation prefixes this host can actually route.</p>
+<p>Pinning alone cannot address F12: the socket can use exactly the address the
+guard approved while still violating the deployment’s policy. The classifier
+must cover the direct ranges and translation prefixes the host can actually
+route, rather than relying on a fixed “private IP” list.</p>
 <h2 id="one-header-rewrites-the-upstream-f8">One header rewrites the upstream: F8</h2>
 <p>RFC 3986 defines URI syntax and comparison. It does not define the lifecycle
 of an application’s mutable URL object. A setter can change an authority
@@ -686,15 +669,15 @@ after routing, and the new authority is fetched without another policy
 check. This is <code>P</code> evidence at response-body depth. F8 does not appear in the
 §10 matrix because that matrix records cross-library disagreements, while
 this result depends on an application object lifecycle.</p>
-<h2 id="the-checked-request-is-not-the-emitted-request">The checked request is not the emitted request</h2>
+<h2 id="authority-can-change-after-validation">Authority can change after validation</h2>
 <p>The socket target is only one identity. HTTP/1 adds <code>Host</code>. HTTP/2 adds
 <code>:authority</code>, <code>:scheme</code>, and <code>:path</code> as independent fields. HTTPS can add SNI
 and a certificate reference name. A guard can approve the dial and still
 lose the request at emission.</p>
 <h3 id="trust-state-and-host-state">Trust state and Host state</h3>
-<p>XWiki is the stranger case, so it goes first. Its forwarded-host input does
-not become the outbound <code>Host</code>. It writes the validator’s allowlist before
-that same validator reads it.</p>
+<p>XWiki differs from the direct <code>Host</code>-override cases. Its forwarded-host input
+does not become the outbound <code>Host</code>; it writes the validator’s allowlist before
+that validator reads it.</p>
 <p><code>DefaultURLSecurityManager.java:143-173</code>:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#FF7B72">public</span><span style="color:#FF7B72"> boolean</span><span style="color:#D2A8FF"> isDomainTrusted</span><span style="color:#E6EDF3">(URL urlToCheck) {</span></span>
 <span class="line"><span style="color:#FF7B72">    if</span><span style="color:#E6EDF3"> (</span><span style="color:#79C0FF">this</span><span style="color:#E6EDF3">.urlConfiguration.</span><span style="color:#D2A8FF">isTrustedDomainsEnabled</span><span style="color:#E6EDF3">()) {</span></span>
@@ -741,7 +724,7 @@ diff with <code>X-Forwarded-Host: internal-svc</code>:</p>
 <p>The bytes are buffered but not returned by the diff, so this sink is blind.
 Proof: <code>P</code>; unauthenticated response-depth open redirect, authenticated
 HTTP-request-depth SSRF. This is <code>state-poison</code>, not F6.</p>
-<p>n8n is the direct F6 shape. With
+<p>n8n is a direct F6 case. With
 <code>N8N_SSRF_PROTECTION_ENABLED=true</code>, its HTTP Request node resolves, checks,
 pins, and revalidates redirects. The flag defaults off. The V3 node also
 accepts arbitrary headers, and <code>parseRequestObject</code> copies them into axios:</p>
@@ -759,7 +742,8 @@ HTTP-request depth, logged-in workflow author, guard enabled.</p>
 <h3 id="f7-no-guarded-product-in-this-audit">F7, no guarded product in this audit</h3>
 <p>RFC 9113 §8.3.1 [3] is not ambiguous: a direct H/2 client must use
 <code>:authority</code>, must not send a differing <code>Host</code>, and a server should reject
-the mismatch. The seam is an API, not permission from the RFC. Netty,
+the mismatch. The disagreement is exposed by client APIs rather than permitted
+by the RFC. Netty,
 <code>node:http2</code>, nghttp2, Swift NIO, Haskell <code>http2</code>, and BEAM can accept
 pseudo-fields separately from a URL object; valid alternate authority or
 path bytes reach the wire.</p>
@@ -810,8 +794,8 @@ through a meaningful validator into direct <code>node:http2</code> fields. Wrapp
 stripped, encoded, constrained, or signed it;
 SigV4 in particular makes the altered request fail authentication. axios
 has an adjacent deletion mismatch—it removes U+0100+ instead of narrowing—
-but no product chain was found in the audited paths. The primitive is the
-result; a product scalp is not invented for it.</p>
+but no product chain was found in the audited paths. This is therefore a
+library-level primitive, not a product finding.</p>
 <h2 id="redirects-escape-the-original-verdict-f5b">Redirects escape the original verdict: F5b</h2>
 <p>RFC 9110 §15.4 defines redirect status codes and the <code>Location</code> field. A
 client may follow a redirect automatically; it is not required to. If it
@@ -1012,7 +996,7 @@ therefore a differential oracle for the reduced validation path:</p>
 <p>This is <code>P</code> evidence at HTTP-request depth for F1 × F5b. The direct F1 case
 in §4.1 separately proves selected methods, headers, stored bodies, and live
 IMDSv2. That deeper impact is not borrowed for the redirect leg.</p>
-<h3 id="one-chain-no-algebra">One chain, no algebra</h3>
+<h3 id="confirmed-composition">Confirmed composition</h3>
 <p>Among the product paths exercised here, this is the sole composition placed
 on the wire. GitLab is F11 alone: dropping the pin and resolving again is the
 weakness, not F11 × F2. Thumbor and Open WebUI prove redirects alone. F7 and
@@ -1021,12 +1005,11 @@ finding.</p>
 <p>RFC 3986 §§7.3-7.4 warned that multiple components interpret URI data during
 dereference and that resolvers accept numeric forms outside the URI grammar.
 RFC 9525 §7.4 later described one component misclassifying an IP as a name
-while the next assumes the IP rule was already enforced. One enforces; the
-next assumes.</p>
-<p>That is prior art for the handoff, not an algebra. The useful result is the
-literal-backslash redirect above: a later entry point ran fewer validators
-and resurrected an old parser split. Every proposed composition still needs
-that request on the wire.</p>
+while the next assumes the IP rule was already enforced.</p>
+<p>That is prior art for the handoff. In the confirmed case above, the
+literal-backslash redirect entered a path with fewer validators and restored
+an earlier parser split. Any further composition still requires a combined
+request to be observed on the wire.</p>
 <h2 id="across-thirteen-audited-stacks">Across thirteen audited stacks</h2>
 <p>The product cases provide the application-level evidence. This matrix is the
 breadth check: URL parsers and HTTP clients across Java (two stacks), Go,
@@ -1081,16 +1064,16 @@ the audited set assembled it. IPv4 numeric forms appeared in all thirteen
 audited columns, but Rust and .NET canonicalize before the resolver handoff,
 so their cells lack <code>D</code>. These differences are why the matrix is a test map,
 not a vulnerability count.</p>
-<p>Secure shapes exist. JDK <code>HttpClient</code> restricts <code>Host</code> by default. Apache
+<p>Several implementations preserve the binding. JDK <code>HttpClient</code> restricts <code>Host</code> by default. Apache
 HttpClient can keep route and authority on one <code>HttpHost</code>. Bitwarden pins by
 rewriting <code>RequestUri</code> to the selected literal. Mastodon checks each address
-inside the connect loop. The seam is common, not inevitable.</p>
-<h3 id="the-same-question-asked-of-the-libraries-directly">The same question, asked of the libraries directly</h3>
+inside the connect loop. The failure is common but not inevitable.</p>
+<h3 id="library-level-distribution">Library-level distribution</h3>
 <p>The matrix above is a test map built by hand. To turn it into a distribution I
 built a differential oracle. The same crafted input goes to every library at
 every stage, and the four-value tuple <code>{validator-host, resolver-IP, emitted :authority, dialed-IP}</code> is diffed across each hop. One run produces 1855
 verdicts across 16 validators and 5 clients in 8 languages.</p>
-<p>Asked about the changedetection.io shape from the backslash case above,
+<p>For the changedetection.io backslash input above,
 delivered through an F5b redirect, the library layer splits four ways:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>validator (parses the redirect target)         -> host            client        -> dialed         verdict</span></span>
 <span class="line"><span>---------------------------------------------------------------------------------------------------------</span></span>
@@ -1098,15 +1081,14 @@ delivered through an F5b redirect, the library layer splits four ways:</p>
 <span class="line"><span>whatwg-url / Node WHATWG / legacy url.parse     169.254.169.254   urllib3        169.254.169.254  BLOCKED</span></span>
 <span class="line"><span>net/url / yarl                                  REJECT (invalid)  urllib3        -                PARSE-REJECT</span></span>
 <span class="line"><span>any                                             example.com       libcurl / Go   example.com      AGREE / BLOCKED</span></span></code></pre>
-<p>No parser here is wrong. The bug is a validator that reads the backslash as
-userinfo paired with a fetcher that reads it as a host terminator, and the oracle
-enumerates which pairs land there. Four real clients behave four different ways.</p>
-<p>The negative control holds. The <code>%5C@</code> variant makes every parser re-agree on
-<code>example.com</code> and survivals drop to zero, which is what makes the first result
-worth reporting.</p>
+<p>The bug comes from pairing a validator that reads the backslash as userinfo with
+a fetcher that reads it as a host terminator. The oracle enumerates those pairs,
+and four real clients produce four different outcomes.</p>
+<p>The <code>%5C@</code> negative control makes every parser re-agree on <code>example.com</code>, and
+survivals drop to zero.</p>
 <p>The full oracle is published separately: what it instruments, the per-classifier
 gap totals, the IDN engine divergence, the F1-F15 taxonomy including the three
-families this article does not reach, and the unchecked cells of the seam space. <a href="/post/ssrf-pipeline/">The URL Parser Cheatsheet</a>.</p>
+families this article does not reach, and the unchecked cells in the coverage map. <a href="/post/ssrf-pipeline/">The URL Parser Cheatsheet</a>.</p>
 <h2 id="defense-the-mastodon-pattern-per-language">Defense: the Mastodon pattern, per language</h2>
 <p>The required controls are consistent across languages. Prefer an allowlist
 when the use case has a fixed destination set. Otherwise, resolve the host,
@@ -1173,10 +1155,10 @@ policy. <code>URI.parse(url)</code> is what <code>Net::HTTP</code> will dial; ch
 the output of a <code>gsub</code> chain. Validate the fetcher’s canonical parse output,
 or convert the URL once into a <code>(scheme, host, port, ip, path)</code> tuple and do
 not pass the original string downstream.</p>
-<h2 id="where-the-blade-stopped">Where the blade stopped</h2>
-<p>A primitive is not a product bug, a classifier pass is not a routed packet,
-and two working legs are not a chain. The audit produced useful dead ends;
-this is the relevant compressed record.</p>
+<h2 id="negative-results-and-limits">Negative results and limits</h2>
+<p>The audit does not treat a primitive as a product bug, a classifier pass as a
+routed packet, or two working legs as a complete chain. The following results
+record where confirmation stopped.</p>
 <h3 id="mechanisms-without-a-guarded-product">Mechanisms without a guarded product</h3>
 <p>F7 needs three conditions in one process: a destination policy, direct
 attacker control of H/2 <code>:authority</code> or <code>:path</code>, and no validation of that
@@ -1214,16 +1196,16 @@ h2c origin. Go and Node exposed both values to application code; hyper-h2
 rejected the mismatch and Apache normalized it. nginx rejected it, while
 Caddy, HAProxy, and Envoy rebuilt <code>Host</code> from <code>:authority</code>. No tested proxy
 forwarded the split, so there is no proxy-chain desync finding.</p>
-<h3 id="the-empirical-boundary">The empirical boundary</h3>
+<h3 id="measured-limits">Measured limits</h3>
 <p>Within the products and paths tested in this audit, one composition was
 wire-confirmed: changedetection.io at F1 × F5b. GitLab is F11 by itself;
 Thumbor and Open WebUI are F5b by themselves. No tested product path carried
 F7 or F9 into a second family. A plausible chain assembled from separate
 labs remains unconfirmed until its combined request reaches the wire.</p>
-<p>The opening Mealie trace is the compact model: the guard approved A and the
-fetcher dialed AAAA. The other families change which representation is lost,
-not the invariant. A verdict that does not survive into the object, resolver,
-socket, authority, and next hop is only a comment on an earlier state.</p>
+<p>The opening Mealie trace provides the simplest example: the guard approved A
+and the fetcher dialled AAAA. Other families lose a different representation,
+but in every case the validation result fails to remain bound through the object,
+resolver, socket, authority, or next hop.</p>
 <h2 id="prior-art-and-acknowledgements">Prior art and acknowledgements</h2>
 <p>The method starts with Orange Tsai’s <em>A New Era of SSRF</em> (Black Hat USA
 2017) [0]: compare the parsers an application applies to one URL. Tsai
@@ -1249,10 +1231,10 @@ not the family itself.</p>
 curl, PHP, Ruby URI, OkHttp, undici, Jetty, Reactor Netty, Swift Foundation,
 Haskell <code>http-client</code> and <code>http2</code>, WHATWG URL, and Ada URL. Thanks also to the
 projects whose maintainers reviewed these findings.</p>
-<p>Language-model tools assisted source navigation and draft review. The author
-verified the PoCs, wire transcripts, and final claims.</p>
-<p>The source excerpts, conditions, and wire transcripts above are the article’s
-public proof record.</p>
+<p>I used language-model tools for source navigation and draft review. I verified
+the PoCs, wire transcripts, and final claims.</p>
+<p>The source excerpts, conditions, and wire transcripts above support the claims
+made in this article.</p>
 <h2 id="references">References</h2>
 <p>[0]  Orange Tsai, “A New Era of SSRF: Exploiting URL Parser in</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Trending Programming Languages", Black Hat USA 2017.</span></span>

