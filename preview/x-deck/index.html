@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="en" class="nojs"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xclow3n &middot; Deck</title><meta name="description" content="Vulnerability research and CTF writeups by Rajat Raghav (xclow3n): HTTP request smuggling, SSRF and parser differentials in HAProxy, Traefik, Envoy, Go net/http, Cloudflare Pingora, Nodemailer and sanitize-html."><meta name="robots" content="noindex"><meta name="theme-color" content="#111512"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap"><link rel="stylesheet" href="/_astro/x-deck.D2Dg0N8Q.css"></head> <body> <a class="skip" href="#list">Skip to the track list</a> <div class="bar" aria-hidden="true"> <i style="background:#C8CCFF"></i><i style="background:#FFBABB"></i><i style="background:#ACD5FF"></i><i style="background:#F7BCF1"></i><i style="background:#82E4F5"></i><i style="background:#E2C3FF"></i><i style="background:#92DEFF"></i><i style="background:#FFB9D7"></i><i style="background:#FFBF9F"></i> </div> <header class="head"> <div class="head__in"> <h1 class="wm">xclow3n</h1> <p class="stand"> <b>HTTP request smuggling, desync and parser differentials.</b>
+Ten posts in published order, newest first. Track lengths are read time.
+</p> <div class="rt"> <span class="rt__n"><b id="elapsed">0:00</b><i>/</i>2:06</span> <span class="rt__l">Running time</span> </div> </div> </header> <div class="railbox"> <div class="rail" id="rail" role="img" aria-label="Running order: A1 32 minutes, A2 33 minutes, A3 23 minutes, A4 16 minutes, A5 11 minutes, B1 2 minutes, B2 3 minutes, B3 3 minutes, B4 3 minutes. Segment width is the share of the 2:06 total."> <i style="flex:32 1 0;--seg:#FFBABB"></i><i style="flex:33 1 0;--seg:#FFB9D7"></i><i style="flex:23 1 0;--seg:#92DEFF"></i><i style="flex:16 1 0;--seg:#E2C3FF"></i><i style="flex:11 1 0;--seg:#82E4F5"></i><i class="brk" style="flex:2 1 0;--seg:#F7BCF1"></i><i style="flex:3 1 0;--seg:#ACD5FF"></i><i style="flex:3 1 0;--seg:#FFBABB"></i><i style="flex:3 1 0;--seg:#C8CCFF"></i> </div> </div> <main class="deck" id="deck"> <div class="col"> <ol class="list" id="list"> <li class="sd"> <span class="sd-l">Side A</span> <span class="sd-s">MAR – OCT 2026</span> <span class="sd-c"> 5 tracks &middot;  1:
+55 </span> </li><li class="t"> <a class="trk" href="/post/smuggling-shouldnt-exist-anymore/" data-k="0" style="--key:#FFBABB"> <span class="t-n"> <span class="t-lab">A1</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> Smuggling Shouldn&#39;t Exist Anymore, Right? </span> <span class="t-find"> <span class="t-sum">Four ways a connection changes owners while it still owes the previous request’s bytes.</span><span class="t-cve">CVE-2026-56866</span> </span> </span> <span class="t-w"> <b>32 min</b> <time datetime="2026-10">OCT 2026</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/the-validator-can-lie/" data-k="1" style="--key:#FFB9D7"> <span class="t-n"> <span class="t-lab">A2</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> The Validator Can Lie: SSRF Beyond URL Validation </span> <span class="t-find"> <span class="t-sum">changedetection.io, GitLab and Mealie approve one host while the fetcher dials another.</span> </span> </span> <span class="t-w"> <b>33 min</b> <time datetime="2026-08">AUG 2026</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/ssrf-pipeline/" data-k="2" style="--key:#92DEFF"> <span class="t-n"> <span class="t-lab">A3</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> The URL Parser Cheatsheet </span> <span class="t-find"> <span class="t-sum">What fourteen pinned URL parsers return for one crafted input, across eight languages.</span> </span> </span> <span class="t-w"> <b>23 min</b> <time datetime="2026-08">AUG 2026</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/ai-vuln-research/" data-k="3" style="--key:#E2C3FF"> <span class="t-n"> <span class="t-lab">A4</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed </span> <span class="t-find"> <span class="t-sum">Four AI-assisted workflows, one of them across 23 proxies and backends. One produced 14 confirmed bugs, another nothing I could report.</span> </span> </span> <span class="t-w"> <b>16 min</b> <time datetime="2026-03">MAR 2026</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/breaking-pingora/" data-k="4" style="--key:#82E4F5"> <span class="t-n"> <span class="t-lab">A5</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy </span> <span class="t-find"> <span class="t-sum">Three smuggling bugs and a cache key that ignores Host, all in Pingora’s default configuration.</span><span class="t-cve">CVE-2026-2835</span> </span> </span> <span class="t-w"> <b>11 min</b> <time datetime="2026-03">MAR 2026</time> </span> </a> </li> <li class="sd"> <span class="sd-l">Side B</span> <span class="sd-s">NOV 2024</span> <span class="sd-c"> 4 tracks &middot;  0:
+11 </span> </li><li class="t"> <a class="trk" href="/post/sanitize-html-bypass-mxss/" data-k="5" style="--key:#F7BCF1"> <span class="t-n"> <span class="t-lab">B1</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> HTML Sanitize Bypass Using MXSS </span> <span class="t-find"> <span class="t-sum">Mutation XSS through sanitize-html, where htmlparser2 and the browser disagree on style and math.</span> </span> </span> <span class="t-w"> <b>2 min</b> <time datetime="2024-11">NOV 2024</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/nodemailer-parser-discrepancy/" data-k="6" style="--key:#ACD5FF"> <span class="t-n"> <span class="t-lab">B2</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> Email Parser Discrepancy in Nodemailer </span> <span class="t-find"> <span class="t-sum">Two address-parsing bugs that misroute mail. Patched in v6.9.16 and v7.0.7.</span><span class="t-cve">GHSA-mm7p-fcc7-pg87</span> </span> </span> <span class="t-w"> <b>3 min</b> <time datetime="2024-11">NOV 2024</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/intergalactic-bounty/" data-k="7" style="--key:#FFBABB"> <span class="t-n"> <span class="t-lab">B3</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> <span class="t-ctf">ctf</span>Intergalactic Bounty: HTB University CTF 2024 </span> <span class="t-find"> <span class="t-sum">Intended solution: a Nodemailer parser discrepancy to MXSS to RCE by prototype pollution.</span> </span> </span> <span class="t-w"> <b>3 min</b> <time datetime="2024-11">NOV 2024</time> </span> </a> </li> <li class="t"> <a class="trk" href="/post/encodecept/" data-k="8" style="--key:#C8CCFF"> <span class="t-n"> <span class="t-lab">B4</span> <i class="t-tick" aria-hidden="true"></i> </span> <span class="t-x"> <span class="t-ttl"> <span class="t-ctf">ctf</span>EncoDecept: HTB University CTF 2024 </span> <span class="t-find"> <span class="t-sum">Intended solution: web cache deception through a Rails path delimiter, then a Django ORM leak.</span> </span> </span> <span class="t-w"> <b>3 min</b> <time datetime="2024-11">NOV 2024</time> </span> </a> </li>  </ol> <span class="needle" id="needle" aria-hidden="true"></span> </div> <aside class="panel" id="panel" aria-labelledby="np-h" style="--key:#FFBABB"> <h2 class="vh" id="np-h">Now playing</h2> <div class="p-art flat" id="p-art">  <img id="p-img" alt=""> <span class="p-scrim" aria-hidden="true"></span> <span class="p-tag" id="p-tag">Side A</span> <span class="p-count" aria-hidden="true"> <span class="count"> <span class="wheel" id="w10" style="--d:0"><span><i>0</i><i>1</i></span></span> <span class="wheel" id="w1" style="--d:1"><span><i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i></span></span> </span> <span class="p-of">of 9</span> </span> </div> <div class="p-body"> <p class="p-when"> <b class="p-lab" id="p-lab">A1</b> <i class="p-labsep" aria-hidden="true">&middot;</i> <b id="p-len">32 min</b> <i aria-hidden="true">&middot;</i> <span class="p-dt" id="p-date">OCT 2026</span> <span class="p-ctf" id="p-ctf" hidden></span> </p> <h3 class="p-ttl" id="p-ttl">Smuggling Shouldn&#39;t Exist Anymore, Right?</h3> <p class="p-find" id="p-find"> Four ways a connection changes owners while it still owes the previous request’s bytes.<span class="cve">CVE-2026-56866</span> </p> </div> <dl class="p-spec"> <div class="sp" id="sp-prod"> <dt>Affected</dt> <dd id="p-prod">Go net/http</dd> </div> <div class="sp" id="sp-cve"> <dt>Identifier</dt> <dd class="key" id="p-cve">CVE-2026-56866</dd> </div> </dl> <div class="p-right"> <a class="p-open" id="p-open" href="/post/smuggling-shouldnt-exist-anymore/"> <span>Read this post</span><em aria-hidden="true">&rarr;</em> </a> <div class="tp"> <button class="tb" id="prev" type="button" disabled> <i aria-hidden="true">&#9666;&#9666;</i><b>Prev</b> </button> <button class="tb tb--play" id="play" type="button" aria-pressed="false"> <span class="sweep" id="sweep" aria-hidden="true"></span> <i aria-hidden="true">&#9656;</i><b id="play-l">Play all</b> </button> <button class="tb" id="next" type="button"> <b>Next</b><i aria-hidden="true">&#9656;&#9656;</i> </button> </div> <p class="hint"> <span><b>&uarr;&darr;</b> / <b>J K</b> step</span> <span><b>Enter</b> open</span> <span class="sp-key"><b>Space</b> pause</span> </p> </div> </aside> </main> <p class="vh" id="say" role="status" aria-live="polite"></p> <footer class="foot"> <span>9 tracks &middot; running time is estimated read time</span> <span>Nine 1-bit plates, one ink each</span> <a href="https://github.com/xclow3n">GitHub</a> <a href="https://x.com/xclow3n">X</a> <span class="end">2:06</span> </footer> <script type="application/json" id="deck-data">[{"n":1,"label":"A1","side":"A","title":"Smuggling Shouldn't Exist Anymore, Right?","find":"Four ways a connection changes owners while it still owes the previous request’s bytes.","credit":"CVE-2026-56866","date":"OCT 2026","min":32,"href":"/post/smuggling-shouldnt-exist-anymore/","ink":"#FFBABB","plate":null,"prod":["Go net/http"],"before":0,"mark":null},{"n":2,"label":"A2","side":"A","title":"The Validator Can Lie: SSRF Beyond URL Validation","find":"changedetection.io, GitLab and Mealie approve one host while the fetcher dials another.","credit":null,"date":"AUG 2026","min":33,"href":"/post/the-validator-can-lie/","ink":"#FFB9D7","plate":"/images/plates/the-validator-can-lie.png","prod":["changedetection.io","GitLab","Mealie"],"before":32,"mark":null},{"n":3,"label":"A3","side":"A","title":"The URL Parser Cheatsheet","find":"What fourteen pinned URL parsers return for one crafted input, across eight languages.","credit":null,"date":"AUG 2026","min":23,"href":"/post/ssrf-pipeline/","ink":"#92DEFF","plate":"/images/plates/ssrf-pipeline.png","prod":["Go net/url","Node URL","Java URI","Ruby URI"],"before":65,"mark":null},{"n":4,"label":"A4","side":"A","title":"Testing AI for Vulnerability Research: 4 Approaches & Where I Failed","find":"Four AI-assisted workflows, one of them across 23 proxies and backends. One produced 14 confirmed bugs, another nothing I could report.","credit":null,"date":"MAR 2026","min":16,"href":"/post/ai-vuln-research/","ink":"#E2C3FF","plate":"/images/plates/ai-vuln-research.png","prod":[],"before":88,"mark":null},{"n":5,"label":"A5","side":"A","title":"Breaking Pingora: HTTP Request Smuggling & Cache Poisoning in Cloudflare's Reverse Proxy","find":"Three smuggling bugs and a cache key that ignores Host, all in Pingora’s default configuration.","credit":"CVE-2026-2835","date":"MAR 2026","min":11,"href":"/post/breaking-pingora/","ink":"#82E4F5","plate":"/images/plates/breaking-pingora.png","prod":[],"before":104,"mark":null},{"n":6,"label":"B1","side":"B","title":"HTML Sanitize Bypass Using MXSS","find":"Mutation XSS through sanitize-html, where htmlparser2 and the browser disagree on style and math.","credit":null,"date":"NOV 2024","min":2,"href":"/post/sanitize-html-bypass-mxss/","ink":"#F7BCF1","plate":"/images/plates/sanitize-html-bypass-mxss.png","prod":["sanitize-html","htmlparser2"],"before":115,"mark":null},{"n":7,"label":"B2","side":"B","title":"Email Parser Discrepancy in Nodemailer","find":"Two address-parsing bugs that misroute mail. Patched in v6.9.16 and v7.0.7.","credit":"GHSA-mm7p-fcc7-pg87","date":"NOV 2024","min":3,"href":"/post/nodemailer-parser-discrepancy/","ink":"#ACD5FF","plate":"/images/plates/nodemailer-parser-discrepancy.png","prod":[],"before":117,"mark":null},{"n":8,"label":"B3","side":"B","title":"Intergalactic Bounty: HTB University CTF 2024","find":"Intended solution: a Nodemailer parser discrepancy to MXSS to RCE by prototype pollution.","credit":null,"date":"NOV 2024","min":3,"href":"/post/intergalactic-bounty/","ink":"#FFBABB","plate":"/images/plates/intergalactic-bounty.png","prod":[],"before":120,"mark":"ctf"},{"n":9,"label":"B4","side":"B","title":"EncoDecept: HTB University CTF 2024","find":"Intended solution: web cache deception through a Rails path delimiter, then a Django ORM leak.","credit":null,"date":"NOV 2024","min":3,"href":"/post/encodecept/","ink":"#C8CCFF","plate":"/images/plates/encodecept.png","prod":[],"before":123,"mark":"ctf"}]</script> <script>
+(function () {
+  var root = document.documentElement;
+  root.classList.remove('nojs');
+  root.classList.add('js');
+
+  var D = JSON.parse(document.getElementById('deck-data').textContent);
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.trk'));
+  if (!rows.length) return;
+
+  var col = document.querySelector('.col');
+  var needle = document.getElementById('needle');
+  var segs = Array.prototype.slice.call(document.querySelectorAll('.rail i'));
+  var panel = document.getElementById('panel');
+  var art = document.getElementById('p-art');
+  var img = document.getElementById('p-img');
+  var body = document.querySelector('.p-body');
+  var el = {
+    tag: document.getElementById('p-tag'),
+    len: document.getElementById('p-len'),
+    date: document.getElementById('p-date'),
+    lab: document.getElementById('p-lab'),
+    ctf: document.getElementById('p-ctf'),
+    ttl: document.getElementById('p-ttl'),
+    find: document.getElementById('p-find'),
+    prod: document.getElementById('p-prod'),
+    cve: document.getElementById('p-cve'),
+    spProd: document.getElementById('sp-prod'),
+    spCve: document.getElementById('sp-cve'),
+    open: document.getElementById('p-open'),
+    elapsed: document.getElementById('elapsed'),
+    w10: document.getElementById('w10'),
+    w1: document.getElementById('w1'),
+    say: document.getElementById('say')
+  };
+  var prevB = document.getElementById('prev');
+  var nextB = document.getElementById('next');
+  var playB = document.getElementById('play');
+  var playL = document.getElementById('play-l');
+  var sweep = document.getElementById('sweep');
+
+  var rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var DWELL = 2800;
+  var cur = 0;
+  var clockAnim = null;   /* the dwell animation IS the auto-advance timer */
+  var flash = [];         /* handles, cancelled before each new track      */
+
+  function hhmm(m) {
+    return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');
+  }
+
+  /* One element moved, nothing created: holding a key re-aims the transform
+     instead of stacking animations. */
+  function placeNeedle() {
+    var r = rows[cur].getBoundingClientRect();
+    var c = col.getBoundingClientRect();
+    needle.style.height = r.height + 'px';
+    needle.style.transform = 'translateY(' + (r.top - c.top) + 'px)';
+    needle.classList.add('lit');
+  }
+
+  function paint(t) {
+    panel.style.setProperty('--key', t.ink);
+    needle.style.setProperty('--key', t.ink);
+
+    if (t.plate) { art.classList.remove('flat'); img.src = t.plate; }
+    else { art.classList.add('flat'); img.removeAttribute('src'); }
+
+    el.tag.textContent = 'Side ' + t.side;
+    el.lab.textContent = t.label;
+    el.len.textContent = t.min + ' min';
+    el.date.textContent = t.date;
+    if (t.mark) { el.ctf.textContent = t.mark; el.ctf.hidden = false; }
+    else { el.ctf.textContent = ''; el.ctf.hidden = true; }
+    el.ttl.textContent = t.title;
+
+    /* textContent for the finding, then the identifier appended as its own
+       element — six of ten posts carry none and print nothing at all. */
+    el.find.textContent = t.find;
+    if (t.credit) {
+      var s = document.createElement('span');
+      s.className = 'cve';
+      s.textContent = t.credit;
+      el.find.appendChild(s);
+    }
+
+    if (t.prod.length) {
+      el.prod.textContent = t.prod.join(' · ');
+      el.spProd.classList.remove('off');
+    } else { el.prod.textContent = ''; el.spProd.classList.add('off'); }
+
+    if (t.credit) { el.cve.textContent = t.credit; el.spCve.classList.remove('off'); }
+    else { el.cve.textContent = ''; el.spCve.classList.add('off'); }
+
+    el.open.href = t.href;
+    el.elapsed.textContent = hhmm(t.before);
+
+    el.w10.style.setProperty('--d', Math.floor(t.n / 10));
+    el.w1.style.setProperty('--d', t.n % 10);
+  }
+
+  function select(i, how) {
+    i = i < 0 ? 0 : i > rows.length - 1 ? rows.length - 1 : i;
+    var same = i === cur;
+    cur = i;
+    var t = D[i];
+
+    for (var k = 0; k < rows.length; k++) {
+      var on = k === i;
+      rows[k].classList.toggle('on', on);
+      if (on) rows[k].setAttribute('aria-current', 'true');
+      else rows[k].removeAttribute('aria-current');
+    }
+    for (var s = 0; s < segs.length; s++) {
+      segs[s].classList.toggle('past', s < i);
+      segs[s].classList.toggle('at', s === i);
+    }
+
+    placeNeedle();
+    paint(t);
+    prevB.disabled = i === 0;
+    nextB.disabled = i === rows.length - 1;
+
+    if (how === 'key') rows[i].focus({ preventScroll: true });
+    if (how === 'key' || how === 'auto' || how === 'button') {
+      rows[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+    el.say.textContent = 'Track ' + t.n + ' of ' + rows.length + ', ' + t.title;
+
+    /* the track change: two short animations on persistent elements, each
+       cancelled before it is restarted, so stepping fast never queues */
+    if (!rm.matches && !same) {
+      for (var f = 0; f < flash.length; f++) { try { flash[f].cancel(); } catch (e) {} }
+      flash = [
+        body.animate(
+          [{ opacity: 0.1, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 145, easing: 'cubic-bezier(.3,.8,.2,1)' }
+        ),
+        art.animate(
+          [{ filter: 'brightness(1.72) contrast(.84)' }, { filter: 'none' }],
+          { duration: 185, easing: 'ease-out' }
+        )
+      ];
+    }
+  }
+
+  /* ----------------------------------------------------------- auto-advance
+     Never starts on its own.  Refused outright under reduced motion.  The
+     sweep animation is the clock, so pause() pauses the advance and there is
+     no second timer that can drift or double-fire. */
+  function running() { return !!clockAnim && clockAnim.playState === 'running'; }
+
+  function arm() {
+    if (clockAnim) { try { clockAnim.cancel(); } catch (e) {} }
+    clockAnim = sweep.animate(
+      [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+      { duration: DWELL, easing: 'linear', fill: 'forwards' }
+    );
+    clockAnim.onfinish = function () {
+      if (cur >= rows.length - 1) { stop(); return; }
+      select(cur + 1, 'auto');
+      arm();
+    };
+  }
+
+  function start() {
+    if (rm.matches) return;
+    playB.setAttribute('aria-pressed', 'true');
+    playL.textContent = 'Pause';
+    arm();
+  }
+
+  function stop() {
+    if (clockAnim) { try { clockAnim.cancel(); } catch (e) {} clockAnim = null; }
+    playB.setAttribute('aria-pressed', 'false');
+    playL.textContent = 'Play all';
+  }
+
+  playB.addEventListener('click', function () {
+    if (running()) stop(); else start();
+  });
+  prevB.addEventListener('click', function () { stop(); select(cur - 1, 'button'); });
+  nextB.addEventListener('click', function () { stop(); select(cur + 1, 'button'); });
+
+  /* the cursor moving through the list is the needle moving: it sticks where
+     the cursor left it, so nothing reverts when the pointer goes away */
+  rows.forEach(function (a, k) {
+    /* pointerType is the signal, not a hover media query: a touch fires
+       'touch' here and never selects, and a laptop that reports a coarse
+       pointer with a mouse plugged in still works */
+    a.addEventListener('pointerenter', function (e) {
+      if (e.pointerType === 'mouse') { stop(); select(k, 'hover'); }
+    });
+    a.addEventListener('focus', function () { stop(); select(k, 'focus'); });
+    a.addEventListener('click', function () { stop(); });
+  });
+
+  var STEP = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1, j: 1, k: -1, J: 1, K: -1 };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target;
+    var mine = t === document.body || t === document.documentElement ||
+               (t instanceof Element && t.closest('#deck'));
+    if (!mine) return;
+
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      if (running()) { e.preventDefault(); stop(); }
+      return;                              /* otherwise space still scrolls */
+    }
+    if (e.key === 'Enter') {
+      if (t instanceof Element && t.closest('.trk')) return;   /* native */
+      if (t instanceof HTMLButtonElement || (t instanceof Element && t.closest('a'))) return;
+      e.preventDefault(); stop();
+      window.location.href = D[cur].href;
+      return;
+    }
+    if (e.key === 'Home' || e.key === 'End') {
+      e.preventDefault(); stop(); select(e.key === 'Home' ? 0 : rows.length - 1, 'key');
+      return;
+    }
+    var d = STEP[e.key];
+    if (!d) return;
+    e.preventDefault();
+    stop();
+    select(cur + d, 'key');
+  });
+
+  /* reduced motion turned on mid-session kills the clock */
+  var onRM = function () { if (rm.matches) stop(); };
+  if (rm.addEventListener) rm.addEventListener('change', onRM); else rm.addListener(onRM);
+
+  var re;
+  window.addEventListener('resize', function () {
+    clearTimeout(re);
+    re = setTimeout(placeNeedle, 90);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeNeedle);
+
+  select(0, 'init');
+})();
+</script> </body> </html>

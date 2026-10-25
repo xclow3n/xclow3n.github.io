@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>xclow3n</title>
+    <link>https://xclow3n.com/</link>
+    <description>Original vulnerability research by Rajat Raghav (xclow3n): HTTP request smuggling, cache poisoning, parser differentials, and authored CTF challenges.</description>
+    <language>en</language>
+    <atom:link href="https://xclow3n.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Smuggling Shouldn&apos;t Exist Anymore, Right?</title>
+      <link>https://xclow3n.com/post/smuggling-shouldnt-exist-anymore/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/smuggling-shouldnt-exist-anymore/</guid>
+      <pubDate>Thu, 01 Oct 2026 00:00:00 GMT</pubDate>
+      <description>A victim asked for /account and got the attacker&apos;s marker back, on a backend socket the proxy believed was clean. Ten products reuse a connection where the previous request is not finished, and reuse is not the defect. Turning it off takes the crossings to zero and leaves every defect in place. Four mechanisms, with wire traces, origin logs and a control for each.</description>
+      <category>HTTP Request Smuggling</category>
+      <category>Connection Reuse</category>
+      <category>Desync</category>
+      <category>HTTP/2</category>
+      <category>HTTP/3</category>
+    </item>
+    <item>
+      <title>The URL Parser Cheatsheet</title>
+      <link>https://xclow3n.com/post/ssrf-pipeline/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/ssrf-pipeline/</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 GMT</pubDate>
+      <description>A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product.</description>
+      <category>SSRF</category>
+      <category>URL Parsing</category>
+      <category>Parser Differential</category>
+      <category>HTTP/2</category>
+      <category>DNS</category>
+      <category>Tooling</category>
+    </item>
+    <item>
+      <title>The Validator Can Lie: SSRF Beyond URL Validation</title>
+      <link>https://xclow3n.com/post/the-validator-can-lie/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/the-validator-can-lie/</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 GMT</pubDate>
+      <description>A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA.</description>
+      <category>SSRF</category>
+      <category>URL Parsing</category>
+      <category>Parser Differential</category>
+      <category>HTTP/2</category>
+      <category>DNS</category>
+    </item>
+    <item>
+      <title>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</title>
+      <link>https://xclow3n.com/post/ai-vuln-research/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/ai-vuln-research/</guid>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Results from testing four AI-assisted vulnerability-research workflows over one week, including 14 confirmed bugs in one target and one approach that produced no reportable findings.</description>
+      <category>AI</category>
+      <category>Vulnerability Research</category>
+      <category>SAML</category>
+      <category>HTTP Smuggling</category>
+      <category>Security</category>
+    </item>
+    <item>
+      <title>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&apos;s Reverse Proxy</title>
+      <link>https://xclow3n.com/post/breaking-pingora/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/breaking-pingora/</guid>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare&apos;s Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes.</description>
+      <category>HTTP Smuggling</category>
+      <category>Cache Poisoning</category>
+      <category>Cloudflare</category>
+      <category>Pingora</category>
+      <category>CVE</category>
+    </item>
+    <item>
+      <title>EncoDecept: HTB University CTF 2024</title>
+      <link>https://xclow3n.com/post/encodecept/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/encodecept/</guid>
+      <pubDate>Fri, 01 Nov 2024 00:00:00 GMT</pubDate>
+      <description>Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</description>
+      <category>CTF</category>
+      <category>Web</category>
+      <category>Cache Deception</category>
+      <category>XSS</category>
+      <category>ORM Leak</category>
+      <category>Rails</category>
+    </item>
+    <item>
+      <title>Intergalactic Bounty: HTB University CTF 2024</title>
+      <link>https://xclow3n.com/post/intergalactic-bounty/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/intergalactic-bounty/</guid>
+      <pubDate>Fri, 01 Nov 2024 00:00:00 GMT</pubDate>
+      <description>Exploiting Nodemailer parser discrepancies, bypassing HTML sanitization with MXSS, and achieving RCE through prototype pollution file overwrite in this HTB University CTF 2024 challenge.</description>
+      <category>CTF</category>
+      <category>Web</category>
+      <category>Nodemailer</category>
+      <category>MXSS</category>
+      <category>Prototype Pollution</category>
+      <category>RCE</category>
+    </item>
+    <item>
+      <title>Email Parser Discrepancy in Nodemailer</title>
+      <link>https://xclow3n.com/post/nodemailer-parser-discrepancy/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/nodemailer-parser-discrepancy/</guid>
+      <pubDate>Fri, 01 Nov 2024 00:00:00 GMT</pubDate>
+      <description>Discovering two email parsing issues in Nodemailer that could lead to email misrouting. The first was patched in v6.9.16, and the second was finally patched in v7.0.7 after I reported it as a security advisory.</description>
+      <category>Security Research</category>
+      <category>Nodemailer</category>
+      <category>Email Parser</category>
+      <category>RFC 5322</category>
+      <category>GHSA-mm7p-fcc7-pg87</category>
+    </item>
+    <item>
+      <title>HTML Sanitize Bypass Using MXSS</title>
+      <link>https://xclow3n.com/post/sanitize-html-bypass-mxss/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/sanitize-html-bypass-mxss/</guid>
+      <pubDate>Fri, 01 Nov 2024 00:00:00 GMT</pubDate>
+      <description>Discovering how Mutation XSS (MXSS) can bypass the sanitize-html library due to differences between htmlparser2 and browser HTML parsers, allowing XSS attacks through style and math elements.</description>
+      <category>Security Research</category>
+      <category>MXSS</category>
+      <category>XSS</category>
+      <category>HTML Sanitization</category>
+      <category>htmlparser2</category>
+    </item>
+  </channel>
+</rss>

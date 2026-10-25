@@ -1,5 +1,11 @@
-<!DOCTYPE html><html lang="en" style="--hue:#92DEFF;--tint:#E2F7FF"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The URL Parser Cheatsheet · xclow3n</title><meta name="description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><link rel="canonical" href="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:type" content="article"><meta property="og:title" content="The URL Parser Cheatsheet · xclow3n"><meta property="og:description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><meta property="og:url" content="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The URL Parser Cheatsheet · xclow3n"><meta name="twitter:description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
-</style><link rel="stylesheet" href="/_astro/_slug_.Cb_o2QD9.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 08</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">08</span> <span>14 parsers, pinned</span>  </div> <h1>The URL Parser Cheatsheet</h1> <p class="stand">A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product.</p> <ul class="facts"><li class="fact">15 families</li><li class="fact">1,855 verdicts</li><li class="fact">8 languages</li><li class="fact">16 validators x 5 clients</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li><li>Tooling</li></ul> </div> <div class="head__art head__art--image" aria-hidden="true"> <img src="/images/posters/ssrf-pipeline-comic-v2.webp" alt="" width="1122" height="1402" style="--focus:50% 27%" decoding="async" fetchpriority="high"> </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#how-this-reference-fits" data-sec="how-this-reference-fits"> <i>01</i><span>How this reference fits</span> </a></li><li><a href="#the-cheatsheet" data-sec="the-cheatsheet"> <i>02</i><span>The cheatsheet</span> </a></li><li><a href="#the-quirks-a-differential-cannot-see" data-sec="the-quirks-a-differential-cannot-see"> <i>03</i><span>The quirks a differential cannot see</span> </a></li><li><a href="#what-the-measurements-show" data-sec="what-the-measurements-show"> <i>04</i><span>What the measurements show</span> </a></li><li><a href="#the-fifteen-families" data-sec="the-fifteen-families"> <i>05</i><span>The fifteen families</span> </a></li><li><a href="#the-oracle" data-sec="the-oracle"> <i>06</i><span>The oracle</span> </a></li><li><a href="#coverage-map" data-sec="coverage-map"> <i>07</i><span>Coverage map</span> </a></li><li><a href="#negative-results-and-limits" data-sec="negative-results-and-limits"> <i>08</i><span>Negative results and limits</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 8 sections</summary> <ol> <li><a href="#how-this-reference-fits"> <i>01</i><span>How this reference fits</span> </a></li><li><a href="#the-cheatsheet"> <i>02</i><span>The cheatsheet</span> </a></li><li><a href="#the-quirks-a-differential-cannot-see"> <i>03</i><span>The quirks a differential cannot see</span> </a></li><li><a href="#what-the-measurements-show"> <i>04</i><span>What the measurements show</span> </a></li><li><a href="#the-fifteen-families"> <i>05</i><span>The fifteen families</span> </a></li><li><a href="#the-oracle"> <i>06</i><span>The oracle</span> </a></li><li><a href="#coverage-map"> <i>07</i><span>Coverage map</span> </a></li><li><a href="#negative-results-and-limits"> <i>08</i><span>Negative results and limits</span> </a></li> </ol> </details> <article class="doc"><h2 id="how-this-reference-fits">How this reference fits</h2>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The URL Parser Cheatsheet · xclow3n</title><meta name="description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><link rel="canonical" href="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:type" content="article"><meta property="og:title" content="The URL Parser Cheatsheet"><meta property="og:description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><meta property="og:url" content="https://xclow3n.com/post/ssrf-pipeline/"><meta property="og:site_name" content="xclow3n"><meta property="og:image" content="https://xclow3n.com/images/social/ssrf-pipeline.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="The URL Parser Cheatsheet"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://xclow3n.com/images/social/ssrf-pipeline.jpg"><meta name="twitter:title" content="The URL Parser Cheatsheet"><meta name="twitter:description" content="A pinned comparison of fourteen URL parsers, fifteen bug families indexed by pipeline stage, and a differential oracle covering sixteen validators and five clients across eight languages. Includes 1855 wire-backed verdicts, unchecked cells, and mechanisms that did not reach a shipped product."><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap&amp;text=%E2%94%80%E2%94%82%E2%94%8C%E2%94%90%E2%94%94%E2%94%98%E2%94%9C%E2%94%A4%E2%94%AC%E2%94%B4%E2%94%BC%E2%94%81%E2%94%83%E2%94%8F%E2%94%93%E2%94%97%E2%94%9B%E2%94%A3%E2%94%AB%E2%94%B3%E2%94%BB%E2%95%8B%E2%96%80%E2%96%84%E2%96%88%E2%96%8C%E2%96%90%E2%96%91%E2%96%92%E2%96%93%E2%96%94%E2%96%81%E2%96%8F%E2%96%95%E2%96%A0%E2%96%A1%E2%96%AA%E2%96%AB%E2%97%86%E2%97%87%E2%97%8F%E2%97%8B%C2%B7%E2%80%A2%E2%88%99%E2%86%97%E2%86%92%E2%86%90%E2%86%91%E2%86%93%E2%9F%A9%E2%9F%A8%C2%BB%C2%AB%E2%95%B1%E2%95%B2%E2%95%B3%E2%95%B4%E2%95%B5%E2%95%B6%E2%95%B7"><!-- Pre-paint, and the same flag the index uses: the progress rule and the
+     key legend are the two things on this page that claim a script is alive,
+     and neither may be painted before one is. The behaviour script at the
+     foot takes it back off if it throws. --><script>document.documentElement.dataset.js = '1';</script><link rel="stylesheet" href="/_astro/_slug_.BInTf9cN.css"></head> <body class="zn">  <div class="prog" id="prog" aria-hidden="true"></div> <div class="page"> <header class="top"> <a class="home" href="/"> <pre class="mark" role="img" aria-label="xclow3n">█   █  ███  █      ███  █   █ ████  █   █
+ █ █  █     █     █   █ █   █     █ ██  █
+  █   █     █     █   █ █ █ █  ███  █ █ █
+ █ █  █     █     █   █ █ █ █     █ █  ██
+█   █  ███  █████  ███   █ █  ████  █   █</pre> </a> <a class="back" href="/"><span aria-hidden="true">&#8592;</span> Roster</a> </header> <div class="head"> <div class="cap" aria-hidden="true"> <span>┌</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab key">File 07</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">RESEARCH</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┐</span> </div> <div class="headtx"> <h1>The URL Parser Cheatsheet</h1> <p class="dek">14 Pinned Parsers</p> </div>   <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">AUG 2026</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">23 min</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div>  <div class="banner"> <img src="/images/poster/ssrf-pipeline.png" alt="" width="1600" height="1200" decoding="async" loading="eager"> </div> </div>  <nav class="toc" id="toc" aria-label="Sections"> <details class="toc__d" id="tocd"> <summary class="toc__s"> <span class="toc__lab">Contents</span> <span class="toc__now" id="tocnow" aria-hidden="true"></span> </summary> <div class="toc__p"> <ol class="toc__l"> <li class="toc__i"> <a href="#how-this-reference-fits" data-h="how-this-reference-fits"> <b class="toc__n" aria-hidden="true">01</b> <span class="toc__t">How this reference fits</span> </a> </li><li class="toc__i"> <a href="#the-cheatsheet" data-h="the-cheatsheet"> <b class="toc__n" aria-hidden="true">02</b> <span class="toc__t">The cheatsheet</span> </a> </li><li class="toc__i"> <a href="#the-quirks-a-differential-cannot-see" data-h="the-quirks-a-differential-cannot-see"> <b class="toc__n" aria-hidden="true">03</b> <span class="toc__t">The quirks a differential cannot see</span> </a> </li><li class="toc__i"> <a href="#what-the-measurements-show" data-h="what-the-measurements-show"> <b class="toc__n" aria-hidden="true">04</b> <span class="toc__t">What the measurements show</span> </a> </li><li class="toc__i"> <a href="#the-fifteen-families" data-h="the-fifteen-families"> <b class="toc__n" aria-hidden="true">05</b> <span class="toc__t">The fifteen families</span> </a> </li><li class="toc__i"> <a href="#the-oracle" data-h="the-oracle"> <b class="toc__n" aria-hidden="true">06</b> <span class="toc__t">The oracle</span> </a> </li><li class="toc__i"> <a href="#coverage-map" data-h="coverage-map"> <b class="toc__n" aria-hidden="true">07</b> <span class="toc__t">Coverage map</span> </a> </li><li class="toc__i"> <a href="#negative-results-and-limits" data-h="negative-results-and-limits"> <b class="toc__n" aria-hidden="true">08</b> <span class="toc__t">Negative results and limits</span> </a> </li> </ol> <p class="toc__k" aria-hidden="true"><b>J</b>/<b>K</b> section</p> </div> </details> </nav> <article class="art"> <h2 id="how-this-reference-fits">How this reference fits</h2>
 <p>This page is the working reference behind
 <a href="/post/the-validator-can-lie/">The Validator Can Lie</a>: the cheatsheet, the raw
 measurements, and the parts that did not fit into a narrative. Read that article
@@ -392,7 +398,7 @@ a parser bug. It is a normalisation step nobody agreed to own.</p>
 <span class="line"><span>P07_ipv4_numeric_forms                         4        4</span></span>
 <span class="line"><span>P02_multi_at_userinfo                          3        4</span></span>
 <span class="line"><span>P12_control_null_bytes                         3        5</span></span></code></pre>
-<p>Three families disagree on every input in them. “The host” is not a property of a URL string; it is a property of the parser you asked.</p>
+<p>Five families disagree on every input in them. “The host” is not a property of a URL string; it is a property of the parser you asked.</p>
 <h3 id="dial-layer-splits">Dial-layer splits</h3>
 <p>SURVIVES verdicts by corpus family and client:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>family                                operator       client                SURVIVES</span></span>
@@ -555,6 +561,7 @@ None was audited end-to-end.</p>
 <p>Joins are by <code>id</code> for parse to dial, by <code>nonce</code> for dial to capture, by host string for resolve to dial. No view binary calls another. They communicate only through JSONL on disk, so any one can be re-run in isolation, and adding a library is one file plus one Dockerfile under <code>views/</code>.</p>
 <h3 id="corpus-and-output">Corpus and output</h3>
 <p>A full <code>orchestrate.sh all</code> run produces 1855 verdicts over 16 validators × 5 clients. The corpus behind them:</p>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -589,8 +596,7 @@ None was audited end-to-end.</p>
 
 
 
-
-<table><thead><tr><th>source</th><th>rows</th><th>role</th></tr></thead><tbody><tr><td><code>payloads.yaml</code> (P01–P15, promoted)</td><td>70</td><td>hand-curated SSRF-shaped core</td></tr><tr><td>WPT <code>urltestdata.json</code></td><td>888</td><td>WHATWG parse differential + expected-host oracle</td></tr><tr><td>UTS-46 <code>IdnaTestV2.txt</code></td><td>6390</td><td>IDNA2003-vs-2008-vs-UTS46 ToASCII vectors</td></tr><tr><td>F12 <code>bypass_corpus.txt</code> (+controls)</td><td>54</td><td>wire-confirmed special-use classifier vectors</td></tr><tr><td>redirect targets (backslash + F12 set)</td><td>13</td><td>F5b operator case table</td></tr></tbody></table>
+<table><thead><tr><th>source</th><th>rows</th><th>role</th></tr></thead><tbody><tr><td><code>payloads.yaml</code> (P01–P15, promoted)</td><td>70</td><td>hand-curated SSRF-shaped core</td></tr><tr><td>WPT <code>urltestdata.json</code></td><td>888</td><td>WHATWG parse differential + expected-host oracle</td></tr><tr><td>UTS-46 <code>IdnaTestV2.txt</code></td><td>6390</td><td>IDNA2003-vs-2008-vs-UTS46 ToASCII vectors</td></tr><tr><td>F12 <code>bypass_corpus.txt</code> (+controls)</td><td>54</td><td>wire-confirmed special-use classifier vectors</td></tr><tr><td>redirect targets (backslash + F12 set)</td><td>13</td><td>F5b operator case table</td></tr></tbody></table></div>
 <p><code>corpus/dial_subset.jsonl</code> narrows this to the SSRF-shaped inputs worth the expensive wire stage. The corpus is assembled and hash-verified by <code>corpus/build_corpus.py</code> against <code>corpus/corpus.lock</code>. No cell is filled by analogy: every <code>input × library-pair × hop</code> is individually dialed and captured.</p>
 <h3 id="the-negative-control">The negative control</h3>
 <p>A negative-control input checks that the oracle does not report a differential when every parser agrees.</p>
@@ -668,7 +674,7 @@ None was audited end-to-end.</p>
 <span class="line"><span>S10 connection establishment / ALPN / TLS         13      0        4    9</span></span>
 <span class="line"><span>S11 SNI emission                                  10      1        5    4</span></span>
 <span class="line"><span>S12 TLS identity verification (cert vs ref-id)    12      1        6    5</span></span>
-<span class="line"><span>TOTAL (14 stages)                                205     36       60  109</span></span></code></pre>
+<span class="line"><span>TOTAL (14 stages)                                187     36       61   90</span></span></code></pre>
 <p>The deployed failures at this stage are explicit opt-outs rather than validator/fetcher disagreements. Three shipped stacks disable verification: Radarr/Sonarr/Lidarr accept an untrusted self-signed cert (chain and name mismatch both) from a plain <code>https://localhost:PORT/</code> URL via an <code>SNI=localhost / 127.0.0.1</code> auto-bypass (<code>_skipped</code>, API-key-bounded); the Jenkins URL Trigger plugin installs an unconditional trust-all <code>SSLContext</code> and an always-true hostname verifier (<code>URLTrigger.java:404-434</code>, present since HTTPS support was added in 2013, no opt-in), wire-confirmed end-to-end in a real Jenkins and retained unreported as MITM-bounded CWE-295; Elixir Gun’s <code>gun_quicer:connect/2</code> ships <code>verify => none</code> over QUIC, acknowledged by an in-tree <code>@todo</code>. All three are bounded to MITM or loopback positions. RFC 6125 is the qualification on the “tight” label: CN-ID fallback and partial wildcards are MAY in 6125 and MUST-ignore in 9525, and both texts remain deployed.</p>
 <p>RFC 9525 §7.2 also hedges that URL-vs-URI parser divergence “is not expected” to manifest in cert matching. That hedge is unverified here. It is an assumption in the spec, not a measurement.</p>
 <h3 id="3-bytes-that-did-not-become-routes">3. Bytes that did not become routes</h3>
@@ -703,25 +709,186 @@ None was audited end-to-end.</p>
 <li>H2 desync, a forwarding proxy that carries <code>Host</code> ≠ <code>:authority</code> rather than normalising it. nginx, Caddy, HAProxy and Envoy all refuse; a CDN, service mesh, or older proxy that does not would complete the chain.</li>
 <li>F13, a cert-identity failure that is neither MITM- nor loopback-bounded, or a 6125-pinned verifier reachable from an attacker-supplied URL inside a product. That would convert an insecure default into a seam, and would narrow the spec-tight claim.</li>
 <li>The 33 decodes-only rows require a deployment where the translator exists: a NAT64 gateway configured with a non-well-known NSP, a SIIT translator, or a 6to4 or Teredo relay on path. In that environment, the same input would route and belong in a different section.</li>
-</ul></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#FFB9D7"> <a href="/post/the-validator-can-lie/"> <span class="rn">09</span> <b>SSRF Beyond Validation</b> <em>shared &middot; ssrf</em> </a> </li> </ul> </div> <nav class="pager"> <a class="pg" href="/post/the-validator-can-lie/" style="--hue:#FFB9D7"> <span class="dir">&larr; Newer</span> <b>The Validator Can Lie: SSRF Beyond URL Validation</b> </a> <a class="pg r" href="/post/ai-vuln-research/" style="--hue:#E2C3FF"> <span class="dir">Older &rarr;</span> <b>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</b> </a> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
-(function () {
-  var doc = document.documentElement;
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
-  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
-  var tick = false;
+</ul> </article> <footer class="end"> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">End of file 07</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div> <div class="endrow"> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> </div> </footer> </div> <script>
+/* THE RAIL, and the top edge.  Everything above works without this: every row
+   in the contents is a real link to a real id, the fold is the browser's own,
+   and the two things that would lie with the script dead — the progress rule
+   and the `J/K` legend — are painted only under [data-js], which this file
+   takes back off if anything below throws.
 
-  function paint() {
-    tick = false;
-    var max = Math.max(1, doc.scrollHeight - innerHeight);
-    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
-    var y = scrollY + innerHeight * 0.3, cur = -1;
-    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
-    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+   Four jobs.
+
+     1  PICK THE SHAPE.  Open at 1300 and up, where the rail has its own
+        margin to live in; closed under it, where it is a control line and an
+        open panel would cover the first screen of the article.  Re-run on
+        every change of the query, because a window gets resized and a tablet
+        gets turned.
+
+     2  SAY WHERE THE READER IS.  The current section is the LAST heading
+        whose top has passed the line, which is 90px down the window with the
+        rail and 120 under the strip.  Headings with no box are skipped, not
+        counted as passed: a heading folded inside a closed panel is not a
+        place the reader can be.  At the very bottom of the document the last
+        section is current whatever the arithmetic says, because the last
+        heading on a short final section never reaches the line.
+
+     3  JUMP.  A click on a row opens whatever panel the heading is folded
+        into before scrolling, rather than trusting the browser to reveal it,
+        and moves focus to the heading so the keyboard carries on from the
+        same place the eye does.  `j` and `k` walk the sections that are
+        actually on the page.  Both guards from the index are here: no
+        modifier, and nothing while focus is in a field.
+
+     4  DRAW THE TOP EDGE.  scrollY over the scrollable height, as a scaleX.
+        One rAF for all of it, so a scroll costs one write. */
+(function () {
+  var root = document.documentElement;
+  try {
+    var nav = document.getElementById('toc');
+    var det = document.getElementById('tocd');
+    var now = document.getElementById('tocnow');
+    var bar = document.getElementById('prog');
+
+    /* The rows and their headings, paired by the id the markdown pipeline
+       wrote.  A row whose heading is not in the document is dropped rather
+       than left to throw on the first scroll. */
+    var links = [], heads = [];
+    if (nav) {
+      [].slice.call(nav.querySelectorAll('a[data-h]')).forEach(function (a) {
+        var h = document.getElementById(a.getAttribute('data-h'));
+        if (h) { links.push(a); heads.push(h); }
+      });
+    }
+
+    /* IS THIS HEADING SOMEWHERE THE READER CAN BE?
+
+       Not `getClientRects().length`, which is what this started as and is
+       wrong: a heading folded inside a CLOSED panel still reports one rect,
+       832px wide and 50px tall, because Chromium lays the content out and
+       then declines to paint it. Measured in the browser, both ways round —
+       `checkVisibility` is false for that same heading and true for one in
+       the open document. The rect test is kept only as the fallback for a
+       browser with no `checkVisibility`, where it is at least never wrong
+       about a heading that is not in the layout at all. */
+    function shown(h) {
+      return h.checkVisibility
+        ? h.checkVisibility({ contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true })
+        : !!h.getClientRects().length;
+    }
+
+    var rail = window.matchMedia('(min-width:1300px)');
+    function shape() { if (det) det.open = rail.matches; }
+    if (rail.addEventListener) rail.addEventListener('change', shape);
+    else if (rail.addListener) rail.addListener(shape);
+    shape();
+
+    /* `sel` is where the keys are and moves with the key; `cur` is what the
+       page has marked, which lags the key by a smooth scroll. Three presses
+       of `j` inside one animation all read the same `cur` and all landed on
+       section 01 — measured, not supposed — so every move is computed from
+       `sel`, and `sel` only goes back to following the scroll once the jump
+       it started has had its 700ms. A wall clock, so a scroll that never
+       arrives cannot leave the keys stuck. */
+    var cur = -1, sel = -1, lock = 0, raf = 0;
+
+    function paint() {
+      raf = 0;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || root.clientHeight;
+      if (bar) {
+        var max = Math.max(1, root.scrollHeight - vh);
+        var p = y / max;
+        bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p) + ')';
+      }
+      if (!links.length) return;
+      var line = rail.matches ? 90 : 120;
+      var i = -1;
+      for (var k = 0; k < heads.length; k++) {
+        var h = heads[k];
+        if (!shown(h)) continue;
+        if (h.getBoundingClientRect().top <= line) i = k; else break;
+      }
+      if (y + vh >= root.scrollHeight - 2) i = heads.length - 1;
+      if (Date.now() > lock) sel = i;
+      if (i === cur) return;
+      if (cur > -1) links[cur].removeAttribute('aria-current');
+      cur = i;
+      if (cur > -1) {
+        links[cur].setAttribute('aria-current', 'location');
+        inview(links[cur]);
+      }
+      if (now) now.textContent = cur > -1 ? links[cur].querySelector('.toc__t').textContent : '';
+    }
+    function tick() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    /* The rail scrolls on its own once the outline is longer than the window.
+       Only its own scrollTop is touched: scrollIntoView here would move the
+       PAGE as well, which is the one thing a reader scrolling must not have
+       done to them. */
+    function inview(a) {
+      /* `offsetParent` is the scroller in both shapes — the rail is the fixed
+         box at 1300 and up, the hanging panel is the absolute one below it —
+         and it is also what offsetTop is measured against, so the two cannot
+         disagree. Guarded to the nav, because an offsetParent that turned out
+         to be <body> would scroll the ARTICLE under the reader. */
+      var box = a.offsetParent;
+      if (!box || !nav.contains(box) || box.scrollHeight <= box.clientHeight) return;
+      var t = a.offsetTop, b = t + a.offsetHeight;
+      if (t < box.scrollTop) box.scrollTop = t - 8;
+      else if (b > box.scrollTop + box.clientHeight) box.scrollTop = b - box.clientHeight + 8;
+    }
+
+    function go(n) {
+      if (n < 0 || n >= heads.length) return;
+      sel = n;
+      lock = Date.now() + 700;
+      var h = heads[n], fold = h.closest ? h.closest('details') : null;
+      if (fold && fold !== det) fold.open = true;
+      h.scrollIntoView();
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + h.id);
+      if (!rail.matches && det) det.open = false;
+      tick();
+    }
+
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        /* a modified click is the reader asking the BROWSER for something —
+           a new tab, a new window, a saved link — and this handler calling
+           preventDefault on it would eat all three */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var a = e.target.closest ? e.target.closest('a[data-h]') : null;
+        if (!a) return;
+        var n = links.indexOf(a);
+        if (n < 0) return;
+        e.preventDefault();
+        go(n);
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+      var t = e.target || {}, tag = t.tagName || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable) return;
+      var d = e.key === 'j' || e.key === 'J' ? 1 : e.key === 'k' || e.key === 'K' ? -1 : 0;
+      if (!d || !heads.length) return;
+      e.preventDefault();
+      /* walk to the next heading that is actually on the page, so `j` never
+         lands the reader inside a panel they have folded shut */
+      var n = sel;
+      do { n += d; } while (n >= 0 && n < heads.length && !shown(heads[n]));
+      if (n < 0 || n >= heads.length) return;
+      go(n);
+    });
+
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    /* a panel opening or closing moves every heading below it */
+    document.addEventListener('toggle', tick, true);
+    paint();
+  } catch (err) {
+    delete root.dataset.js;
   }
-  addEventListener('scroll', function () {
-    if (!tick) { tick = true; requestAnimationFrame(paint); }
-  }, { passive: true });
-  addEventListener('resize', paint);
-  paint();
 })();
-</script>  </body></html>
+</script> </body> </html>

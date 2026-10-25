@@ -1,5 +1,11 @@
-<!DOCTYPE html><html lang="en" style="--hue:#82E4F5;--tint:#DFF9FE"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy · xclow3n</title><meta name="description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><link rel="canonical" href="https://xclow3n.com/post/breaking-pingora/"><meta property="og:type" content="article"><meta property="og:title" content="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy · xclow3n"><meta property="og:description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><meta property="og:url" content="https://xclow3n.com/post/breaking-pingora/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy · xclow3n"><meta name="twitter:description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
-</style><link rel="stylesheet" href="/_astro/_slug_.Cb_o2QD9.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 06</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-03">MAR 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">06</span> <span>Request Smuggling</span>  </div> <h1>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h1> <p class="stand">Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare&#39;s Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes.</p> <ul class="facts"><li class="fact">3 CVEs</li><li class="fact">$5,000 bounty</li><li class="fact">98 days to disclosure</li><li class="fact">CVE-2026-2835</li></ul> <ul class="tags"><li>HTTP Smuggling</li><li>Cache Poisoning</li><li>Cloudflare</li><li>Pingora</li><li>CVE</li></ul> </div> <div class="head__art head__art--image" aria-hidden="true"> <img src="/images/posters/breaking-pingora-comic-v1.webp" alt="" width="1122" height="1402" style="--focus:50% 28%" decoding="async" fetchpriority="high"> </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#introduction" data-sec="introduction"> <i>01</i><span>Introduction</span> </a></li><li><a href="#background-how-http-request-smuggling-works" data-sec="background-how-http-request-smuggling-works"> <i>02</i><span>Background: How HTTP Request Smuggling Works</span> </a></li><li><a href="#bug-1-connection-upgrade-header-bypass-cve-2026-2833" data-sec="bug-1-connection-upgrade-header-bypass-cve-2026-2833"> <i>03</i><span>Bug 1: Connection Upgrade Header Bypass (CVE-2026-2833)</span> </a></li><li><a href="#bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835" data-sec="bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835"> <i>04</i><span>Bug 2: Transfer-Encoding Comma-Separated Misparsing (CVE-2026-2835)</span> </a></li><li><a href="#bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835" data-sec="bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835"> <i>05</i><span>Bug 3: Transfer-Encoding Duplicate Header Handling (CVE-2026-2835)</span> </a></li><li><a href="#bug-4-default-cache-key-excludes-host-header-cve-2026-2836" data-sec="bug-4-default-cache-key-excludes-host-header-cve-2026-2836"> <i>06</i><span>Bug 4: Default Cache Key Excludes Host Header (CVE-2026-2836)</span> </a></li><li><a href="#the-http10-close-delimited-body-a-shared-exploitation-primitive" data-sec="the-http10-close-delimited-body-a-shared-exploitation-primitive"> <i>07</i><span>The HTTP/1.0 Close-Delimited Body: A Shared Exploitation Primitive</span> </a></li><li><a href="#disclosure" data-sec="disclosure"> <i>08</i><span>Disclosure</span> </a></li><li><a href="#advisories" data-sec="advisories"> <i>09</i><span>Advisories</span> </a></li><li><a href="#impact-summary" data-sec="impact-summary"> <i>10</i><span>Impact Summary</span> </a></li><li><a href="#fixed-versions" data-sec="fixed-versions"> <i>11</i><span>Fixed Versions</span> </a></li><li><a href="#timeline" data-sec="timeline"> <i>12</i><span>Timeline</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 12 sections</summary> <ol> <li><a href="#introduction"> <i>01</i><span>Introduction</span> </a></li><li><a href="#background-how-http-request-smuggling-works"> <i>02</i><span>Background: How HTTP Request Smuggling Works</span> </a></li><li><a href="#bug-1-connection-upgrade-header-bypass-cve-2026-2833"> <i>03</i><span>Bug 1: Connection Upgrade Header Bypass (CVE-2026-2833)</span> </a></li><li><a href="#bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835"> <i>04</i><span>Bug 2: Transfer-Encoding Comma-Separated Misparsing (CVE-2026-2835)</span> </a></li><li><a href="#bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835"> <i>05</i><span>Bug 3: Transfer-Encoding Duplicate Header Handling (CVE-2026-2835)</span> </a></li><li><a href="#bug-4-default-cache-key-excludes-host-header-cve-2026-2836"> <i>06</i><span>Bug 4: Default Cache Key Excludes Host Header (CVE-2026-2836)</span> </a></li><li><a href="#the-http10-close-delimited-body-a-shared-exploitation-primitive"> <i>07</i><span>The HTTP/1.0 Close-Delimited Body: A Shared Exploitation Primitive</span> </a></li><li><a href="#disclosure"> <i>08</i><span>Disclosure</span> </a></li><li><a href="#advisories"> <i>09</i><span>Advisories</span> </a></li><li><a href="#impact-summary"> <i>10</i><span>Impact Summary</span> </a></li><li><a href="#fixed-versions"> <i>11</i><span>Fixed Versions</span> </a></li><li><a href="#timeline"> <i>12</i><span>Timeline</span> </a></li> </ol> </details> <article class="doc"><h2 id="introduction">Introduction</h2>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy · xclow3n</title><meta name="description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><link rel="canonical" href="https://xclow3n.com/post/breaking-pingora/"><meta property="og:type" content="article"><meta property="og:title" content="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy"><meta property="og:description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><meta property="og:url" content="https://xclow3n.com/post/breaking-pingora/"><meta property="og:site_name" content="xclow3n"><meta property="og:image" content="https://xclow3n.com/images/social/breaking-pingora.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://xclow3n.com/images/social/breaking-pingora.jpg"><meta name="twitter:title" content="Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare's Reverse Proxy"><meta name="twitter:description" content="Three HTTP request-smuggling bugs and one cache-poisoning vulnerability in Cloudflare's Pingora reverse proxy, including root causes, proofs of concept, fixes, and disclosure notes."><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap&amp;text=%E2%94%80%E2%94%82%E2%94%8C%E2%94%90%E2%94%94%E2%94%98%E2%94%9C%E2%94%A4%E2%94%AC%E2%94%B4%E2%94%BC%E2%94%81%E2%94%83%E2%94%8F%E2%94%93%E2%94%97%E2%94%9B%E2%94%A3%E2%94%AB%E2%94%B3%E2%94%BB%E2%95%8B%E2%96%80%E2%96%84%E2%96%88%E2%96%8C%E2%96%90%E2%96%91%E2%96%92%E2%96%93%E2%96%94%E2%96%81%E2%96%8F%E2%96%95%E2%96%A0%E2%96%A1%E2%96%AA%E2%96%AB%E2%97%86%E2%97%87%E2%97%8F%E2%97%8B%C2%B7%E2%80%A2%E2%88%99%E2%86%97%E2%86%92%E2%86%90%E2%86%91%E2%86%93%E2%9F%A9%E2%9F%A8%C2%BB%C2%AB%E2%95%B1%E2%95%B2%E2%95%B3%E2%95%B4%E2%95%B5%E2%95%B6%E2%95%B7"><!-- Pre-paint, and the same flag the index uses: the progress rule and the
+     key legend are the two things on this page that claim a script is alive,
+     and neither may be painted before one is. The behaviour script at the
+     foot takes it back off if it throws. --><script>document.documentElement.dataset.js = '1';</script><link rel="stylesheet" href="/_astro/_slug_.BInTf9cN.css"></head> <body class="zn">  <div class="prog" id="prog" aria-hidden="true"></div> <div class="page"> <header class="top"> <a class="home" href="/"> <pre class="mark" role="img" aria-label="xclow3n">█   █  ███  █      ███  █   █ ████  █   █
+ █ █  █     █     █   █ █   █     █ ██  █
+  █   █     █     █   █ █ █ █  ███  █ █ █
+ █ █  █     █     █   █ █ █ █     █ █  ██
+█   █  ███  █████  ███   █ █  ████  █   █</pre> </a> <a class="back" href="/"><span aria-hidden="true">&#8592;</span> Roster</a> </header> <div class="head"> <div class="cap" aria-hidden="true"> <span>┌</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab key">File 05</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">RESEARCH</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┐</span> </div> <div class="headtx"> <h1>Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</h1> <p class="dek">Request Smuggling</p> </div>  <dl class="meta">   <dt>Identifiers</dt> <dd class="id"><span class="v">CVE-2026-2835</span></dd>  </dl> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">MAR 2026</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">11 min</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div>  <div class="banner"> <img src="/images/poster/breaking-pingora.png" alt="" width="1600" height="1200" decoding="async" loading="eager"> </div> </div>  <nav class="toc" id="toc" aria-label="Sections"> <details class="toc__d" id="tocd"> <summary class="toc__s"> <span class="toc__lab">Contents</span> <span class="toc__now" id="tocnow" aria-hidden="true"></span> </summary> <div class="toc__p"> <ol class="toc__l"> <li class="toc__i"> <a href="#introduction" data-h="introduction"> <b class="toc__n" aria-hidden="true">01</b> <span class="toc__t">Introduction</span> </a> </li><li class="toc__i"> <a href="#background-how-http-request-smuggling-works" data-h="background-how-http-request-smuggling-works"> <b class="toc__n" aria-hidden="true">02</b> <span class="toc__t">Background: How HTTP Request Smuggling Works</span> </a> </li><li class="toc__i"> <a href="#bug-1-connection-upgrade-header-bypass-cve-2026-2833" data-h="bug-1-connection-upgrade-header-bypass-cve-2026-2833"> <b class="toc__n" aria-hidden="true">03</b> <span class="toc__t">Bug 1: Connection Upgrade Header Bypass (CVE-2026-2833)</span> </a> </li><li class="toc__i"> <a href="#bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835" data-h="bug-2-transfer-encoding-comma-separated-misparsing-cve-2026-2835"> <b class="toc__n" aria-hidden="true">04</b> <span class="toc__t">Bug 2: Transfer-Encoding Comma-Separated Misparsing (CVE-2026-2835)</span> </a> </li><li class="toc__i"> <a href="#bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835" data-h="bug-3-transfer-encoding-duplicate-header-handling-cve-2026-2835"> <b class="toc__n" aria-hidden="true">05</b> <span class="toc__t">Bug 3: Transfer-Encoding Duplicate Header Handling (CVE-2026-2835)</span> </a> </li><li class="toc__i"> <a href="#bug-4-default-cache-key-excludes-host-header-cve-2026-2836" data-h="bug-4-default-cache-key-excludes-host-header-cve-2026-2836"> <b class="toc__n" aria-hidden="true">06</b> <span class="toc__t">Bug 4: Default Cache Key Excludes Host Header (CVE-2026-2836)</span> </a> </li><li class="toc__i"> <a href="#the-http10-close-delimited-body-a-shared-exploitation-primitive" data-h="the-http10-close-delimited-body-a-shared-exploitation-primitive"> <b class="toc__n" aria-hidden="true">07</b> <span class="toc__t">The HTTP/1.0 Close-Delimited Body: A Shared Exploitation Primitive</span> </a> </li><li class="toc__i"> <a href="#disclosure" data-h="disclosure"> <b class="toc__n" aria-hidden="true">08</b> <span class="toc__t">Disclosure</span> </a> </li><li class="toc__i"> <a href="#advisories" data-h="advisories"> <b class="toc__n" aria-hidden="true">09</b> <span class="toc__t">Advisories</span> </a> </li><li class="toc__i"> <a href="#impact-summary" data-h="impact-summary"> <b class="toc__n" aria-hidden="true">10</b> <span class="toc__t">Impact Summary</span> </a> </li><li class="toc__i"> <a href="#fixed-versions" data-h="fixed-versions"> <b class="toc__n" aria-hidden="true">11</b> <span class="toc__t">Fixed Versions</span> </a> </li><li class="toc__i"> <a href="#timeline" data-h="timeline"> <b class="toc__n" aria-hidden="true">12</b> <span class="toc__t">Timeline</span> </a> </li> </ol> <p class="toc__k" aria-hidden="true"><b>J</b>/<b>K</b> section</p> </div> </details> </nav> <article class="art"> <h2 id="introduction">Introduction</h2>
 <p>Between December 2025 and January 2026, I found and reported multiple vulnerabilities in <a href="https://github.com/cloudflare/pingora">Pingora</a>, Cloudflare’s open-source reverse proxy framework written in Rust. Pingora is positioned as a modern replacement for NGINX and powers parts of Cloudflare’s own infrastructure.</p>
 <p>I found three independent HTTP request smuggling bugs and one cache poisoning vulnerability, all exploitable under Pingora’s default configuration with no special setup required. I confirmed the Upgrade header bug (Bug 1) also affects downstream projects like <a href="https://github.com/vicanso/pingap">Pingap</a> and <a href="https://encore.dev/">Encore</a>. The TE and cache bugs likely do as well since they’re in shared Pingora code, but I didn’t verify those specifically.</p>
 <p>Cloudflare’s own CDN stack is protected by upstream architectural layers that prevent exploitation, but direct Pingora deployments on the internet are fully exposed.</p>
@@ -71,7 +77,7 @@
 <li><strong>Session hijacking</strong> - capture victim’s cookies and auth headers</li>
 </ul>
 <p>Backend logs confirm the desync - <code>/admin</code> and <code>/secret</code> accessed with the proxy’s internal IP, while the proxy itself never saw those requests:</p>
-<p><img src="/images/pingora/bug1-cross-user-desync.webp" alt="Burp Suite and terminal logs showing cross-user desync with /admin and /secret accessed via internal proxy IP"></p>
+<figure><a class="shot" href="/images/pingora/bug1-cross-user-desync.webp" target="_blank" rel="noopener"><img src="/images/pingora/bug1-cross-user-desync.webp" alt="Burp Suite and terminal logs showing cross-user desync with /admin and /secret accessed via internal proxy IP"></a></figure>
 <h3 id="root-cause-in-code">Root Cause in Code</h3>
 <p>The actual root cause is in <a href="https://github.com/cloudflare/pingora/blob/ef017ceb01962063addbacdab2a4fd2700039db5/pingora-core/src/protocols/http/v1/server.rs#L797"><code>pingora-core/src/protocols/http/v1/server.rs#L797</code></a>. When the session encounters an <code>Upgrade</code> header, it calls <code>init_http10()</code>, which puts the session into “pass-through” mode. This is the same close-delimited body mode exploited in the TE bugs (Bugs 2 &#x26; 3). In this mode, Pingora reads until the connection closes and forwards everything as raw bytes, including any pipelined requests.</p>
 <p>Side note: <code>ServerSession::into_inner()</code> has a doc comment suggesting it’s involved in the upgrade process, but it’s not actually called as part of this code path. The pass-through behavior is triggered entirely through <code>init_http10()</code>.</p>
@@ -107,7 +113,7 @@
 <p><strong>Why HTTP/1.0?</strong> This is an attacker-controlled bypass technique, not an environmental requirement. The attacker chooses the protocol version in their request. With HTTP/1.0, Pingora triggers <code>init_http10()</code> which reads the body using close-delimited mode and forwards everything, including the smuggled request.</p>
 <p>With HTTP/1.1, Pingora doesn’t forward the body bytes the same way, so the desync doesn’t occur.</p>
 <p>The attacker’s request with <code>Transfer-Encoding: identity, chunked</code> - Pingora doesn’t recognize the chunked framing, forwards everything, and the backend (Express) returns the smuggled <code>/admin</code> response:</p>
-<p><img src="/images/pingora/bug2-te-comma-smuggling.webp" alt="Burp Suite showing TE comma-separated smuggling payload with /admin response from backend"></p>
+<figure><a class="shot" href="/images/pingora/bug2-te-comma-smuggling.webp" target="_blank" rel="noopener"><img src="/images/pingora/bug2-te-comma-smuggling.webp" alt="Burp Suite showing TE comma-separated smuggling payload with /admin response from backend"></a></figure>
 <h3 id="the-exploitation-chain">The Exploitation Chain</h3>
 <ol>
 <li>Attacker sends the payload above from Connection A</li>
@@ -146,8 +152,9 @@
 <span class="line"><span style="color:#7EE787">X</span><span style="color:#FF7B72">:</span><span style="color:#E6EDF3"> </span></span></code></pre>
 <p>Same cross-user impact. Same exploitation chain. Different root cause, different code path, different fix.</p>
 <p>Duplicate <code>Transfer-Encoding</code> headers - Pingora only reads the first (<code>identity</code>), misses the second (<code>chunked</code>), and the backend grants access to <code>/admin</code>:</p>
-<p><img src="/images/pingora/bug3-te-duplicate-smuggling.webp" alt="Burp Suite showing duplicate TE header smuggling with admin panel response"></p>
+<figure><a class="shot" href="/images/pingora/bug3-te-duplicate-smuggling.webp" target="_blank" rel="noopener"><img src="/images/pingora/bug3-te-duplicate-smuggling.webp" alt="Burp Suite showing duplicate TE header smuggling with admin panel response"></a></figure>
 <h3 id="why-these-are-independent-bugs">Why These Are Independent Bugs</h3>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -172,8 +179,7 @@
 
 
 
-
-<table><thead><tr><th></th><th>Bug 2 (Comma-Separated)</th><th>Bug 3 (Duplicate Headers)</th></tr></thead><tbody><tr><td>Root Cause</td><td>Exact string match in <code>is_chunked_encoding()</code></td><td><code>.get()</code> returns first header only</td></tr><tr><td>Fix</td><td>Parse comma-separated TE list</td><td>Use <code>.get_all()</code> for TE headers</td></tr><tr><td>Code Path</td><td>Single header parsing</td><td>Multi-header retrieval</td></tr></tbody></table>
+<table><thead><tr><th></th><th>Bug 2 (Comma-Separated)</th><th>Bug 3 (Duplicate Headers)</th></tr></thead><tbody><tr><td>Root Cause</td><td>Exact string match in <code>is_chunked_encoding()</code></td><td><code>.get()</code> returns first header only</td></tr><tr><td>Fix</td><td>Parse comma-separated TE list</td><td>Use <code>.get_all()</code> for TE headers</td></tr><tr><td>Code Path</td><td>Single header parsing</td><td>Multi-header retrieval</td></tr></tbody></table></div>
 <p>Fixing one does not fix the other. Cloudflare’s patch addresses both within <code>is_chunked_encoding_from_headers()</code> but with distinct changes. Both bugs are tracked under CVE-2026-2835.</p>
 <hr>
 <h2 id="bug-4-default-cache-key-excludes-host-header-cve-2026-2836">Bug 4: Default Cache Key Excludes Host Header (CVE-2026-2836)</h2>
@@ -239,7 +245,7 @@
 <p>The third report (#3515245) was initially dismissed as expected behavior. The analyst referenced documentation suggesting Host was already included in cache keys, but this didn’t match the actual default code path. After I walked through the specific code flow and pointed out that their own description of “shared caching across virtual hosts” contradicted Host being in the key, it was triaged.</p>
 <p>None of this is unusual for complex vulnerability classes. HTTP smuggling and cache poisoning aren’t straightforward to validate, and analysts are working across many programs and bug types at once. Once the reports reached the Cloudflare engineering team, the experience was excellent. Technical discussions were thorough, patches were solid, and the coordinated disclosure was handled well.</p>
 <h3 id="severity-decisions">Severity Decisions</h3>
-<p>Cloudflare maintained <strong>High</strong> severity on HackerOne for all reports because its internal CDN stack has upstream architectural mitigations that prevent exploitation. The CVEs were rated <strong>Critical</strong> to represent the impact on standalone Pingora deployments.</p>
+<p>Cloudflare maintained <strong>High</strong> severity on HackerOne for all reports because its internal CDN stack has upstream architectural mitigations that prevent exploitation. Two of the three CVEs were rated <strong>Critical</strong> to represent the impact on standalone Pingora deployments; the cache-key CVE, <code>CVE-2026-2836</code>, was rated <strong>High</strong>.</p>
 <p>I pushed back on this, arguing that severity should reflect the impact on Pingora as a scoped product, not Cloudflare’s internal compensating controls. Cloudflare’s position was that the HackerOne severity reflects their specific risk profile, while the CVE reflects the general risk. Reasonable people can disagree here, but Cloudflare did commit to updating their program policy to clarify how severity is evaluated when their infrastructure has compensating controls but the scoped open-source product doesn’t.</p>
 <p>For researchers reporting vulnerabilities in company-maintained open-source projects, internal mitigations may affect bounty severity even when the CVE receives a higher score. It is worth clarifying that distinction early.</p>
 <h3 id="the-te-bug-consolidation">The TE Bug Consolidation</h3>
@@ -250,6 +256,7 @@
 <p>On bounty: Cloudflare awarded $1,500 as the base for the TE report, plus a $500 bonus recognizing the duplicate header bug as a distinct programmatic error. Fair outcome given the consolidation.</p>
 <p>If bugs have independent root causes and fixes, separate reports make that distinction easier to preserve during downstream tracking. Combining Bugs 2 and 3 in one report made separate CVE treatment much harder to argue for later.</p>
 <h3 id="bounty">Bounty</h3>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -274,10 +281,10 @@
 
 
 
-
-<table><thead><tr><th>Report</th><th>Amount</th></tr></thead><tbody><tr><td>Upgrade header smuggling (#3449260)</td><td>$1,500</td></tr><tr><td>TE smuggling - base + $500 bonus (#3508851)</td><td>$2,000</td></tr><tr><td>Cache key poisoning (#3515245)</td><td>$1,500</td></tr><tr><td><strong>Total</strong></td><td><strong>$5,000</strong></td></tr></tbody></table>
+<table><thead><tr><th>Report</th><th>Amount</th></tr></thead><tbody><tr><td>Upgrade header smuggling (#3449260)</td><td>$1,500</td></tr><tr><td>TE smuggling - base + $500 bonus (#3508851)</td><td>$2,000</td></tr><tr><td>Cache key poisoning (#3515245)</td><td>$1,500</td></tr><tr><td><strong>Total</strong></td><td><strong>$5,000</strong></td></tr></tbody></table></div>
 <hr>
 <h2 id="advisories">Advisories</h2>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -306,10 +313,10 @@
 
 
 
-
-<table><thead><tr><th>CVE</th><th>Title</th><th>GHSA</th><th>RUSTSEC</th></tr></thead><tbody><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2833">CVE-2026-2833</a></td><td>HTTP Request Smuggling via Premature Upgrade</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-xq2h-p299-vjwv">GHSA-xq2h-p299-vjwv</a></td><td>Published</td></tr><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2835">CVE-2026-2835</a></td><td>HTTP Request Smuggling via HTTP/1.0 and Transfer-Encoding Misparsing</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-hj7x-879w-vrp7">GHSA-hj7x-879w-vrp7</a></td><td>Published</td></tr><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2836">CVE-2026-2836</a></td><td>Cache Poisoning via Insecure-by-Default Cache Key</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-f93w-pcj3-rggc">GHSA-f93w-pcj3-rggc</a></td><td>Published</td></tr></tbody></table>
+<table><thead><tr><th>CVE</th><th>Title</th><th>GHSA</th><th>RUSTSEC</th></tr></thead><tbody><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2833">CVE-2026-2833</a></td><td>HTTP Request Smuggling via Premature Upgrade</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-xq2h-p299-vjwv">GHSA-xq2h-p299-vjwv</a></td><td>Published</td></tr><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2835">CVE-2026-2835</a></td><td>HTTP Request Smuggling via HTTP/1.0 and Transfer-Encoding Misparsing</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-hj7x-879w-vrp7">GHSA-hj7x-879w-vrp7</a></td><td>Published</td></tr><tr><td><a href="https://www.cve.org/cverecord?id=CVE-2026-2836">CVE-2026-2836</a></td><td>Cache Poisoning via Insecure-by-Default Cache Key</td><td><a href="https://github.com/cloudflare/pingora/security/advisories/GHSA-f93w-pcj3-rggc">GHSA-f93w-pcj3-rggc</a></td><td>Published</td></tr></tbody></table></div>
 <hr>
 <h2 id="impact-summary">Impact Summary</h2>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -349,8 +356,7 @@
 
 
 
-
-<table><thead><tr><th>Bug</th><th>Type</th><th>CVE</th><th>CVE Severity</th><th>Affected Deployments</th></tr></thead><tbody><tr><td>Upgrade Header Passthrough</td><td>HTTP Request Smuggling</td><td>CVE-2026-2833</td><td>Critical</td><td>Any Pingora deployment with keep-alive backends</td></tr><tr><td>TE Comma-Separated Misparsing</td><td>HTTP Request Smuggling</td><td>CVE-2026-2835</td><td>Critical</td><td>Pingora + Node.js/lenient backends</td></tr><tr><td>TE Duplicate Header Handling</td><td>HTTP Request Smuggling</td><td>CVE-2026-2835</td><td>Critical</td><td>Pingora + Node.js/lenient backends</td></tr><tr><td>Default Cache Key Missing Host</td><td>Cache Poisoning</td><td>CVE-2026-2836</td><td>High</td><td>Any Pingora deployment with caching enabled</td></tr></tbody></table>
+<table><thead><tr><th>Bug</th><th>Type</th><th>CVE</th><th>CVE Severity</th><th>Affected Deployments</th></tr></thead><tbody><tr><td>Upgrade Header Passthrough</td><td>HTTP Request Smuggling</td><td>CVE-2026-2833</td><td>Critical</td><td>Any Pingora deployment with keep-alive backends</td></tr><tr><td>TE Comma-Separated Misparsing</td><td>HTTP Request Smuggling</td><td>CVE-2026-2835</td><td>Critical</td><td>Pingora + Node.js/lenient backends</td></tr><tr><td>TE Duplicate Header Handling</td><td>HTTP Request Smuggling</td><td>CVE-2026-2835</td><td>Critical</td><td>Pingora + Node.js/lenient backends</td></tr><tr><td>Default Cache Key Missing Host</td><td>Cache Poisoning</td><td>CVE-2026-2836</td><td>High</td><td>Any Pingora deployment with caching enabled</td></tr></tbody></table></div>
 <p>All bugs are exploitable under <strong>default configuration</strong>, require no authentication or non-default settings, and have low attack complexity.</p>
 <p>Cross-user impact proven for all smuggling bugs via separate VPS instances over the public internet.</p>
 <hr>
@@ -358,6 +364,7 @@
 <p>All bugs are fixed in <strong>Pingora 0.8.0</strong>.</p>
 <hr>
 <h2 id="timeline">Timeline</h2>
+<div class="t-scroll" tabindex="0">
 
 
 
@@ -418,27 +425,187 @@
 
 
 
+<table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody><tr><td>Dec 2, 2025</td><td>Reported Upgrade header smuggling (#3449260)</td></tr><tr><td>Dec 5, 2025</td><td>Bug 1 triaged after live instance provided</td></tr><tr><td>Jan 13, 2026</td><td>Reported TE comma-separated smuggling (#3508851)</td></tr><tr><td>Jan 14, 2026</td><td>Bug 2 triaged</td></tr><tr><td>Jan 18, 2026</td><td>Identified TE duplicate header bug, reported within #3508851</td></tr><tr><td>Jan 18, 2026</td><td>Reported cache key poisoning (#3515245)</td></tr><tr><td>Jan 19, 2026</td><td>Bug 4 triaged</td></tr><tr><td>Jan 29, 2026</td><td>Received and verified patch for Bug 1</td></tr><tr><td>Feb 13, 2026</td><td>Received and verified patch for Bugs 2 &#x26; 3</td></tr><tr><td>Feb 25, 2026</td><td>Received and verified patch for Bug 4</td></tr><tr><td>Mar 3, 2026</td><td>Bounty awarded</td></tr><tr><td>Mar 5, 2026</td><td>CVEs, GHSAs, and RUSTSECs published</td></tr><tr><td>Mar 9, 2026</td><td>Coordinated blog publication</td></tr></tbody></table></div>
+<p><strong>Total:</strong> 97 days from first report to public disclosure.</p> </article> <footer class="end"> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">End of file 05</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div> <div class="endrow"> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> </div> </footer> </div> <script>
+/* THE RAIL, and the top edge.  Everything above works without this: every row
+   in the contents is a real link to a real id, the fold is the browser's own,
+   and the two things that would lie with the script dead — the progress rule
+   and the `J/K` legend — are painted only under [data-js], which this file
+   takes back off if anything below throws.
 
-<table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody><tr><td>Dec 2, 2025</td><td>Reported Upgrade header smuggling (#3449260)</td></tr><tr><td>Dec 5, 2025</td><td>Bug 1 triaged after live instance provided</td></tr><tr><td>Jan 13, 2026</td><td>Reported TE comma-separated smuggling (#3508851)</td></tr><tr><td>Jan 14, 2026</td><td>Bug 2 triaged</td></tr><tr><td>Jan 18, 2026</td><td>Identified TE duplicate header bug, reported within #3508851</td></tr><tr><td>Jan 18, 2026</td><td>Reported cache key poisoning (#3515245)</td></tr><tr><td>Jan 19, 2026</td><td>Bug 4 triaged</td></tr><tr><td>Jan 29, 2026</td><td>Received and verified patch for Bug 1</td></tr><tr><td>Feb 13, 2026</td><td>Received and verified patch for Bugs 2 &#x26; 3</td></tr><tr><td>Feb 25, 2026</td><td>Received and verified patch for Bug 4</td></tr><tr><td>Mar 3, 2026</td><td>Bounty awarded</td></tr><tr><td>Mar 5, 2026</td><td>CVEs, GHSAs, and RUSTSECs published</td></tr><tr><td>Mar 9, 2026</td><td>Coordinated blog publication</td></tr></tbody></table>
-<p><strong>Total:</strong> ~98 days from first report to public disclosure.</p></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#E2C3FF"> <a href="/post/ai-vuln-research/"> <span class="rn">07</span> <b>4 AI Approaches</b> <em>shared &middot; http smuggling</em> </a> </li> </ul> </div> <nav class="pager"> <a class="pg" href="/post/ai-vuln-research/" style="--hue:#E2C3FF"> <span class="dir">&larr; Newer</span> <b>Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</b> </a> <a class="pg r" href="/post/sanitize-html-bypass-mxss/" style="--hue:#F7BCF1"> <span class="dir">Older &rarr;</span> <b>HTML Sanitize Bypass Using MXSS</b> </a> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
+   Four jobs.
+
+     1  PICK THE SHAPE.  Open at 1300 and up, where the rail has its own
+        margin to live in; closed under it, where it is a control line and an
+        open panel would cover the first screen of the article.  Re-run on
+        every change of the query, because a window gets resized and a tablet
+        gets turned.
+
+     2  SAY WHERE THE READER IS.  The current section is the LAST heading
+        whose top has passed the line, which is 90px down the window with the
+        rail and 120 under the strip.  Headings with no box are skipped, not
+        counted as passed: a heading folded inside a closed panel is not a
+        place the reader can be.  At the very bottom of the document the last
+        section is current whatever the arithmetic says, because the last
+        heading on a short final section never reaches the line.
+
+     3  JUMP.  A click on a row opens whatever panel the heading is folded
+        into before scrolling, rather than trusting the browser to reveal it,
+        and moves focus to the heading so the keyboard carries on from the
+        same place the eye does.  `j` and `k` walk the sections that are
+        actually on the page.  Both guards from the index are here: no
+        modifier, and nothing while focus is in a field.
+
+     4  DRAW THE TOP EDGE.  scrollY over the scrollable height, as a scaleX.
+        One rAF for all of it, so a scroll costs one write. */
 (function () {
-  var doc = document.documentElement;
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
-  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
-  var tick = false;
+  var root = document.documentElement;
+  try {
+    var nav = document.getElementById('toc');
+    var det = document.getElementById('tocd');
+    var now = document.getElementById('tocnow');
+    var bar = document.getElementById('prog');
 
-  function paint() {
-    tick = false;
-    var max = Math.max(1, doc.scrollHeight - innerHeight);
-    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
-    var y = scrollY + innerHeight * 0.3, cur = -1;
-    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
-    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+    /* The rows and their headings, paired by the id the markdown pipeline
+       wrote.  A row whose heading is not in the document is dropped rather
+       than left to throw on the first scroll. */
+    var links = [], heads = [];
+    if (nav) {
+      [].slice.call(nav.querySelectorAll('a[data-h]')).forEach(function (a) {
+        var h = document.getElementById(a.getAttribute('data-h'));
+        if (h) { links.push(a); heads.push(h); }
+      });
+    }
+
+    /* IS THIS HEADING SOMEWHERE THE READER CAN BE?
+
+       Not `getClientRects().length`, which is what this started as and is
+       wrong: a heading folded inside a CLOSED panel still reports one rect,
+       832px wide and 50px tall, because Chromium lays the content out and
+       then declines to paint it. Measured in the browser, both ways round —
+       `checkVisibility` is false for that same heading and true for one in
+       the open document. The rect test is kept only as the fallback for a
+       browser with no `checkVisibility`, where it is at least never wrong
+       about a heading that is not in the layout at all. */
+    function shown(h) {
+      return h.checkVisibility
+        ? h.checkVisibility({ contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true })
+        : !!h.getClientRects().length;
+    }
+
+    var rail = window.matchMedia('(min-width:1300px)');
+    function shape() { if (det) det.open = rail.matches; }
+    if (rail.addEventListener) rail.addEventListener('change', shape);
+    else if (rail.addListener) rail.addListener(shape);
+    shape();
+
+    /* `sel` is where the keys are and moves with the key; `cur` is what the
+       page has marked, which lags the key by a smooth scroll. Three presses
+       of `j` inside one animation all read the same `cur` and all landed on
+       section 01 — measured, not supposed — so every move is computed from
+       `sel`, and `sel` only goes back to following the scroll once the jump
+       it started has had its 700ms. A wall clock, so a scroll that never
+       arrives cannot leave the keys stuck. */
+    var cur = -1, sel = -1, lock = 0, raf = 0;
+
+    function paint() {
+      raf = 0;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || root.clientHeight;
+      if (bar) {
+        var max = Math.max(1, root.scrollHeight - vh);
+        var p = y / max;
+        bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p) + ')';
+      }
+      if (!links.length) return;
+      var line = rail.matches ? 90 : 120;
+      var i = -1;
+      for (var k = 0; k < heads.length; k++) {
+        var h = heads[k];
+        if (!shown(h)) continue;
+        if (h.getBoundingClientRect().top <= line) i = k; else break;
+      }
+      if (y + vh >= root.scrollHeight - 2) i = heads.length - 1;
+      if (Date.now() > lock) sel = i;
+      if (i === cur) return;
+      if (cur > -1) links[cur].removeAttribute('aria-current');
+      cur = i;
+      if (cur > -1) {
+        links[cur].setAttribute('aria-current', 'location');
+        inview(links[cur]);
+      }
+      if (now) now.textContent = cur > -1 ? links[cur].querySelector('.toc__t').textContent : '';
+    }
+    function tick() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    /* The rail scrolls on its own once the outline is longer than the window.
+       Only its own scrollTop is touched: scrollIntoView here would move the
+       PAGE as well, which is the one thing a reader scrolling must not have
+       done to them. */
+    function inview(a) {
+      /* `offsetParent` is the scroller in both shapes — the rail is the fixed
+         box at 1300 and up, the hanging panel is the absolute one below it —
+         and it is also what offsetTop is measured against, so the two cannot
+         disagree. Guarded to the nav, because an offsetParent that turned out
+         to be <body> would scroll the ARTICLE under the reader. */
+      var box = a.offsetParent;
+      if (!box || !nav.contains(box) || box.scrollHeight <= box.clientHeight) return;
+      var t = a.offsetTop, b = t + a.offsetHeight;
+      if (t < box.scrollTop) box.scrollTop = t - 8;
+      else if (b > box.scrollTop + box.clientHeight) box.scrollTop = b - box.clientHeight + 8;
+    }
+
+    function go(n) {
+      if (n < 0 || n >= heads.length) return;
+      sel = n;
+      lock = Date.now() + 700;
+      var h = heads[n], fold = h.closest ? h.closest('details') : null;
+      if (fold && fold !== det) fold.open = true;
+      h.scrollIntoView();
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + h.id);
+      if (!rail.matches && det) det.open = false;
+      tick();
+    }
+
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        /* a modified click is the reader asking the BROWSER for something —
+           a new tab, a new window, a saved link — and this handler calling
+           preventDefault on it would eat all three */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var a = e.target.closest ? e.target.closest('a[data-h]') : null;
+        if (!a) return;
+        var n = links.indexOf(a);
+        if (n < 0) return;
+        e.preventDefault();
+        go(n);
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+      var t = e.target || {}, tag = t.tagName || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable) return;
+      var d = e.key === 'j' || e.key === 'J' ? 1 : e.key === 'k' || e.key === 'K' ? -1 : 0;
+      if (!d || !heads.length) return;
+      e.preventDefault();
+      /* walk to the next heading that is actually on the page, so `j` never
+         lands the reader inside a panel they have folded shut */
+      var n = sel;
+      do { n += d; } while (n >= 0 && n < heads.length && !shown(heads[n]));
+      if (n < 0 || n >= heads.length) return;
+      go(n);
+    });
+
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    /* a panel opening or closing moves every heading below it */
+    document.addEventListener('toggle', tick, true);
+    paint();
+  } catch (err) {
+    delete root.dataset.js;
   }
-  addEventListener('scroll', function () {
-    if (!tick) { tick = true; requestAnimationFrame(paint); }
-  }, { passive: true });
-  addEventListener('resize', paint);
-  paint();
 })();
-</script>  </body></html>
+</script> </body> </html>

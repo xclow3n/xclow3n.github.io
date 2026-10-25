@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xclow3n &mdash; research bench</title><meta name="description" content="Vulnerability research by Rajat Raghav (xclow3n): HTTP request smuggling in Pingora, Traefik and Envoy, Go net/http connection reuse, URL parser differentials, mutation XSS, and authored HTB CTF challenges."><meta name="robots" content="noindex"><meta name="theme-color" content="#12100E"><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap"><style>:root{--bench:#12100E;--panel:#1B1713;--panel-2:#241F19;--code:#0C0A08;--bone:#F0EBE0;--bone-2:#C6BEB0;--dim:#9A9183;--faint:#8A8072;--rule:#443D33;--rule-2:#716758;--amber:#F2B23C;--display:"Space Grotesk",-apple-system,"Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans",-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--ro-h:46px;color-scheme:dark}*,*:before,*:after{margin:0;padding:0;box-sizing:border-box}html{background:var(--bench);-webkit-text-size-adjust:100%}body{background:var(--bench);color:var(--bone);font-family:var(--body);font-size:16px;padding-bottom:var(--ro-h);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}::selection{background:var(--amber);color:var(--bench)}:root{scrollbar-color:#332E27 var(--bench);scrollbar-width:thin}::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--bench)}::-webkit-scrollbar-thumb{background:#332e27;border:3px solid var(--bench)}:focus-visible{outline:2px solid var(--amber);outline-offset:2px}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.skip{position:absolute;left:-9999px;top:0;z-index:5;background:var(--amber);color:var(--bench);font:600 12px/1 var(--mono);padding:10px 14px}.skip:focus{left:8px;top:8px}.crop{position:relative}.crop:before,.crop:after{content:"";position:absolute;left:-9px;right:-9px;height:9px;pointer-events:none;background:linear-gradient(var(--rule-2),var(--rule-2)) 0 0/1px 9px no-repeat,linear-gradient(var(--rule-2),var(--rule-2)) 100% 0/1px 9px no-repeat}.crop:before{top:-9px;background-position:0 100%,100% 100%}.crop:after{bottom:-9px}.scale{height:9px;background:repeating-linear-gradient(to right,var(--rule-2) 0 1px,transparent 1px 90px) left bottom/100% 9px no-repeat,repeating-linear-gradient(to right,var(--rule-2) 0 1px,transparent 1px 15px) left bottom/100% 4px no-repeat,linear-gradient(var(--rule),var(--rule)) left bottom/100% 1px no-repeat}.ro{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--bench);border-top:1px solid var(--rule)}.ro__in{max-width:1180px;margin:0 auto;padding:8px 36px 9px;display:flex;align-items:flex-start;gap:22px}.ro__cap{flex:0 0 172px;padding-top:1px}.ro__cap b{display:block;font:600 9.5px/1.3 var(--mono);letter-spacing:.14em;color:var(--bone);text-transform:uppercase}.ro__cap span{display:block;margin-top:2px;font:400 9.5px/1.35 var(--mono);color:var(--faint)}.ro__set{flex:1 1 auto;display:flex;gap:4px 10px;flex-wrap:wrap;min-width:0}.ro__f{flex:1 1 92px;min-width:0}.ro__f dt{font:500 9px/1.3 var(--mono);letter-spacing:.11em;color:var(--dim);text-transform:uppercase;white-space:nowrap}.ro__f dd{font:500 11.5px/1.35 var(--mono);color:var(--bone);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ro__f dd[data-blank]{color:var(--faint)}@media(max-width:1080px){:root{--ro-h:46px}.ro__in{padding:8px 28px 9px;gap:16px}.ro__cap{flex:0 0 140px}.ro__f{flex:1 1 80px}}@media(max-width:980px){:root{--ro-h:73px}.ro__in{padding:7px 28px 8px;gap:14px}.ro__set{gap:3px 10px}.ro__cap{flex:0 0 118px}.ro__f{flex:1 1 calc(25% - 8px)}}@media(max-width:560px){:root{--ro-h:0px}.ro{position:static;margin-top:28px}.ro__in{padding:12px 18px 20px}.ro__set{gap:10px 14px}.ro__f{flex:1 1 calc(50% - 14px)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style><link rel="stylesheet" href="/_astro/id-instrument.DeOdGIRU.css"></head> <body> <a class="skip" href="#entries">Skip to the entries</a> <div class="sheet"> <header class="mast crop"> <div class="mast__top"> <h1 class="mark">xclow3n</h1> <p class="subj">HTTP request smuggling &middot; desync &middot; parser differentials</p> <p class="who"> <span>Rajat Raghav</span> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> <a href="/rss.xml">RSS</a> </p> </div> <div class="scale" aria-hidden="true"></div> <p class="key"> <span><b>9</b> entries, newest first</span> <span> <i class="lamp" aria-hidden="true"></i>an identifier I am credited for
+        &mdash; <b>3</b> of 9.
+<em>The other 6 carry none.</em> </span> </p> </header> <main> <h2 class="sr" id="entries">Research and writeups, newest first</h2> <ol class="list" aria-labelledby="entries"> <li class="row"> <a class="hit" href="/post/smuggling-shouldnt-exist-anymore/"> <span class="txt"> <span class="ttl">Smuggling Shouldn&#39;t Exist Anymore, Right?</span> <span class="line"> <span class="sum">Four ways a connection changes owners while it still owes the previous request’s bytes.</span> <span class="id">CVE-2026-56866</span> </span> </span> <time class="dt" datetime="2026-10">OCT 2026</time> <span class="rd">32 min</span>  <i class="mk lamp" aria-hidden="true"></i>  <span class="run">09</span> </a> </li><li class="row"> <a class="hit" href="/post/the-validator-can-lie/"> <span class="txt"> <span class="ttl">The Validator Can Lie: SSRF Beyond URL Validation</span> <span class="line"> <span class="sum">changedetection.io, GitLab and Mealie approve one host while the fetcher dials another.</span>  </span> </span> <time class="dt" datetime="2026-08">AUG 2026</time> <span class="rd">33 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">08</span> </a> </li><li class="row"> <a class="hit" href="/post/ssrf-pipeline/"> <span class="txt"> <span class="ttl">The URL Parser Cheatsheet</span> <span class="line"> <span class="sum">What fourteen pinned URL parsers return for one crafted input, across eight languages.</span>  </span> </span> <time class="dt" datetime="2026-08">AUG 2026</time> <span class="rd">23 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">07</span> </a> </li><li class="row"> <a class="hit" href="/post/ai-vuln-research/"> <span class="txt"> <span class="ttl">Testing AI for Vulnerability Research: 4 Approaches &amp; Where I Failed</span> <span class="line"> <span class="sum">Four AI-assisted workflows, one of them across 23 proxies and backends. One produced 14 confirmed bugs, another nothing I could report.</span>  </span> </span> <time class="dt" datetime="2026-03">MAR 2026</time> <span class="rd">16 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">06</span> </a> </li><li class="row"> <a class="hit" href="/post/breaking-pingora/"> <span class="txt"> <span class="ttl">Breaking Pingora: HTTP Request Smuggling &amp; Cache Poisoning in Cloudflare&#39;s Reverse Proxy</span> <span class="line"> <span class="sum">Three smuggling bugs and a cache key that ignores Host, all in Pingora’s default configuration.</span> <span class="id">CVE-2026-2835</span> </span> </span> <time class="dt" datetime="2026-03">MAR 2026</time> <span class="rd">11 min</span>  <i class="mk lamp" aria-hidden="true"></i>  <span class="run">05</span> </a> </li><li class="row brk"> <a class="hit" href="/post/sanitize-html-bypass-mxss/"> <span class="txt"> <span class="ttl">HTML Sanitize Bypass Using MXSS</span> <span class="line"> <span class="sum">Mutation XSS through sanitize-html, where htmlparser2 and the browser disagree on style and math.</span>  </span> </span> <time class="dt" datetime="2024-11">NOV 2024</time> <span class="rd">2 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">04</span> </a> </li><li class="row"> <a class="hit" href="/post/nodemailer-parser-discrepancy/"> <span class="txt"> <span class="ttl">Email Parser Discrepancy in Nodemailer</span> <span class="line"> <span class="sum">Two address-parsing bugs that misroute mail. Patched in v6.9.16 and v7.0.7.</span> <span class="id">GHSA-mm7p-fcc7-pg87</span> </span> </span> <time class="dt" datetime="2024-11">NOV 2024</time> <span class="rd">3 min</span>  <i class="mk lamp" aria-hidden="true"></i>  <span class="run">03</span> </a> </li><li class="row"> <a class="hit" href="/post/intergalactic-bounty/"> <span class="txt"> <span class="ttl">Intergalactic Bounty: HTB University CTF 2024</span> <span class="line"> <span class="sum">Intended solution: a Nodemailer parser discrepancy to MXSS to RCE by prototype pollution.</span>  </span> </span> <time class="dt" datetime="2024-11">NOV 2024</time> <span class="rd"><i>ctf</i> 3 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">02</span> </a> </li><li class="row"> <a class="hit" href="/post/encodecept/"> <span class="txt"> <span class="ttl">EncoDecept: HTB University CTF 2024</span> <span class="line"> <span class="sum">Intended solution: web cache deception through a Rails path delimiter, then a Django ORM leak.</span>  </span> </span> <time class="dt" datetime="2024-11">NOV 2024</time> <span class="rd"><i>ctf</i> 3 min</span>  <i class="mk" aria-hidden="true"></i>  <span class="run">01</span> </a> </li> </ol> </main> </div> <aside class="ro" aria-label="How this page view was framed" title="Every value is read from a browser API on this page view. A dash is a value the browser does not expose — nothing here is inferred or filled in."> <div class="ro__in"> <p class="ro__cap"> <b>This connection</b> <span>dash = not exposed</span> </p> <dl class="ro__set"> <div class="ro__f"> <dt>ALPN</dt> <dd data-ro="alpn" data-blank title="PerformanceNavigationTiming.nextHopProtocol">&ndash;</dd> </div> <div class="ro__f"> <dt>Socket</dt> <dd data-ro="sock" data-blank title="connectEnd - connectStart, with transferSize and deliveryType to tell a pooled connection from a cache hit">&ndash;</dd> </div> <div class="ro__f"> <dt>TLS</dt> <dd data-ro="tls" data-blank title="secureConnectionStart and connectEnd; 'none' only when location.protocol is http:">&ndash;</dd> </div> <div class="ro__f"> <dt>TTFB</dt> <dd data-ro="ttfb" data-blank title="responseStart - requestStart">&ndash;</dd> </div> <div class="ro__f"> <dt>Coding</dt> <dd data-ro="coding" data-blank title="decodedBodySize / encodedBodySize from the Navigation Timing entry. The browser does not expose WHICH coding, so it is never named. No reading on this strip is allowed to run past its field and be clipped, so the ratio goes in and the byte count stays out.">&ndash;</dd> </div> <div class="ro__f"> <dt>Link</dt> <dd data-ro="link" data-blank title="navigator.connection.effectiveType and .rtt — Chromium only">&ndash;</dd> </div> <div class="ro__f"> <dt>Parse</dt> <dd data-ro="parse" data-blank title="document.compatMode">&ndash;</dd> </div> <div class="ro__f"> <dt>Viewport</dt> <dd data-ro="view" data-blank title="innerWidth, innerHeight, devicePixelRatio">&ndash;</dd> </div> </dl> </div> </aside> <script>
+/* Fills the readout.  Writes a slot only when it holds a real value; every
+   unset slot keeps the dash the server printed. */
+(function () {
+  var put = function (key, value) {
+    if (value === null || value === undefined || value === '') return;
+    var node = document.querySelector('[data-ro="' + key + '"]');
+    if (!node) return;
+    node.textContent = String(value);
+    node.removeAttribute('data-blank');
+  };
+  var read = function () {
+    var nav = null;
+    try {
+      var all = performance.getEntriesByType('navigation');
+      nav = (all && all.length) ? all[0] : null;
+    } catch (e) { nav = null; }
+
+    if (nav) {
+      put('alpn', nav.nextHopProtocol);
+
+      /* SOCKET. Resource Timing collapses connectStart and connectEnd onto
+         fetchStart for a reused connection AND for a cache hit; transferSize
+         of 0 with a decoded body is the cache case. */
+      var cs = nav.connectStart, ce = nav.connectEnd;
+      var cached = nav.transferSize === 0 && nav.decodedBodySize > 0;
+      if (cached) put('sock', 'from cache');
+      else if (ce > cs && ce - cs >= 0.5) put('sock', 'new ' + Math.round(ce - cs) + ' ms');
+      else if (cs > 0) put('sock', 'pooled');
+
+      /* TLS. A real handshake reports its own duration. No handshake mark is
+         ambiguous, so cleartext is claimed only from location.protocol. */
+      if (nav.secureConnectionStart > 0 && nav.connectEnd > nav.secureConnectionStart) {
+        put('tls', Math.round(nav.connectEnd - nav.secureConnectionStart) + ' ms');
+      } else if (location.protocol === 'http:') {
+        put('tls', 'none');
+      }
+
+      if (nav.responseStart > 0 && nav.requestStart > 0 && nav.responseStart >= nav.requestStart) {
+        put('ttfb', Math.round(nav.responseStart - nav.requestStart) + ' ms');
+      }
+
+      var enc = nav.encodedBodySize, dec = nav.decodedBodySize;
+      if (enc > 0 && dec > 0) {
+        put('coding', dec / enc > 1.02 ? (dec / enc).toFixed(1) + ':1' : 'identity');
+      }
+    }
+
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (c && c.effectiveType) {
+      put('link', typeof c.rtt === 'number' ? c.effectiveType + ' / ' + c.rtt + ' ms' : c.effectiveType);
+    }
+
+    put('parse', document.compatMode === 'CSS1Compat' ? 'standards' : 'quirks');
+
+    var dpr = window.devicePixelRatio;
+    put('view', window.innerWidth + '×' + window.innerHeight +
+      (typeof dpr === 'number' ? ' @' + (Math.round(dpr * 100) / 100) : ''));
+  };
+
+  read();
+  /* Timing marks that were still 0 when the parser reached this script are
+     final by load; the viewport is re-read whenever it changes. */
+  addEventListener('load', read);
+  var t;
+  addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(read, 120);
+  });
+})();
+</script> </body></html>
