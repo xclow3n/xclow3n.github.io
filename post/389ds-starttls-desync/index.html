@@ -1,0 +1,423 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345) · xclow3n</title><meta name="description" content="A StartTLS desync in 389 Directory Server lets an on-path attacker make LDAP-backed applications accept a wrong password by confusing an anonymous bind's success with the real authentication result. On a Fedora 44 host it opened an SSH session as a user whose password the directory had refused."><link rel="canonical" href="https://xclow3n.com/post/389ds-starttls-desync/"><meta property="og:type" content="article"><meta property="og:title" content="Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345)"><meta property="og:description" content="A StartTLS desync in 389 Directory Server lets an on-path attacker make LDAP-backed applications accept a wrong password by confusing an anonymous bind's success with the real authentication result. On a Fedora 44 host it opened an SSH session as a user whose password the directory had refused."><meta property="og:url" content="https://xclow3n.com/post/389ds-starttls-desync/"><meta property="og:site_name" content="xclow3n"><meta property="og:image" content="https://xclow3n.com/images/social/389ds-starttls-desync.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345)"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://xclow3n.com/images/social/389ds-starttls-desync.jpg"><meta name="twitter:title" content="Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345)"><meta name="twitter:description" content="A StartTLS desync in 389 Directory Server lets an on-path attacker make LDAP-backed applications accept a wrong password by confusing an anonymous bind's success with the real authentication result. On a Fedora 44 host it opened an SSH session as a user whose password the directory had refused."><meta name="author" content="Rajat Raghav"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="xclow3n" href="/rss.xml"><meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap&amp;text=%E2%94%80%E2%94%82%E2%94%8C%E2%94%90%E2%94%94%E2%94%98%E2%94%9C%E2%94%A4%E2%94%AC%E2%94%B4%E2%94%BC%E2%94%81%E2%94%83%E2%94%8F%E2%94%93%E2%94%97%E2%94%9B%E2%94%A3%E2%94%AB%E2%94%B3%E2%94%BB%E2%95%8B%E2%96%80%E2%96%84%E2%96%88%E2%96%8C%E2%96%90%E2%96%91%E2%96%92%E2%96%93%E2%96%94%E2%96%81%E2%96%8F%E2%96%95%E2%96%A0%E2%96%A1%E2%96%AA%E2%96%AB%E2%97%86%E2%97%87%E2%97%8F%E2%97%8B%C2%B7%E2%80%A2%E2%88%99%E2%86%97%E2%86%92%E2%86%90%E2%86%91%E2%86%93%E2%9F%A9%E2%9F%A8%C2%BB%C2%AB%E2%95%B1%E2%95%B2%E2%95%B3%E2%95%B4%E2%95%B5%E2%95%B6%E2%95%B7"><!-- Pre-paint, and the same flag the index uses: the progress rule and the
+     key legend are the two things on this page that claim a script is alive,
+     and neither may be painted before one is. The behaviour script at the
+     foot takes it back off if it throws. --><script>document.documentElement.dataset.js = '1';</script><link rel="stylesheet" href="/_astro/_slug_.BlbGN2fy.css"></head> <body class="zn">  <div class="prog" id="prog" aria-hidden="true"></div> <div class="page"> <header class="top"> <a class="home" href="/"> <pre class="mark" role="img" aria-label="xclow3n">█   █  ███  █      ███  █   █ ████  █   █
+ █ █  █     █     █   █ █   █     █ ██  █
+  █   █     █     █   █ █ █ █  ███  █ █ █
+ █ █  █     █     █   █ █ █ █     █ █  ██
+█   █  ███  █████  ███   █ █  ████  █   █</pre> </a> <a class="back" href="/"><span aria-hidden="true">&#8592;</span> Roster</a> </header> <div class="head"> <div class="cap" aria-hidden="true"> <span>┌</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab key">File 10</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">RESEARCH</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┐</span> </div> <div class="headtx"> <h1>Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345)</h1> <p class="dek">Forged Bind Result</p> </div>  <dl class="meta">  <dt>Affected</dt> <dd><span class="v">389 Directory Server</span></dd>   <dt>Identifiers</dt> <dd class="id"><span class="v">CVE-2026-86345</span><span class="v">GHSA-c4v7-fhgq-r988</span></dd>  </dl> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">NOV 2026</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">7 min</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div>  <div class="banner"> <img src="/images/poster/389ds-starttls-desync.png" alt="" width="1600" height="900" decoding="async" loading="eager"> </div> </div>  <nav class="toc" id="toc" aria-label="Sections"> <details class="toc__d" id="tocd"> <summary class="toc__s"> <span class="toc__lab">Contents</span> <span class="toc__now" id="tocnow" aria-hidden="true"></span> </summary> <div class="toc__p"> <ol class="toc__l"> <li class="toc__i"> <a href="#tldr" data-h="tldr"> <b class="toc__n" aria-hidden="true">01</b> <span class="toc__t">TL;DR</span> </a> </li><li class="toc__i"> <a href="#the-tested-path" data-h="the-tested-path"> <b class="toc__n" aria-hidden="true">02</b> <span class="toc__t">The tested path</span> </a> </li><li class="toc__i"> <a href="#what-a-normal-login-does" data-h="what-a-normal-login-does"> <b class="toc__n" aria-hidden="true">03</b> <span class="toc__t">What a normal login does</span> </a> </li><li class="toc__i"> <a href="#how-fourteen-bytes-change-the-answer" data-h="how-fourteen-bytes-change-the-answer"> <b class="toc__n" aria-hidden="true">04</b> <span class="toc__t">How fourteen bytes change the answer</span> </a> </li><li class="toc__i"> <a href="#why-389-ds-let-the-request-through" data-h="why-389-ds-let-the-request-through"> <b class="toc__n" aria-hidden="true">05</b> <span class="toc__t">Why 389-ds let the request through</span> </a> </li><li class="toc__i"> <a href="#an-ssh-session-with-the-wrong-password" data-h="an-ssh-session-with-the-wrong-password"> <b class="toc__n" aria-hidden="true">06</b> <span class="toc__t">An SSH session with the wrong password</span> </a> </li><li class="toc__i"> <a href="#what-the-attack-needs-from-the-directory" data-h="what-the-attack-needs-from-the-directory"> <b class="toc__n" aria-hidden="true">07</b> <span class="toc__t">What the attack needs from the directory</span> </a> </li><li class="toc__i"> <a href="#fix-and-disclosure" data-h="fix-and-disclosure"> <b class="toc__n" aria-hidden="true">08</b> <span class="toc__t">Fix and disclosure</span> </a> </li> </ol> <p class="toc__k" aria-hidden="true"><b>J</b>/<b>K</b> section</p> </div> </details> </nav> <article class="art"> <h2 id="tldr">TL;DR</h2>
+<p>I found a StartTLS flaw in 389 Directory Server that lets an on-path attacker
+make LDAP-backed services accept a wrong password. The attacker injects an
+anonymous bind before TLS starts. Its success response arrives inside TLS
+with the message ID the client expects for its real password check.</p>
+<p>I used this to open an SSH session as <code>alice</code> on a Fedora 44 host while
+389-ds rejected the wrong password with <code>err=49</code>. Certificate validation stayed
+enabled. The SSH result depends on the client’s follow-up checks and the
+directory’s access rules; I tested <code>nss-pam-ldapd</code>, not <code>sssd</code>. Deployments
+using StartTLS should apply the fix or switch to implicit TLS (<code>ldaps://</code>).</p>
+<h2 id="the-tested-path">The tested path</h2>
+<p>I tested this through <code>sshd</code>, the SSH server. It called Linux-PAM, Linux’s
+authentication framework. The <code>pam_ldap</code> module passed the password check to
+<code>nslcd</code>, the LDAP client connecting to 389-ds.</p>
+<p>The attacker submits a chosen account name and wrong password to the service.
+They also need an on-path position <strong>between the service and 389-ds</strong>, where
+they can read, append to, and delay its initial LDAP traffic. A login attempt
+alone is insufficient; the account owner need not participate.</p>
+<figure class="research-figure">
+  <a href="/images/diagrams/389ds-test-setup.svg" target="_blank" rel="noopener">
+    <picture>
+      <source media="(max-width: 640px)" srcset="/images/diagrams/389ds-test-setup-mobile.svg" width="360" height="650">
+      <img src="/images/diagrams/389ds-test-setup.svg" width="560" height="590" alt="The attacker submits Alice and a wrong password to a login service and controls a relay between nslcd, the LDAP client, and 389-ds. TLS terminates at nslcd and 389-ds; the relay forwards encrypted traffic after the upgrade." loading="lazy" decoding="async">
+    </picture>
+  </a>
+  <figcaption><code>nslcd</code> looked up Alice on one connection, then opened another for her bind and a verification search. The relay injected on both; the bind-result mix-up mattered on the second. This setup allowed anonymous LDAP reads.</figcaption>
+</figure>
+<h2 id="what-a-normal-login-does">What a normal login does</h2>
+<p>With StartTLS, the LDAP connection begins in plaintext. The client requests
+an upgrade, 389-ds agrees, and they negotiate TLS on the same socket. The
+client then sends a <strong>bind</strong>, LDAP’s authentication request, with the account
+name and password. A wrong password returns <code>err=49</code> (invalid credentials);
+an empty account name and password establish an anonymous connection.</p>
+<p>Each LDAP request carries a <code>messageID</code> that the client uses to match its
+response. In the clients I tested, StartTLS used ID 1 and the password bind
+used ID 2. A wrong password should produce the exchange below (<code>C</code> is the
+client; <code>S</code> is 389-ds):</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>C: StartTLS                 ID 1</span></span>
+<span class="line"><span>S: StartTLS OK              ID 1</span></span>
+<span class="line"><span>   [TLS + certificate check]</span></span>
+<span class="line"><span>C: bind(alice, wrong password)  ID 2</span></span>
+<span class="line"><span>S: bind err=49              ID 2</span></span></code></pre>
+<h2 id="how-fourteen-bytes-change-the-answer">How fourteen bytes change the answer</h2>
+<p>My relay read the StartTLS message ID and appended a 14-byte anonymous
+<code>BindRequest</code> using the next ID, the one the client would use for its password
+bind. The injected request had an empty account name and password, so its
+success only established an anonymous connection.</p>
+<p>The relay first kept its upstream connection busy with anonymous <code>whoami</code>
+operations for seven seconds. It then sent the StartTLS request and extra
+bind in one <code>sendall()</code> call, before the TLS handshake. After the upgrade,
+it forwarded ciphertext without decrypting it or replacing the certificate.</p>
+<figure class="research-figure">
+  <a href="/images/diagrams/389ds-result-flow.svg" target="_blank" rel="noopener">
+    <picture>
+      <source media="(max-width: 640px)" srcset="/images/diagrams/389ds-result-flow-mobile.svg" width="360" height="830">
+      <img src="/images/diagrams/389ds-result-flow.svg" width="560" height="710" alt="Four-step result collision: the relay appends anonymous bind ID 2 to plaintext StartTLS ID 1; 389-ds upgrades to TLS while retaining buffered plaintext; the anonymous bind receives success ID 2 inside TLS; 389-ds then handles the real user bind with ID 2 and returns error 49, but the client accepts the anonymous success as its bind result." loading="lazy" decoding="async">
+    </picture>
+  </a>
+  <figcaption>The anonymous bind's success arrived inside TLS with the same message ID as the client's password bind. The directory produced both responses; the real password check failed.</figcaption>
+</figure>
+<p>In one <code>ldapwhoami -ZZ</code> trial against <code>389-ds-base-3.2.2-2.fc44</code>, the client
+exited 0 and printed <code>anonymous</code> despite a wrong password for the Directory
+Manager administrator account.
+On that same connection, 389-ds logged the anonymous bind request before its
+<code>TLS1.3</code> line, its success result after that line, then the real Directory
+Manager bind returning <code>err=49</code>. These are server events; I did not measure
+the resulting TCP packets or the client’s send and read times.</p>
+<p>The client accepted a <strong>real success response for the wrong bind</strong>, leaving
+the connection anonymous.</p>
+<h2 id="why-389-ds-let-the-request-through">Why 389-ds let the request through</h2>
+<p>In the source I examined, <code>start_tls_io_enable()</code> installed the TLS I/O layer
+without clearing plaintext still held in the connection’s read buffer.
+Later LDAP reads could consume those bytes after the upgrade. The StartTLS
+guard checked for pending operations, but buffered bytes that had not yet
+become an <code>Operation</code> escaped that check. <a href="https://www.rfc-editor.org/rfc/rfc4511#section-4.14.1">RFC 4511
+§4.14.1</a> requires the
+client to finish the upgrade before sending another LDAP message.</p>
+<p>The seven-second warm-up made this setup reproducible. A cold attempt was
+rejected by the StartTLS guard. I did not isolate the scheduling change that
+let the buffered request through, so seven seconds is a condition of this
+setup, not a general delay requirement.</p>
+<h2 id="an-ssh-session-with-the-wrong-password">An SSH session with the wrong password</h2>
+<p>On a Fedora 44 host running <code>nss-pam-ldapd</code> and
+<code>openssh-server-10.2p1-16.fc44</code>, <code>sshd</code> opened an interactive terminal session as
+<code>alice</code> and ran commands in it for a client sending
+<code>TOTALLY-WRONG-PASSWORD</code>, while 389-ds refused that same credential with
+<code>err=49</code> on the same LDAP connection. This worked in <strong>3 of 3</strong> attempts.
+<code>sshd</code> logged
+<code>Accepted keyboard-interactive/pam for alice</code> and <code>permanently_set_uid: 5000/5000</code>, and <code>id -un</code> inside the session returned <code>alice</code>.</p>
+<p><code>sshd</code> completed the account phase, logging
+<code>do_pam_account pam_acct_mgmt = 0 (Success)</code>, then <code>pam_setcred</code> and
+<code>pam_open_session</code>. Fedora ships <code>KbdInteractiveAuthentication no</code>; with
+that setting <code>sshd</code> used its plain
+<code>password</code> method instead, and the outcome was the same in <strong>3 of 3</strong>
+attempts.</p>
+<p>Without injection, <strong>0 of 3</strong> logins succeeded. Moving the injected bind’s
+message ID from the StartTLS ID plus one to plus two also produced <strong>0 of 3</strong>,
+with the same attacker and seven-second warm-up. The directory still
+executed the smuggled bind with <code>err=0</code>, but <code>nslcd</code> no longer logged
+<code>bind successful</code> for Alice, despite running the same <code>ldap_sasl_bind</code> in
+the same session. This one-byte change tested the response-ID collision
+named in <a href="https://access.redhat.com/security/cve/cve-2026-86345">Red Hat’s
+advisory</a>.</p>
+<p>I used the authentication and account lookup configuration that Debian’s
+<code>libpam-ldapd</code> generates. Fedora’s own LDAP integration uses <code>sssd</code>, which I
+did not test.
+The SSH result also depended on <code>nslcd</code>’s post-bind verification search,
+covered below.</p>
+<details>
+<summary>Authentication and account lookup configuration</summary>
+<p>The setup adds <code>pam_ldap</code> lines to <code>password-auth</code> and points <code>passwd</code>,
+<code>shadow</code> and <code>group</code> at LDAP in <code>nsswitch.conf</code>. Fedora’s <code>authselect</code>
+profiles are <code>local</code>, <code>nis</code>, <code>sssd</code> and <code>winbind</code>; none reference <code>pam_ldap</code>.</p>
+<p><code>/etc/pam.d/sshd</code> was Fedora’s own file, unmodified. No Fedora session module
+was relaxed or removed. The only added session line was
+<code>session optional pam_ldap.so</code>.</p>
+</details>
+<h2 id="what-the-attack-needs-from-the-directory">What the attack needs from the directory</h2>
+<p>At this point, <code>nslcd</code> thinks Alice’s password was accepted. But 389-ds
+rejected her bind, so the directory connection is still anonymous. The SSH
+login now depends on an extra check that <code>nslcd</code> performs after the bind.</p>
+<p>By default, <code>nslcd</code> searches for Alice’s <strong>entry</strong>, her account record in the
+directory, using that same connection. This verification search only needs
+to find the entry. Since the connection is anonymous, the directory’s access
+rules decide whether an unauthenticated reader can see it. If the search
+finds nothing, <code>nslcd</code> refuses the login despite accepting the bind result.</p>
+<p>Using a service account for the initial user lookup does not avoid this
+check. That lookup uses a separate connection; its permissions do not carry
+over to the connection where Alice’s password check failed.</p>
+<p>I tested whether allowing or skipping this follow-up search changed the
+SSH result:</p>
+<div class="t-scroll" tabindex="0">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Configuration</th><th>Wrong-password SSH logins</th></tr></thead><tbody><tr><td>Verification enabled; no anonymous read (service account for initial lookups)</td><td><strong>0 of 3</strong></td></tr><tr><td>Verification enabled; anonymous access to the entry’s type field (<code>objectClass</code>) only</td><td><strong>3 of 3</strong></td></tr><tr><td>Verification disabled (<code>pam_authc_search NONE</code>); no anonymous read</td><td><strong>3 of 3</strong></td></tr><tr><td>Default <code>nslcd</code> verification; shipped sample-entry access rules</td><td><strong>3 of 3</strong></td></tr></tbody></table></div>
+<p>With the verification search enabled and no anonymous read, it returned
+<code>SRCH base="uid=alice,…" RESULT err=0 nentries=0</code>: no entry was returned,
+so the login stopped. Alice’s record still existed: a legitimate login in
+that configuration succeeded.</p>
+<p>Granting anonymous <code>read,search</code> permission on <code>objectClass</code> was enough to
+pass the check. The search returned only the entry’s distinguished name
+(its full name within the directory), with no attribute values. Finding the
+record was sufficient; <code>nslcd</code> did not need to read the account details.
+Setting <code>pam_authc_search NONE</code>, which this <code>nslcd</code> build honours, skipped
+the search entirely, so anonymous read permission was no longer needed.</p>
+<p>For the sample-entry test, I created the directory subtree with
+<code>dsconf backend create --create-entries</code> and added no access rule. The rules
+installed with those sample entries already allowed the anonymous lookup.
+A legitimate login succeeded first, then the wrong-password logins
+succeeded. The server logged:</p>
+<pre class="astro-code github-dark-default" style="background-color:#0d1117;color:#e6edf3; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>op=446 BIND dn=""                      smuggled, in cleartext</span></span>
+<span class="line"><span>conn=25 TLS1.3 128-bit AES-GCM[PQC]</span></span>
+<span class="line"><span>op=446 RESULT err=0 tag=97 dn=""       answered inside TLS</span></span>
+<span class="line"><span>op=447 BIND dn="uid=alice,..."</span></span>
+<span class="line"><span>op=447 RESULT err=49 - Invalid credentials</span></span>
+<span class="line"><span>op=448 SRCH base="uid=alice,..." scope=0</span></span>
+<span class="line"><span>op=448 RESULT err=0 tag=101 nentries=1</span></span></code></pre>
+<p>Here <code>err=49</code> shows the failed password check, while <code>nentries=1</code> shows that
+the follow-up search still found Alice’s entry. That was enough for <code>nslcd</code>
+to continue the login.</p>
+<p>The bind-result mix-up itself needs no directory read permission. The
+earlier <code>ldapwhoami</code> trial had no follow-up search, and those LDAP-client
+tests ran before I added a directory access rule. The permission requirement
+comes from <code>nslcd</code>’s verification step in the SSH login.</p>
+<details>
+<summary>Additional test: could an injected account bind provide read access?</summary>
+<p>I also tried smuggling a bind as an account that could read Alice’s entry.
+The directory accepted it, but <strong>0 of 2</strong> logins succeeded. That bind’s own
+result carried <code>dn=""</code>, an empty distinguished name; the account’s identity
+did not survive to the verification search.</p>
+</details>
+<details>
+<summary>Which directory-creation methods install the read rule?</summary>
+<p>The two stock methods for creating a directory subtree install different
+access rules. My setup’s
+lib389 <code>create_suffix_entry</code> path installs one instruction scoped to the
+domain entry. The SSH chain failed in that configuration. The sample-entry
+path installs thirteen instructions, five granting to <code>ldap:///anyone</code>.</p>
+<p>The relevant rule sits on <code>ou=people</code>, filters on
+<code>(objectClass=posixaccount)</code>, and grants <code>read, search, compare</code> over
+<code>objectClass</code>, <code>uid</code>, <code>uidNumber</code>, <code>gidNumber</code>, <code>gecos</code>, <code>homeDirectory</code>,
+<code>loginShell</code> and <code>cn</code> among others. It has shipped since 1.4.0.</p>
+<p><code>dscreate</code> with <code>sample_entries = yes</code> and <code>dsidm initialise</code> reach the same
+lib389 code as the <code>dsconf</code> command I tested, but I did not run them. I have
+not measured how common either method is in deployed directories.</p>
+</details>
+<h2 id="fix-and-disclosure">Fix and disclosure</h2>
+<p>Red Hat assigned <a href="https://access.redhat.com/security/cve/cve-2026-86345">CVE-2026-86345</a>.
+My submitted proof of concept stopped at Linux-PAM’s
+answer through <code>pamtester</code>, which returned success for the same wrong
+password in <strong>3 of 3</strong> attempts. Red Hat rates the issue <strong>Moderate</strong>, with a
+CVSS 3.1 score of <strong>9.0</strong>. <a href="https://github.com/advisories/GHSA-c4v7-fhgq-r988">GitHub advisory
+GHSA-c4v7-fhgq-r988</a>
+was published on 2 October 2026. Upstream merged <a href="https://github.com/389ds/389-ds-base/pull/7922">pull request
+#7922</a> on 7 October 2026.
+The fix prevents another worker from processing extra buffered data during
+StartTLS, rejects remaining plaintext, and tightens the pending-operation
+check. I did not test the fixed code or backports.</p>
+<p>I reproduced the desync on two Fedora 44 builds, <code>389-ds-base-3.2.2-2.fc44</code> and
+<code>389-ds-base-3.2.3-5.fc44</code>. At the time of writing, <code>dnf</code> resolves <code>3.2.3-5</code>
+from Fedora 44’s updates repository; <code>3.2.2-2</code> has aged out. The newer build
+dates from 9 September 2026, before the upstream fix, and no fixed build has
+reached that repository. I checked Fedora 44 only and did no version bisect.
+The GitHub advisory lists both affected and patched versions as unknown.</p>
+<p><a href="https://access.redhat.com/security/cve/cve-2026-86345">Red Hat recommends disabling StartTLS and requiring
+<code>ldaps://</code></a>, so the
+connection begins with TLS before any LDAP message and exposes no plaintext
+upgrade request. The vendor says no configuration-only mitigation fully
+closes the issue with StartTLS enabled. I tested standalone Fedora builds,
+not Red Hat Enterprise Linux, Red Hat Directory Server, FreeIPA or upstream
+<code>main</code>; use the vendor’s affected
+product and update information for those deployments.</p> </article> <footer class="end"> <div class="cap" aria-hidden="true"> <span>└</span><span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span> <span class="lab">End of file 10</span> <span class="f">────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span><span>┘</span> </div> <div class="endrow"> <a href="mailto:me@xclow3n.com">me@xclow3n.com</a> </div> </footer> </div> <script>
+/* THE RAIL, and the top edge.  Everything above works without this: every row
+   in the contents is a real link to a real id, the fold is the browser's own,
+   and the two things that would lie with the script dead — the progress rule
+   and the `J/K` legend — are painted only under [data-js], which this file
+   takes back off if anything below throws.
+
+   Four jobs.
+
+     1  PICK THE SHAPE.  Open at 1300 and up, where the rail has its own
+        margin to live in; closed under it, where it is a control line and an
+        open panel would cover the first screen of the article.  Re-run on
+        every change of the query, because a window gets resized and a tablet
+        gets turned.
+
+     2  SAY WHERE THE READER IS.  The current section is the LAST heading
+        whose top has passed the line, which is 90px down the window with the
+        rail and 120 under the strip.  Headings with no box are skipped, not
+        counted as passed: a heading folded inside a closed panel is not a
+        place the reader can be.  At the very bottom of the document the last
+        section is current whatever the arithmetic says, because the last
+        heading on a short final section never reaches the line.
+
+     3  JUMP.  A click on a row opens whatever panel the heading is folded
+        into before scrolling, rather than trusting the browser to reveal it,
+        and moves focus to the heading so the keyboard carries on from the
+        same place the eye does.  `j` and `k` walk the sections that are
+        actually on the page.  Both guards from the index are here: no
+        modifier, and nothing while focus is in a field.
+
+     4  DRAW THE TOP EDGE.  scrollY over the scrollable height, as a scaleX.
+        One rAF for all of it, so a scroll costs one write. */
+(function () {
+  var root = document.documentElement;
+  try {
+    var nav = document.getElementById('toc');
+    var det = document.getElementById('tocd');
+    var now = document.getElementById('tocnow');
+    var bar = document.getElementById('prog');
+
+    /* The rows and their headings, paired by the id the markdown pipeline
+       wrote.  A row whose heading is not in the document is dropped rather
+       than left to throw on the first scroll. */
+    var links = [], heads = [];
+    if (nav) {
+      [].slice.call(nav.querySelectorAll('a[data-h]')).forEach(function (a) {
+        var h = document.getElementById(a.getAttribute('data-h'));
+        if (h) { links.push(a); heads.push(h); }
+      });
+    }
+
+    /* IS THIS HEADING SOMEWHERE THE READER CAN BE?
+
+       Not `getClientRects().length`, which is what this started as and is
+       wrong: a heading folded inside a CLOSED panel still reports one rect,
+       832px wide and 50px tall, because Chromium lays the content out and
+       then declines to paint it. Measured in the browser, both ways round —
+       `checkVisibility` is false for that same heading and true for one in
+       the open document. The rect test is kept only as the fallback for a
+       browser with no `checkVisibility`, where it is at least never wrong
+       about a heading that is not in the layout at all. */
+    function shown(h) {
+      return h.checkVisibility
+        ? h.checkVisibility({ contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true })
+        : !!h.getClientRects().length;
+    }
+
+    var rail = window.matchMedia('(min-width:1300px)');
+    function shape() { if (det) det.open = rail.matches; }
+    if (rail.addEventListener) rail.addEventListener('change', shape);
+    else if (rail.addListener) rail.addListener(shape);
+    shape();
+
+    /* `sel` is where the keys are and moves with the key; `cur` is what the
+       page has marked, which lags the key by a smooth scroll. Three presses
+       of `j` inside one animation all read the same `cur` and all landed on
+       section 01 — measured, not supposed — so every move is computed from
+       `sel`, and `sel` only goes back to following the scroll once the jump
+       it started has had its 700ms. A wall clock, so a scroll that never
+       arrives cannot leave the keys stuck. */
+    var cur = -1, sel = -1, lock = 0, raf = 0;
+
+    function paint() {
+      raf = 0;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var vh = window.innerHeight || root.clientHeight;
+      if (bar) {
+        var max = Math.max(1, root.scrollHeight - vh);
+        var p = y / max;
+        bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p) + ')';
+      }
+      if (!links.length) return;
+      var line = rail.matches ? 90 : 120;
+      var i = -1;
+      for (var k = 0; k < heads.length; k++) {
+        var h = heads[k];
+        if (!shown(h)) continue;
+        if (h.getBoundingClientRect().top <= line) i = k; else break;
+      }
+      if (y + vh >= root.scrollHeight - 2) i = heads.length - 1;
+      if (Date.now() > lock) sel = i;
+      if (i === cur) return;
+      if (cur > -1) links[cur].removeAttribute('aria-current');
+      cur = i;
+      if (cur > -1) {
+        links[cur].setAttribute('aria-current', 'location');
+        inview(links[cur]);
+      }
+      if (now) now.textContent = cur > -1 ? links[cur].querySelector('.toc__t').textContent : '';
+    }
+    function tick() { if (!raf) raf = requestAnimationFrame(paint); }
+
+    /* The rail scrolls on its own once the outline is longer than the window.
+       Only its own scrollTop is touched: scrollIntoView here would move the
+       PAGE as well, which is the one thing a reader scrolling must not have
+       done to them. */
+    function inview(a) {
+      /* `offsetParent` is the scroller in both shapes — the rail is the fixed
+         box at 1300 and up, the hanging panel is the absolute one below it —
+         and it is also what offsetTop is measured against, so the two cannot
+         disagree. Guarded to the nav, because an offsetParent that turned out
+         to be <body> would scroll the ARTICLE under the reader. */
+      var box = a.offsetParent;
+      if (!box || !nav.contains(box) || box.scrollHeight <= box.clientHeight) return;
+      var t = a.offsetTop, b = t + a.offsetHeight;
+      if (t < box.scrollTop) box.scrollTop = t - 8;
+      else if (b > box.scrollTop + box.clientHeight) box.scrollTop = b - box.clientHeight + 8;
+    }
+
+    function go(n) {
+      if (n < 0 || n >= heads.length) return;
+      sel = n;
+      lock = Date.now() + 700;
+      var h = heads[n], fold = h.closest ? h.closest('details') : null;
+      if (fold && fold !== det) fold.open = true;
+      h.scrollIntoView();
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + h.id);
+      if (!rail.matches && det) det.open = false;
+      tick();
+    }
+
+    if (nav) {
+      nav.addEventListener('click', function (e) {
+        /* a modified click is the reader asking the BROWSER for something —
+           a new tab, a new window, a saved link — and this handler calling
+           preventDefault on it would eat all three */
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var a = e.target.closest ? e.target.closest('a[data-h]') : null;
+        if (!a) return;
+        var n = links.indexOf(a);
+        if (n < 0) return;
+        e.preventDefault();
+        go(n);
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+      var t = e.target || {}, tag = t.tagName || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable) return;
+      var d = e.key === 'j' || e.key === 'J' ? 1 : e.key === 'k' || e.key === 'K' ? -1 : 0;
+      if (!d || !heads.length) return;
+      e.preventDefault();
+      /* walk to the next heading that is actually on the page, so `j` never
+         lands the reader inside a panel they have folded shut */
+      var n = sel;
+      do { n += d; } while (n >= 0 && n < heads.length && !shown(heads[n]));
+      if (n < 0 || n >= heads.length) return;
+      go(n);
+    });
+
+    window.addEventListener('scroll', tick, { passive: true });
+    window.addEventListener('resize', tick);
+    /* a panel opening or closing moves every heading below it */
+    document.addEventListener('toggle', tick, true);
+    paint();
+  } catch (err) {
+    delete root.dataset.js;
+  }
+})();
+</script> </body> </html>

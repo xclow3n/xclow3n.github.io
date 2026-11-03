@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="830" viewBox="0 0 360 830" role="img" aria-labelledby="title desc">
+  <title id="title">How the wrong bind result is accepted</title>
+  <desc id="desc">The relay appends an anonymous bind with message ID 2 to the plaintext StartTLS request with ID 1. The directory upgrades while the extra plaintext remains buffered. It sends an anonymous bind success with ID 2 inside TLS, then handles Alice's bind with ID 2 and rejects the wrong password. The tested client accepts the anonymous success; the directory remains anonymous.</desc>
+  <style>
+    text{font-family:'DejaVu Sans Mono',monospace;fill:#e2e2db}
+    .head{font-size:19px;font-weight:700;fill:#58e08b}
+    .tag{font-size:13px;font-weight:700}
+    .line{font-size:16px;font-weight:700}
+    .body{font-size:14px}
+    .small{font-size:13px}
+    .muted{fill:#a4aaa1}
+    .green{fill:#58e08b}
+    .orange{fill:#f0a848}
+    .box{fill:#07090a;stroke:#333b31;stroke-width:1}
+    .attack{fill:#151108;stroke:#f0a848;stroke-width:1}
+    .wire{stroke:#8a8f86;stroke-width:1.5}
+  </style>
+  <rect width="360" height="830" fill="#000"/>
+  <text class="head" x="16" y="31">02 / One ID, two binds</text>
+  <text class="small muted" x="16" y="52">Server order; client matching below</text>
+  <path d="M16 63H344" stroke="#333b31"/>
+
+  <rect class="attack" x="16" y="76" width="328" height="133"/>
+  <text class="tag orange" x="30" y="101">01 / BEFORE TLS</text>
+  <text class="line" x="30" y="132">StartTLS request [ID 1]</text>
+  <text class="body" x="30" y="162">relay adds anonymous bind [ID 2]</text>
+  <text class="small muted" x="30" y="188">14 plaintext bytes</text>
+  <path class="wire" d="M180 209V229"/>
+  <polygon fill="#8a8f86" points="180,237 173,225 187,225"/>
+
+  <rect class="box" x="16" y="239" width="328" height="133"/>
+  <text class="tag green" x="30" y="264">02 / TLS UPGRADE</text>
+  <text class="line" x="30" y="295">389-ds accepts StartTLS</text>
+  <text class="body" x="30" y="325">TLS begins; injected plaintext</text>
+  <text class="body" x="30" y="349">remains buffered</text>
+  <path class="wire" d="M180 372V392"/>
+  <polygon fill="#8a8f86" points="180,400 173,388 187,388"/>
+
+  <rect class="attack" x="16" y="402" width="328" height="133"/>
+  <text class="tag orange" x="30" y="427">03 / INSIDE TLS</text>
+  <text class="line" x="30" y="458">Anonymous bind response</text>
+  <text class="body" x="30" y="488">success [ID 2]</text>
+  <text class="small muted" x="30" y="514">genuine reply from 389-ds</text>
+  <path class="wire" d="M180 535V555"/>
+  <polygon fill="#8a8f86" points="180,563 173,551 187,551"/>
+
+  <rect class="box" x="16" y="565" width="328" height="123"/>
+  <text class="tag green" x="30" y="590">04 / REAL PASSWORD CHECK</text>
+  <text class="line" x="30" y="621">389-ds handles Alice bind</text>
+  <text class="body" x="30" y="653">[ID 2] → err=49, wrong password</text>
+  <path class="wire" d="M180 688V708"/>
+  <polygon fill="#8a8f86" points="180,716 173,704 187,704"/>
+
+  <rect x="16" y="718" width="328" height="92" fill="#07090a" stroke="#58e08b" stroke-width="1"/>
+  <text class="line green" x="30" y="747">Client accepts ID 2 success</text>
+  <text class="body" x="30" y="775">Tested PAM auth succeeds;</text>
+  <text class="small" x="30" y="797">directory remains anonymous.</text>
+</svg>

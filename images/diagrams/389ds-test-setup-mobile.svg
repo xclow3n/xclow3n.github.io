@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="650" viewBox="0 0 360 650" role="img" aria-labelledby="title desc">
+  <title id="title">The tested authentication path</title>
+  <desc id="desc">The attacker invokes a PAM test with Alice and a wrong password. PAM reaches nslcd. The attacker-controlled relay sits between nslcd and 389-ds, changes the plaintext StartTLS traffic, then forwards ciphertext. TLS ends at nslcd and 389-ds.</desc>
+  <style>
+    text{font-family:'DejaVu Sans Mono',monospace;fill:#e2e2db}
+    .head{font-size:19px;font-weight:700;fill:#58e08b}
+    .label{font-size:17px;font-weight:700}
+    .body{font-size:14px}
+    .small{font-size:13px}
+    .muted{fill:#a4aaa1}
+    .green{fill:#58e08b}
+    .orange{fill:#f0a848}
+    .box{fill:#07090a;stroke:#333b31;stroke-width:1}
+    .attack{fill:#151108;stroke:#f0a848;stroke-width:1}
+    .wire{stroke:#8a8f86;stroke-width:1.5}
+  </style>
+  <rect width="360" height="650" fill="#000"/>
+  <text class="head" x="16" y="31">01 / The tested path</text>
+  <text class="small muted" x="16" y="52">One attempted login</text>
+  <path d="M16 63H344" stroke="#333b31"/>
+
+  <rect class="attack" x="16" y="74" width="328" height="76"/>
+  <text class="label orange" x="30" y="103">Attacker</text>
+  <text class="body" x="30" y="128">chooses alice + wrong password</text>
+  <path class="wire" d="M180 150V170"/>
+  <polygon fill="#8a8f86" points="180,178 173,166 187,166"/>
+
+  <rect class="box" x="16" y="180" width="328" height="88"/>
+  <text class="label" x="30" y="209">Login service</text>
+  <text class="body muted" x="30" y="233">sshd → Linux-PAM</text>
+  <text class="body muted" x="30" y="254">→ pam_ldap</text>
+  <path class="wire" d="M180 268V288"/>
+  <polygon fill="#8a8f86" points="180,296 173,284 187,284"/>
+
+  <rect class="box" x="16" y="298" width="328" height="75"/>
+  <text class="label green" x="30" y="327">nslcd</text>
+  <text class="body muted" x="30" y="352">LDAP client · TLS endpoint</text>
+  <path class="wire" d="M180 373V393"/>
+  <polygon fill="#8a8f86" points="180,401 173,389 187,389"/>
+  <text class="small muted" x="193" y="390">plaintext StartTLS</text>
+
+  <rect class="attack" x="16" y="403" width="328" height="75"/>
+  <text class="label orange" x="30" y="432">Attacker-controlled relay</text>
+  <text class="body muted" x="30" y="457">appends, then forwards</text>
+  <path class="wire" d="M180 478V498"/>
+  <polygon fill="#8a8f86" points="180,506 173,494 187,494"/>
+
+  <rect class="box" x="16" y="508" width="328" height="75"/>
+  <text class="label green" x="30" y="537">389-ds</text>
+  <text class="body muted" x="30" y="562">directory · TLS endpoint</text>
+  <path d="M16 601H344" stroke="#333b31"/>
+  <text class="small muted" x="16" y="623">After TLS: relay forwards ciphertext.</text>
+</svg>

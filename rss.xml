@@ -7,6 +7,18 @@
     <language>en</language>
     <atom:link href="https://xclow3n.com/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Auth Bypass in LDAP Services via StartTLS Desync in 389-ds (CVE-2026-86345)</title>
+      <link>https://xclow3n.com/post/389ds-starttls-desync/</link>
+      <guid isPermaLink="true">https://xclow3n.com/post/389ds-starttls-desync/</guid>
+      <pubDate>Sun, 01 Nov 2026 00:00:00 GMT</pubDate>
+      <description>A StartTLS desync in 389 Directory Server lets an on-path attacker make LDAP-backed applications accept a wrong password by confusing an anonymous bind&apos;s success with the real authentication result. On a Fedora 44 host it opened an SSH session as a user whose password the directory had refused.</description>
+      <category>LDAP</category>
+      <category>StartTLS</category>
+      <category>Desync</category>
+      <category>389 Directory Server</category>
+      <category>CVE-2026-86345</category>
+    </item>
+    <item>
       <title>Smuggling Shouldn&apos;t Exist Anymore, Right?</title>
       <link>https://xclow3n.com/post/smuggling-shouldnt-exist-anymore/</link>
       <guid isPermaLink="true">https://xclow3n.com/post/smuggling-shouldnt-exist-anymore/</guid>

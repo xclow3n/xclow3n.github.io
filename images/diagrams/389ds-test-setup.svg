@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="590" viewBox="0 0 560 590" role="img" aria-labelledby="title desc">
+  <title id="title">The tested authentication path</title>
+  <desc id="desc">The attacker submits Alice and a wrong password to a login service and separately controls an on-path relay between nslcd and 389 Directory Server. The relay alters plaintext StartTLS traffic, then forwards ciphertext. TLS terminates at nslcd and the directory.</desc>
+  <style>
+    text{font-family:'DejaVu Sans Mono',monospace;fill:#e2e2db}
+    .head{font-size:20px;font-weight:700;fill:#58e08b}
+    .label{font-size:18px;font-weight:700}
+    .detail{font-size:13px}
+    .small{font-size:13px}
+    .muted{fill:#a4aaa1}
+    .green{fill:#58e08b}
+    .orange{fill:#f0a848}
+    .box{fill:#07090a;stroke:#333b31;stroke-width:1}
+    .attack{fill:#151108;stroke:#f0a848;stroke-width:1}
+    .path{fill:none;stroke:#8a8f86;stroke-width:1.5}
+    .control{fill:none;stroke:#f0a848;stroke-width:1.5;stroke-dasharray:4 3}
+    .rule{stroke:#333b31;stroke-width:1}
+  </style>
+  <rect width="560" height="590" fill="#000"/>
+  <text class="head" x="24" y="37">01 / The tested path</text>
+  <text class="small muted" x="24" y="62">One attempted login; two separate attacker capabilities</text>
+  <path class="rule" d="M24 75H536"/>
+
+  <rect class="attack" x="24" y="91" width="190" height="100"/>
+  <text class="label orange" x="42" y="124">Attacker</text>
+  <text class="detail" x="42" y="151">chooses alice +</text>
+  <text class="detail" x="42" y="174">wrong password</text>
+
+  <path class="control" d="M214 141H289"/>
+  <polygon fill="#f0a848" points="299,141 286,134 286,148"/>
+  <text class="small muted" x="251" y="125" text-anchor="middle">submits</text>
+
+  <rect class="box" x="300" y="91" width="236" height="100"/>
+  <text class="label" x="319" y="124">Login service</text>
+  <text class="detail muted" x="319" y="151">sshd → Linux-PAM</text>
+  <text class="detail muted" x="319" y="174">→ pam_ldap</text>
+
+  <path class="path" d="M418 191V214"/>
+  <polygon fill="#8a8f86" points="418,223 411,210 425,210"/>
+  <rect class="box" x="300" y="225" width="236" height="78"/>
+  <text class="label green" x="319" y="257">nslcd</text>
+  <text class="detail muted" x="319" y="282">LDAP client · TLS endpoint</text>
+
+  <path class="control" d="M119 191V373H289"/>
+  <polygon fill="#f0a848" points="299,373 286,366 286,380"/>
+  <text class="detail orange" x="143" y="266">also controls</text>
+  <text class="detail orange" x="143" y="290">the relay</text>
+
+  <path class="path" d="M418 303V324"/>
+  <polygon fill="#8a8f86" points="418,334 411,321 425,321"/>
+  <text class="small muted" x="435" y="325">plaintext</text>
+  <rect class="attack" x="300" y="336" width="236" height="78"/>
+  <text class="label orange" x="319" y="368">On-path relay</text>
+  <text class="detail muted" x="319" y="393">appends, then forwards</text>
+
+  <path class="path" d="M418 414V435"/>
+  <polygon fill="#8a8f86" points="418,445 411,432 425,432"/>
+  <rect class="box" x="300" y="447" width="236" height="78"/>
+  <text class="label green" x="319" y="479">389-ds</text>
+  <text class="detail muted" x="319" y="504">directory · TLS endpoint</text>
+
+  <path class="rule" d="M24 543H536"/>
+  <text class="small muted" x="24" y="566">After the upgrade, the relay passes encrypted bytes.</text>
+</svg>
